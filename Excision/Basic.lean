@@ -117,7 +117,7 @@ attribute [local simp] SimplicialObject.δ_def SimplexCategory.δ_apply
 @[simps]
 noncomputable def extraDegeneracy (y : Y) : (toAugmentedSSet R Y).ExtraDegeneracy where
   s' := ↾fun _ ↦ .const y
-  s n := ↾(fun f ↦ StdSimplex.affineMapMk (Fin.induction y (fun i _ ↦ f.hom (StdSimplex.single i))))
+  s n := ↾(fun f ↦ StdSimplex.affineMapMk (Fin.cases y (fun i ↦ f.hom (StdSimplex.single i))))
   s₀_comp_δ₁ := by dsimp ;ext _ i; fin_cases i; simp
   s_comp_δ₀ n := by dsimp; ext _ i; simp
   s_comp_δ n i := by
