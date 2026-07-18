@@ -57,13 +57,21 @@ noncomputable def StdSimplex.affineMap {M N : Type*} (f : M → N) :
     ConvexSpace.AffineMap R (StdSimplex R M) (StdSimplex R N) where
   hom := StdSimplex.map f
 
+@[simp]
+lemma StdSimplex.sConvexComb_map_iConvexComb {M : Type*} {Y : Type*} [ConvexSpace R Y] (f : M → Y)
+    (s : StdSimplex R (StdSimplex R M)) :
+    sConvexComb (map (fun s ↦ iConvexComb s f) s) = iConvexComb (sConvexComb s) f :=
+  calc
+    _ = iConvexComb s fun s ↦ sConvexComb (map f s) := sConvexComb_map _ _
+    _ = sConvexComb (map f (sConvexComb s)) := by
+        rw [StdSimplex.map_sConvexComb, sConvexComb_sConvexComb, sConvexComb_map,
+          iConvexComb_map]
+
 @[simps, implicit_reducible]
 noncomputable def StdSimplex.affineMapMk {M : Type*} {Y : Type*} [ConvexSpace R Y] (f : M → Y) :
     ConvexSpace.AffineMap R (StdSimplex R M) Y where
-  hom s := by
-    exact iConvexComb s f
-  isAffineMap.map_sConvexComb s := by
-    sorry
+  hom s := iConvexComb s f
+  isAffineMap.map_sConvexComb s := by simp
 
 @[fun_prop]
 lemma isAffineMap_const {X Y : Type*} [ConvexSpace R X] [ConvexSpace R Y] (y : Y) :
