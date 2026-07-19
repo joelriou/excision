@@ -80,6 +80,8 @@ lemma toSSet_δ_zero (y : Y) {n : ℕ} (s : ConvexSpace.AffineMap R (StdSimplex 
 
 section
 
+variable {Y}
+
 attribute [local simp] SimplicialObject.δ_def SimplexCategory.δ_apply
 
 @[simp]
