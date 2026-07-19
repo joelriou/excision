@@ -14,7 +14,6 @@ public import Mathlib.AlgebraicTopology.SimplexCategory.Basic
 
 @[expose] public section
 
-
 namespace SimplexCategory
 
 lemma δ_apply {n : ℕ} (i : Fin (n + 2)) (j : Fin (n + 1)) :
