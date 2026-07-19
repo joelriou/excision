@@ -1,8 +1,10 @@
 import Excision.ConvexSpace.AffineMap
 import Excision.ConvexSpace.StdSimplex
 import Excision.ConvexSpace.ToSSet
+import Excision.HomotopyCategory.ChainComplex
 import Excision.Linear.ULift
 import Excision.SimplexCategory.Basic
 import Excision.SimplicialSet.ChainComplexAb
 import Excision.SingularHomology.Basic
 import Excision.SingularHomology.NatTransOfFinsupp
+import Excision.SmallSimplices

@@ -9,7 +9,6 @@ public import Excision.ConvexSpace.StdSimplex
 public import Excision.SimplexCategory.Basic
 public import Mathlib.AlgebraicTopology.ExtraDegeneracy
 
-
 /-!
 # Affine simplices in the singular simplicial set of a convex space
 
