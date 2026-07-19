@@ -37,15 +37,28 @@ noncomputable def hSd : ∀ (n : ℕ),
   | Nat.zero => 0
   | Nat.succ n =>
       Sigma.desc (fun s ↦
-        (SSet.ιChainComplex _ s -
-          SSet.ιChainComplex _ s ≫ ((toSSet ℝ Y).chainComplex R).d (n + 1) n ≫ hSd n) ≫
+        (SSet.ιChainComplex _ s - SSet.ιChainComplex _ s ≫
+          ((toSSet ℝ Y).chainComplex R).d (n + 1) n ≫ hSd n) ≫
             toSSet.cone s.isobarycenter _ (n + 1))
+
+@[simp]
+lemma hSd_zero : hSd Y R 0 = 0 := rfl
+
+@[reassoc]
+lemma ι_hSd_succ {n : ℕ}
+    (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin (n + 2))) Y) :
+    SSet.ιChainComplex _ s ≫ hSd Y R (n + 1) =
+      (SSet.ιChainComplex _ s - SSet.ιChainComplex _ s ≫
+        ((toSSet ℝ Y).chainComplex R).d (n + 1) n ≫ hSd Y R n) ≫
+          toSSet.cone s.isobarycenter _ (n + 1) :=
+  Sigma.ι_desc ..
 
 @[inherit_doc hSd]
 noncomputable def hSd' (n m : ℕ) :
     ((toSSet ℝ Y).chainComplex R).X n ⟶ ((toSSet ℝ Y).chainComplex R).X m :=
   if h : n + 1 = m then hSd Y R n ≫ eqToHom (by simp [h]) else 0
 
+@[simp]
 lemma hSd'_eq (n : ℕ) : hSd' Y R n (n + 1) = hSd Y R n := by simp [hSd']
 
 lemma hSd'_zero (n m : ℕ) (h : n + 1 ≠ m) : hSd' Y R n m = 0 := by grind [hSd']
@@ -63,7 +76,11 @@ noncomputable def homotopyIdSd : Homotopy (𝟙 _) (sd Y R) :=
   Homotopy.equivSubZero.symm
     (.trans (.ofEq (by simp [sd])) (.nullHomotopy (hSd' Y R) (hSd'_zero Y R)))
 
--- TODO: equational lemma for `sd`
+@[simp]
+lemma sd_f_0 : (sd Y R).f 0 = 𝟙 _ := by
+  simp [sd, Homotopy.nullHomotopicMap_f_of_not_rel_left (ComplexShape.down_mk 1 0 rfl) (by simp)]
+
+-- TODO: more equational lemmas for `sd`
 
 end ConvexSpace.toSSet
 
