@@ -20,8 +20,8 @@ universe v u
 
 namespace CategoryTheory.Linear
 
-variable {R : Type u} [Semiring R] {C : Type*} [Category* C] [Preadditive C]
-  [Linear R C]
+variable {R : Type u} [Semiring R] {C : Type*} [Category* C]
+  [Preadditive C] [Linear R C]
 
 instance ulift : Linear (ULift.{v} R) C where
   homModule _ _ := Module.compHom _ ULift.ringEquiv.toRingHom
