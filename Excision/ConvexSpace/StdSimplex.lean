@@ -61,6 +61,7 @@ noncomputable def affineMapMk {M : Type*} {Y : Type*} [ConvexSpace R Y] (f : M â
 
 open BigOperators
 
+/-- The isobarycenter of the standard simplex. -/
 @[simps]
 noncomputable def isobarycenter
     {K : Type*} [Field K] [CharZero K] [LinearOrder K] [IsStrictOrderedRing K]
@@ -79,7 +80,8 @@ variable {K : Type*} [Field K] [CharZero K] [LinearOrder K] [IsStrictOrderedRing
   {M : Type*} [Nonempty M] [Fintype M] {Y : Type*} [ConvexSpace K Y]
   (f : ConvexSpace.AffineMap K (StdSimplex K M) Y)
 
-noncomputable def isobarycenter : Y := f .isobarycenter
+/-- The image of the isobarycenter of the standard simplex by an affine map. -/
+noncomputable abbrev isobarycenter : Y := f .isobarycenter
 
 end ConvexSpace.AffineMap
 

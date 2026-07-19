@@ -32,7 +32,7 @@ variable (Y : Type w) [ConvexSpace R Y]
 variable (R) in
 /-- Given a convex space `Y`, this is the simplicial set whose `n`-simplices are
 affine maps from the `n`-dimensional standard simplex to `Y`. -/
-protected noncomputable abbrev toSSet : SSet where
+noncomputable abbrev toSSet : SSet where
   obj n := ConvexSpace.AffineMap R (StdSimplex R (Fin (n.unop.len + 1))) Y
   map f := ↾fun g ↦ g.comp (StdSimplex.affineMap f.unop)
   map_comp _ _ := by
@@ -44,8 +44,8 @@ protected noncomputable abbrev toSSet : SSet where
 variable (R) in
 /-- Given a convex space `Y`, this is the augmented simplicial set
 whose `n`-simplices are affine maps from the `n`-dimensional standard simplex to `Y`. -/
-protected noncomputable abbrev toSSetAugmented : SSet.Augmented where
-  left := ConvexSpace.toSSet R Y
+noncomputable abbrev toSSetAugmented : SSet.Augmented where
+  left := toSSet R Y
   right := PUnit
   hom.app _ := ↾fun _ ↦ .unit
 
@@ -59,7 +59,7 @@ from the standard `n`-simplex to `Y` are identified to tuples `[y₀, ..., yₙ]
 by the images of the vertices. -/
 @[simps]
 noncomputable def toSSet.extraDegeneracy (y : Y) :
-    (ConvexSpace.toSSetAugmented R Y).ExtraDegeneracy where
+    (toSSetAugmented R Y).ExtraDegeneracy where
   s' := ↾fun _ ↦ .const y
   s n := ↾fun f ↦ StdSimplex.affineMapMk (Fin.cases y (fun i ↦ f (.single i)))
   s₀_comp_δ₁ := by ext _ i; fin_cases i; simp
@@ -68,10 +68,13 @@ noncomputable def toSSet.extraDegeneracy (y : Y) :
 
 variable {Y} {C : Type*} [Category* C] [Preadditive C] [HasCoproducts.{max u w} C]
 
+/-- Given a convex space `Y`, `y : Y` and `n : ℕ`, this is the morphism from
+affine `n`-chains (with coefficients in `M`) to affine `n + 1`-chains which
+sends a simplex `[y₀, ..., yₙ]` to `[y, y₀, ..., yₙ]`. -/
 noncomputable def toSSet.cone (y : Y) (M : C) (n : ℕ) :
-    ((ConvexSpace.toSSet R Y).chainComplex M).X n ⟶
-      ((ConvexSpace.toSSet R Y).chainComplex M).X (n + 1) :=
-  ((extraDegeneracy y (R := R)).map (sigmaConst.obj M)).s n
+    ((toSSet R Y).chainComplex M).X n ⟶
+      ((toSSet R Y).chainComplex M).X (n + 1) :=
+  ((extraDegeneracy y).map (sigmaConst.obj M)).s n
 
 end ConvexSpace
 

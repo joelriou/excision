@@ -25,31 +25,45 @@ variable {C : Type*} [Category C] [Preadditive C] [HasCoproducts.{w} C]
 
 namespace ConvexSpace.toSSet
 
+/-- The data that is part of the homotopy between the identity and
+the subdivision endomorphism `sd Y R` of the complex of affine
+chains with coefficients in `R` in the convex space `Y`.
+(We mostly follow the proof in Proposition 2.21 in Hatcher's book.
+It seems that this can be zero for `n = 0` though, which is different
+from the definition in the book.) -/
 noncomputable def hSd : ∀ (n : ℕ),
-    ((ConvexSpace.toSSet ℝ Y).chainComplex R).X n ⟶
-      ((ConvexSpace.toSSet ℝ Y).chainComplex R).X (n + 1)
+    ((toSSet ℝ Y).chainComplex R).X n ⟶
+      ((toSSet ℝ Y).chainComplex R).X (n + 1)
   | Nat.zero => 0
   | Nat.succ n =>
       Sigma.desc (fun s ↦
         (SSet.ιChainComplex _ s -
-          SSet.ιChainComplex _ s ≫ ((ConvexSpace.toSSet ℝ Y).chainComplex R).d (n + 1) n ≫ hSd n) ≫
-            ConvexSpace.toSSet.cone s.isobarycenter _ (n + 1))
+          SSet.ιChainComplex _ s ≫ ((toSSet ℝ Y).chainComplex R).d (n + 1) n ≫ hSd n) ≫
+            toSSet.cone s.isobarycenter _ (n + 1))
 
-noncomputable def hSd' (i j : ℕ) :
-    ((ConvexSpace.toSSet ℝ Y).chainComplex R).X i ⟶ ((ConvexSpace.toSSet ℝ Y).chainComplex R).X j :=
-  if hij : i + 1 = j then hSd Y R i ≫ eqToHom (by simp [hij]) else 0
+@[inherit_doc hSd]
+noncomputable def hSd' (n m : ℕ) :
+    ((toSSet ℝ Y).chainComplex R).X n ⟶ ((toSSet ℝ Y).chainComplex R).X m :=
+  if h : n + 1 = m then hSd Y R n ≫ eqToHom (by simp [h]) else 0
 
 lemma hSd'_eq (n : ℕ) : hSd' Y R n (n + 1) = hSd Y R n := by simp [hSd']
 
-lemma hSd'_zero (i j : ℕ) (hij : i + 1 ≠ j) : hSd' Y R i j = 0 := by grind [hSd']
+lemma hSd'_zero (n m : ℕ) (h : n + 1 ≠ m) : hSd' Y R n m = 0 := by grind [hSd']
 
+/-- The subdivision operator on the complex of affine chains with coefficients
+in `R` of a convex space `Y`. By definition, it is homotopic to the identity
+(see `homotopyIdSd`). -/
 noncomputable def sd :
-    (ConvexSpace.toSSet ℝ Y).chainComplex R ⟶ (ConvexSpace.toSSet ℝ Y).chainComplex R :=
+    (toSSet ℝ Y).chainComplex R ⟶ (toSSet ℝ Y).chainComplex R :=
   𝟙 _ - Homotopy.nullHomotopicMap (hSd' Y R)
 
+/-- The homotopy from the identity to the subdivision endomorphism `sd Y R`
+of the complex of affine chains with coefficients in `R` in the convex space `Y`. -/
 noncomputable def homotopyIdSd : Homotopy (𝟙 _) (sd Y R) :=
   Homotopy.equivSubZero.symm
     (.trans (.ofEq (by simp [sd])) (.nullHomotopy (hSd' Y R) (hSd'_zero Y R)))
+
+-- TODO: equational lemma for `sd`
 
 end ConvexSpace.toSSet
 
