@@ -5,7 +5,6 @@ Authors: Joël Riou
 -/
 module
 
-public import Mathlib
 public import Mathlib.Algebra.Category.Grp.Colimits
 public import Mathlib.AlgebraicTopology.SimplicialSet.Homology.Basic
 
