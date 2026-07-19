@@ -47,7 +47,7 @@ noncomputable def sd :
     (ConvexSpace.toSSet ℝ Y).chainComplex R ⟶ (ConvexSpace.toSSet ℝ Y).chainComplex R :=
   𝟙 _ - Homotopy.nullHomotopicMap (hSd' Y R)
 
-noncomputable def homotopySdId : Homotopy (𝟙 _) (sd Y R) :=
+noncomputable def homotopyIdSd : Homotopy (𝟙 _) (sd Y R) :=
   Homotopy.equivSubZero.symm
     (.trans (.ofEq (by simp [sd])) (.nullHomotopy (hSd' Y R) (hSd'_zero Y R)))
 
