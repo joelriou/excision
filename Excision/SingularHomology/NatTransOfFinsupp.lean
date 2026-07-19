@@ -25,8 +25,6 @@ namespace AlgebraicTopology
 variable {C : Type u} [Category.{v} C] [HasCoproducts.{w} C]
   [Preadditive C]
 
-
-
 namespace singularChainComplexFunctor
 
 variable {R : C} {n : ℕ} {F : TopCat.{w} ⥤ C}
