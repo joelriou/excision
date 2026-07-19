@@ -1,3 +1,4 @@
+import Excision.ConvexSpace.AffineChains
 import Excision.ConvexSpace.AffineMap
 import Excision.ConvexSpace.StdSimplex
 import Excision.ConvexSpace.ToSSet

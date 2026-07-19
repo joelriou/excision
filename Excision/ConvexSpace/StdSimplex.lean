@@ -14,7 +14,9 @@ public import Excision.ConvexSpace.AffineMap
 
 @[expose] public section
 
-namespace Convexity.StdSimplex
+namespace Convexity
+
+namespace StdSimplex
 
 variable {R : Type*} [PartialOrder R] [Semiring R] [IsStrictOrderedRing R]
 
@@ -57,4 +59,18 @@ noncomputable def affineMapMk {M : Type*} {Y : Type*} [ConvexSpace R Y] (f : M �
   toFun s := iConvexComb s f
   isAffineMap_toFun.map_sConvexComb s := by simp
 
-end Convexity.StdSimplex
+open BigOperators
+
+@[simps]
+noncomputable def isobarycenter
+    {K : Type*} [Field K] [CharZero K] [LinearOrder K] [IsStrictOrderedRing K]
+    {M : Type*} [Nonempty M] [Fintype M] : StdSimplex K M where
+  weights := ∑ (m : M), .single m (Fintype.card M)⁻¹
+  nonneg := Finset.sum_nonneg (by simp)
+  total := by
+    rw [Finsupp.sum_fintype _ _ (by simp)]
+    simp
+
+end StdSimplex
+
+end Convexity

@@ -41,7 +41,7 @@ protected noncomputable abbrev toSSet : SSet where
 variable (R) in
 /-- Given a convex space `Y`, this is the augmented simplicial set
 whose `n`-simplices are affine maps from the `n`-dimensional standard simplex to `Y`. -/
-noncomputable abbrev toSSetAugmented : SSet.Augmented where
+protected noncomputable abbrev toSSetAugmented : SSet.Augmented where
   left := ConvexSpace.toSSet R Y
   right := PUnit
   hom.app _ := ↾fun _ ↦ .unit
@@ -55,7 +55,8 @@ it sends a `n`-simplex `[y₀, ..., yₙ]` to `[y, y₀, ..., yₙ]`, where affi
 from the standard `n`-simplex to `Y` are identified to tuples `[y₀, ..., yₙ]` given
 by the images of the vertices. -/
 @[simps]
-noncomputable def extraDegeneracy (y : Y) : (toSSetAugmented R Y).ExtraDegeneracy where
+noncomputable def extraDegeneracy (y : Y) :
+    (ConvexSpace.toSSetAugmented R Y).ExtraDegeneracy where
   s' := ↾fun _ ↦ .const y
   s n := ↾fun f ↦ StdSimplex.affineMapMk (Fin.cases y (fun i ↦ f (.single i)))
   s₀_comp_δ₁ := by ext _ i; fin_cases i; simp
