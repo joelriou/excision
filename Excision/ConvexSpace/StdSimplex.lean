@@ -73,4 +73,14 @@ noncomputable def isobarycenter
 
 end StdSimplex
 
+namespace ConvexSpace.AffineMap
+
+variable {K : Type*} [Field K] [CharZero K] [LinearOrder K] [IsStrictOrderedRing K]
+  {M : Type*} [Nonempty M] [Fintype M] {Y : Type*} [ConvexSpace K Y]
+  (f : ConvexSpace.AffineMap K (StdSimplex K M) Y)
+
+noncomputable def isobarycenter : Y := f .isobarycenter
+
+end ConvexSpace.AffineMap
+
 end Convexity

@@ -6,8 +6,8 @@ Authors: Joël Riou
 module
 
 public import Excision.ConvexSpace.ToSSet
+public import Mathlib.Algebra.Order.Archimedean.Real.Basic
 public import Mathlib.AlgebraicTopology.SimplicialSet.Homology.Basic
-public import Mathlib.Data.Real.Basic
 
 /-!
 # ...
@@ -30,14 +30,14 @@ noncomputable def hSd : ∀ (n : ℕ),
       ((ConvexSpace.toSSet ℝ Y).chainComplex R).X (n + 1)
   | Nat.zero => 0
   | Nat.succ n =>
-      Sigma.desc (fun s ↦ by
-        dsimp at s
-        sorry)
+      Sigma.desc (fun s ↦
+        (SSet.ιChainComplex _ s -
+          SSet.ιChainComplex _ s ≫ ((ConvexSpace.toSSet ℝ Y).chainComplex R).d (n + 1) n ≫ hSd n) ≫
+            ConvexSpace.toSSet.cone s.isobarycenter _ (n + 1))
 
 noncomputable def hSd' (i j : ℕ) :
     ((ConvexSpace.toSSet ℝ Y).chainComplex R).X i ⟶ ((ConvexSpace.toSSet ℝ Y).chainComplex R).X j :=
-  if hij : i + 1 = j then hSd Y R i ≫ eqToHom (by simp [hij])
-  else 0
+  if hij : i + 1 = j then hSd Y R i ≫ eqToHom (by simp [hij]) else 0
 
 lemma hSd'_eq (n : ℕ) : hSd' Y R n (n + 1) = hSd Y R n := by simp [hSd']
 

@@ -8,23 +8,26 @@ module
 public import Excision.ConvexSpace.StdSimplex
 public import Excision.SimplexCategory.Basic
 public import Mathlib.AlgebraicTopology.ExtraDegeneracy
+public import Mathlib.AlgebraicTopology.SimplicialSet.Homology.Basic
 
 /-!
 # Affine simplices in the singular simplicial set of a convex space
 
 -/
 
+universe u w
+
 @[expose] public section
 
-open CategoryTheory
+open CategoryTheory Limits
 
 namespace Convexity
 
-variable {R : Type*} [PartialOrder R] [Semiring R] [IsStrictOrderedRing R]
+variable {R : Type u} [PartialOrder R] [Semiring R] [IsStrictOrderedRing R]
 
 namespace ConvexSpace
 
-variable (Y : Type*) [ConvexSpace R Y]
+variable (Y : Type w) [ConvexSpace R Y]
 
 variable (R) in
 /-- Given a convex space `Y`, this is the simplicial set whose `n`-simplices are
@@ -55,13 +58,20 @@ it sends a `n`-simplex `[y₀, ..., yₙ]` to `[y, y₀, ..., yₙ]`, where affi
 from the standard `n`-simplex to `Y` are identified to tuples `[y₀, ..., yₙ]` given
 by the images of the vertices. -/
 @[simps]
-noncomputable def extraDegeneracy (y : Y) :
+noncomputable def toSSet.extraDegeneracy (y : Y) :
     (ConvexSpace.toSSetAugmented R Y).ExtraDegeneracy where
   s' := ↾fun _ ↦ .const y
   s n := ↾fun f ↦ StdSimplex.affineMapMk (Fin.cases y (fun i ↦ f (.single i)))
   s₀_comp_δ₁ := by ext _ i; fin_cases i; simp
   s_comp_δ _ _ := by ext _ j; obtain rfl | ⟨j, rfl⟩ := j.eq_zero_or_eq_succ <;> simp
   s_comp_σ _ _ := by ext _ j; obtain rfl | ⟨j, rfl⟩ := j.eq_zero_or_eq_succ <;> simp
+
+variable {Y} {C : Type*} [Category* C] [Preadditive C] [HasCoproducts.{max u w} C]
+
+noncomputable def toSSet.cone (y : Y) (M : C) (n : ℕ) :
+    ((ConvexSpace.toSSet R Y).chainComplex M).X n ⟶
+      ((ConvexSpace.toSSet R Y).chainComplex M).X (n + 1) :=
+  ((extraDegeneracy y (R := R)).map (sigmaConst.obj M)).s n
 
 end ConvexSpace
 

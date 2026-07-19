@@ -30,7 +30,7 @@ noncomputable abbrev singularChainComplex (X : TopCat.{w}) (R : C) :
 
 /-- Inclusion of a summand of an object in the singular chain complex of
 a topological space. -/
-noncomputable abbrev ιSingularChainComplexX
+noncomputable abbrev ιSingularChainComplex
     (X : TopCat.{w}) {R : C} {n : ℕ} (x : (toSSet.obj X) _⦋n⦌) :
     R ⟶ (X.singularChainComplex R).X n :=
   Sigma.ι (fun _ ↦ R) x
@@ -45,10 +45,10 @@ set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma ιSingularChainComplex_map
     {X Y : TopCat.{w}} (f : X ⟶ Y) {R : C} {n : ℕ} (x : (toSSet.obj X) _⦋n⦌) :
-    X.ιSingularChainComplexX (R := R) x ≫
+    X.ιSingularChainComplex (R := R) x ≫
       (((singularChainComplexFunctor C).obj R).map f).f n =
-        Y.ιSingularChainComplexX ((toSSet.map f).app _ x) := by
-  simp [singularChainComplexFunctor, ιSingularChainComplexX,
+        Y.ιSingularChainComplex ((toSSet.map f).app _ x) := by
+  simp [singularChainComplexFunctor, ιSingularChainComplex,
     SSet.chainComplexFunctor]
 
 end TopCat

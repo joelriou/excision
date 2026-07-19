@@ -42,15 +42,15 @@ set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma ι_natTransMk (f : R ⟶ F.obj (SimplexCategory.toTop.{w} ^⦋n⦌))
     (X : TopCat.{w}) (s : (TopCat.toSSet.obj X) _⦋n⦌) :
-    dsimp% X.ιSingularChainComplexX s ≫ (natTransMk f).app X =
+    dsimp% X.ιSingularChainComplex s ≫ (natTransMk f).app X =
       f ≫ F.map s.down :=
   Sigma.ι_desc ..
 
 set_option backward.isDefEq.respectTransparency false in
 lemma natTrans_ext
     {f g : (singularChainComplexFunctor C).obj R ⋙ HomologicalComplex.eval _ _ n ⟶ F}
-    (h : TopCat.ιSingularChainComplexX _ (TopCat.toSSet.univObj n) ≫ f.app _ =
-      TopCat.ιSingularChainComplexX _ (TopCat.toSSet.univObj n) ≫ g.app _) :
+    (h : TopCat.ιSingularChainComplex _ (TopCat.toSSet.univObj n) ≫ f.app _ =
+      TopCat.ιSingularChainComplex _ (TopCat.toSSet.univObj n) ≫ g.app _) :
     f = g := by
   ext X
   refine Sigma.hom_ext _ _ (fun s ↦ ?_)
