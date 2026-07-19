@@ -5,7 +5,6 @@ Authors: Joël Riou
 -/
 module
 
-public import Mathlib
 public import Mathlib.Algebra.Ring.ULift
 public import Mathlib.CategoryTheory.Linear.Basic
 
