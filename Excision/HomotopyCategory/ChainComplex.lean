@@ -29,7 +29,7 @@ lemma trianglehOfDegreewiseSplit_distinguished
   (HomotopyCategory.distinguished_iff_iso_trianglehOfDegreewiseSplit ..).2
     ⟨_, σ, ⟨Iso.refl _⟩⟩
 
-lemma homotopyEquivalence_shortComplexF_iff_of_splitting
+lemma homotopyEquivalences_shortComplexF_iff_of_splitting
     (σ : ∀ n, (S.map (eval _ _ n)).Splitting) :
     homotopyEquivalences _ _ S.f ↔ Nonempty (Homotopy (𝟙 S.X₃) 0) := by
   rw [← HomotopyCategory.isZero_quotient_obj_iff,
@@ -43,7 +43,7 @@ namespace ChainComplex
 variable [HasZeroObject C] [HasBinaryBiproducts C]
   (S : ShortComplex (ChainComplex C ℕ))
 
-lemma homotopyEquivalence_shortComplexF_iff_of_degreewiseSplit
+lemma homotopyEquivalences_shortComplexF_iff_of_degreewiseSplit
     (σ : ∀ n, (S.map (eval _ _ n)).Splitting) :
     homotopyEquivalences _ _ S.f ↔ Nonempty (Homotopy (𝟙 S.X₃) 0) := by
   sorry
