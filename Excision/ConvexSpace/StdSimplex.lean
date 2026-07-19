@@ -53,11 +53,22 @@ lemma sConvexComb_map_iConvexComb {M : Type*} {Y : Type*} [ConvexSpace R Y] (f :
           iConvexComb_map]
 
 /-- Constructor for (bundled) affine maps from a standard simplex to a convex space. -/
-@[simps, implicit_reducible]
+--@[simps, implicit_reducible]
+@[simps -isSimp]
 noncomputable def affineMapMk {M : Type*} {Y : Type*} [ConvexSpace R Y] (f : M → Y) :
     ConvexSpace.AffineMap R (StdSimplex R M) Y where
   toFun s := iConvexComb s f
   isAffineMap_toFun.map_sConvexComb s := by simp
+
+@[simp]
+lemma affineMapMk_single {M : Type*} {Y : Type*} [ConvexSpace R Y] (f : M → Y) (m : M) :
+    affineMapMk (R := R) f (.single m) = f m := by
+  simp [affineMapMk_toFun]
+
+lemma affineMapMk_surjective {M : Type*} {Y : Type*} [ConvexSpace R Y]
+    (s : ConvexSpace.AffineMap R (StdSimplex R M) Y) :
+    ∃ (f : M → Y), affineMapMk f = s :=
+  ⟨fun i ↦ s (single i), by ext; simp [affineMapMk_toFun]⟩
 
 open BigOperators
 
