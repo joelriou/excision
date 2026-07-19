@@ -4,3 +4,5 @@ import Excision.ConvexSpace.ToSSet
 import Excision.Linear.ULift
 import Excision.SimplexCategory.Basic
 import Excision.SimplicialSet.ChainComplexAb
+import Excision.SingularHomology.Basic
+import Excision.SingularHomology.NatTransOfFinsupp
