@@ -103,8 +103,6 @@ lemma ι_sd_f_succ {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin
       Finset.sum_singleton, Fin.succ_one_eq_two, sub_add_cancel_left, neg_add_rev, neg_neg, sd_f_0,
       Category.id_comp, SSet.ιChainComplex_d_assoc, Finset.sum_neg_distrib, Preadditive.add_comp,
       ι_cone, Preadditive.neg_comp]
-    -- the next line is not strictly necessary, but it is useful
-    -- in order to decipher the goal
     generalize hγ : s.isobarycenter = γ
     obtain ⟨s, rfl⟩ := StdSimplex.affineMapMk_surjective s
     obtain ⟨s₀, s₁, rfl⟩ := Fin.exists_vecCons₂ s
