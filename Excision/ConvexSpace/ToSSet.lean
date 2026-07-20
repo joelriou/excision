@@ -21,6 +21,15 @@ universe w u
 
 open CategoryTheory Limits
 
+-- to be moved
+lemma CategoryTheory.Preadditive.hasZeroObject_of_hasCoproducts (C : Type*) [Category* C]
+    [Preadditive C]
+    [HasCoproduct (PEmpty.elim : PEmpty.{w + 1} → C)] :
+    HasZeroObject C :=
+  ⟨∐ (PEmpty.elim : PEmpty.{w + 1} → C), by
+    rw [IsZero.iff_id_eq_zero]
+    cat_disch⟩
+
 namespace Convexity
 
 variable {R : Type u} [PartialOrder R] [Semiring R] [IsStrictOrderedRing R]
@@ -151,6 +160,31 @@ noncomputable def toSSet.cone (y : Y) (M : C) (n : ℕ) :
     ((toSSet R Y).chainComplex M).X n ⟶
       ((toSSet R Y).chainComplex M).X (n + 1) :=
   ((extraDegeneracy y).map (sigmaConst.obj M)).s n
+
+set_option backward.isDefEq.respectTransparency false in
+set_option backward.defeqAttrib.useBackward true in
+@[simp]
+lemma toSSet.d_comp_cone_add_cone_comp_d (y : Y) (M : C) {n : ℕ} :
+    ((toSSet R Y).chainComplex M).d (n + 1) n ≫ toSSet.cone y M n +
+    toSSet.cone y M (n + 1) ≫ ((toSSet R Y).chainComplex M).d (n + 2) (n + 1) = 𝟙 _ := by
+  have := Preadditive.hasZeroObject_of_hasCoproducts C
+  have := (((extraDegeneracy (R := R) y).map
+    (sigmaConst.obj M)).homotopyEquiv.homotopyHomInvId.symm.comm (n + 1)).symm
+  rw [Homotopy.prevD_chainComplex, Homotopy.dNext_succ_chainComplex] at this
+  simpa [-AlgebraicTopology.AlternatingFaceMapComplex.obj_d_eq,
+    SimplicialObject.Augmented.ExtraDegeneracy.homotopyEquiv] using! this
+
+lemma toSSet.d_comp_cone_eq_sub (y : Y) (M : C) {n : ℕ} :
+    ((toSSet R Y).chainComplex M).d (n + 1) n ≫ toSSet.cone y M n =
+    𝟙 _ - toSSet.cone y M (n + 1) ≫ ((toSSet R Y).chainComplex M).d (n + 2) (n + 1) := by
+  rw [← d_comp_cone_add_cone_comp_d y]
+  abel
+
+lemma toSSet.cone_comp_d_eq_sub (y : Y) (M : C) {n : ℕ} :
+    toSSet.cone y M (n + 1) ≫ ((toSSet R Y).chainComplex M).d (n + 2) (n + 1) =
+    𝟙 _ - ((toSSet R Y).chainComplex M).d (n + 1) n ≫ toSSet.cone y M n := by
+  rw [← d_comp_cone_add_cone_comp_d y]
+  abel
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in

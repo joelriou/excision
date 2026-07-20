@@ -88,32 +88,30 @@ lemma sd_f_succ (n : ℕ) :
   simp [sd, Homotopy.nullHomotopicMap_f (ComplexShape.down_mk (n + 2) (n + 1) rfl)
     (ComplexShape.down_mk (n + 1) n rfl), sub_sub]
 
---set_option backward.defeqAttrib.useBackward true in
---set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma ι_sd_f_succ {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin (n + 2))) Y) :
     SSet.ιChainComplex _ s ≫ (sd Y R).f (n + 1) =
       SSet.ιChainComplex _ s ≫ ((toSSet ℝ Y).chainComplex R).d (n + 1) n ≫
-        toSSet.cone (R := ℝ) s.isobarycenter R n := by
-  induction n with
-  | zero =>
-    dsimp
-    -- simp? [sd_f_succ, Fin.sum_univ_succ, toSSet_δ_zero.{w}]
-    simp only [sd_f_succ, Nat.reduceAdd, hSd_zero, comp_zero, sub_zero, Preadditive.comp_sub,
+        (sd Y R).f n ≫ toSSet.cone (R := ℝ) s.isobarycenter R n := by
+  obtain _ | n := n
+  · -- simp? [sd_f_succ, Fin.sum_univ_succ, toSSet_δ_zero.{w}]
+    simp only [Nat.reduceAdd, sd_f_succ, hSd_zero, comp_zero, sub_zero, Preadditive.comp_sub,
       Category.comp_id, ι_hSd_succ_assoc, ι_cone_assoc, SSet.ιChainComplex_d, Int.reduceNeg,
       Fin.sum_univ_succ, Fin.isValue, Fin.coe_ofNat_eq_mod, Nat.zero_mod, pow_zero,
       toSSet_δ_zero.{w}, one_smul, Fin.val_succ, zero_add, pow_one, Fin.succ_zero_eq_one, neg_smul,
       Finset.univ_unique, Fin.default_eq_zero, Fin.val_eq_zero, even_two, Even.neg_pow, one_pow,
-      Finset.sum_singleton, Fin.succ_one_eq_two, sub_add_cancel_left, neg_add_rev, neg_neg,
-      SSet.ιChainComplex_d_assoc, Finset.sum_neg_distrib, Preadditive.add_comp, ι_cone,
-      Preadditive.neg_comp]
+      Finset.sum_singleton, Fin.succ_one_eq_two, sub_add_cancel_left, neg_add_rev, neg_neg, sd_f_0,
+      Category.id_comp, SSet.ιChainComplex_d_assoc, Finset.sum_neg_distrib, Preadditive.add_comp,
+      ι_cone, Preadditive.neg_comp]
+    -- the next line is not strictly necessary, but it is useful
+    -- in order to decipher the goal
     generalize hγ : s.isobarycenter = γ
     obtain ⟨s, rfl⟩ := StdSimplex.affineMapMk_surjective s
     obtain ⟨s₀, s₁, rfl⟩ := Fin.exists_vecCons₂ s
     simp [toSSet_δ_zero_affineMapMk₂.{w}, toSSet_δ_one_affineMapMk₂.{w},
       toSSet_δ_two_affineMapMk₃.{w}, toSSet_δ_one_affineMapMk₃.{w}]
     abel
-  | succ n => sorry
+  · simp [sd_f_succ, ι_hSd_succ_assoc, cone_comp_d_eq_sub]
 
 end ConvexSpace.toSSet
 
