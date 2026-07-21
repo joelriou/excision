@@ -46,6 +46,7 @@ noncomputable def hSd : ∀ (n : ℕ),
 @[simp]
 lemma hSd_zero : hSd Y R 0 = 0 := rfl
 
+variable {Y} in
 @[reassoc (attr := simp)]
 lemma ι_hSd_succ {n : ℕ}
     (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin (n + 2))) Y) :
@@ -89,6 +90,7 @@ lemma sd_f_succ (n : ℕ) :
   simp [sd, Homotopy.nullHomotopicMap_f (ComplexShape.down_mk (n + 2) (n + 1) rfl)
     (ComplexShape.down_mk (n + 1) n rfl), sub_sub]
 
+variable {Y} in
 @[reassoc]
 lemma ι_sd_f_succ {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin (n + 2))) Y) :
     SSet.ιChainComplex _ s ≫ (sd Y R).f (n + 1) =
@@ -101,6 +103,7 @@ lemma ι_sd_f_succ {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin
 variable {n : ℕ}
 
 open Equiv.Perm in
+variable {Y} in
 @[reassoc]
 lemma ι_sd_f_eq_sum {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin (n + 1))) Y) :
     SSet.ιChainComplex _ s ≫ (sd Y R).f n =
@@ -131,6 +134,12 @@ lemma ι_sd_f_eq_sum {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (F
       ext k
       obtain ⟨k, rfl⟩ := (equivSuccSymm i σ).surjective k
       obtain rfl | ⟨k, rfl⟩ := k.eq_zero_or_eq_succ <;> simp
+
+example {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin (n + 1))) Y) :
+    SSet.ιChainComplex _ s ≫ (sd Y R).f n ≫ (sd Y R).f n = sorry := by
+  simp [ι_sd_f_eq_sum_assoc, Preadditive.sum_comp, ι_sd_f_eq_sum]
+  sorry
+
 
 end ConvexSpace.toSSet
 
