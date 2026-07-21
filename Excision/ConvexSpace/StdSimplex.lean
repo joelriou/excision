@@ -237,7 +237,7 @@ noncomputable def sdVertex
 
 lemma sdVertex_def (f : ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y)
     (σ : Equiv.Perm (Fin n)) (i : Fin n) :
-    f.sdVertex σ i = f.subIsobarycenter { x : Fin n | i ≤ σ⁻¹ x} ⟨σ i, by simp⟩ :=
+    f.sdVertex σ i = f.subIsobarycenter { x : Fin n | i ≤ σ⁻¹ x } ⟨σ i, by simp⟩ :=
   rfl
 
 @[simp]
