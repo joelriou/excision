@@ -5,6 +5,7 @@ import Excision.ConvexSpace.ToSSet
 import Excision.Fin.Vec
 import Excision.HomotopyCategory.ChainComplex
 import Excision.Linear.ULift
+import Excision.Perm.EquivSucc
 import Excision.SimplexCategory.Basic
 import Excision.SimplicialSet.ChainComplexAb
 import Excision.SingularHomology.Basic

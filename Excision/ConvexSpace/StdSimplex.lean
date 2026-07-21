@@ -96,8 +96,6 @@ lemma affineMapMk_surjective {M : Type*} {Y : Type*} [ConvexSpace R Y]
     ∃ (f : M → Y), affineMapMk f = s :=
   ⟨fun i ↦ s (single i), by ext; simp [affineMapMk_toFun]⟩
 
-open BigOperators
-
 /-- In the standard simplex with vertices `M`, this is the isobarycenter of
 a nonempty finite subset `S` of `M`. -/
 @[simps]

@@ -80,13 +80,6 @@ noncomputable abbrev toSSet : SSet where
     rw [← StdSimplex.map_comp]
     rfl
 
-@[simp]
-lemma toSSet_δ_zero (y : Y) {n : ℕ} (s : ConvexSpace.AffineMap R (StdSimplex R (Fin (n + 1))) Y) :
-    (toSSet R Y).δ 0 (s.cone y) = s := by
-  ext
-  simp [SimplicialObject.δ_def, SimplexCategory.δ_apply,
-    AffineMap.cone_def, StdSimplex.affineMapMk_toFun]
-
 section
 
 variable {Y}
@@ -94,34 +87,46 @@ variable {Y}
 attribute [local simp] SimplicialObject.δ_def SimplexCategory.δ_apply
 
 @[simp]
-lemma toSSet_δ_zero_affineMapMk₂ (y₀ y₁ : Y) :
+lemma toSSet.δ_zero_affineMapMk₂ (y₀ y₁ : Y) :
     (toSSet R Y).δ 0 (StdSimplex.affineMapMk ![y₀, y₁]) =
       StdSimplex.affineMapMk ![y₁] := by
   ext i; fin_cases i; simp
 
-@[simp]
-lemma toSSet_δ_one_affineMapMk₂ (y₀ y₁ : Y) :
+@[simp high]
+lemma toSSet.δ_one_affineMapMk₂ (y₀ y₁ : Y) :
     (toSSet R Y).δ 1 (StdSimplex.affineMapMk ![y₀, y₁]) =
       StdSimplex.affineMapMk ![y₀] := by
   ext i; fin_cases i; simp
 
 @[simp]
-lemma toSSet_δ_zero_affineMapMk₃ (y₀ y₁ y₂ : Y) :
+lemma toSSet.δ_zero_affineMapMk₃ (y₀ y₁ y₂ : Y) :
     (toSSet R Y).δ 0 (StdSimplex.affineMapMk ![y₀, y₁, y₂]) =
       StdSimplex.affineMapMk ![y₁, y₂] := by
   ext i; fin_cases i <;> simp
 
 @[simp]
-lemma toSSet_δ_one_affineMapMk₃ (y₀ y₁ y₂ : Y) :
+lemma toSSet.δ_one_affineMapMk₃ (y₀ y₁ y₂ : Y) :
     (toSSet R Y).δ 1 (StdSimplex.affineMapMk ![y₀, y₁, y₂]) =
       StdSimplex.affineMapMk ![y₀, y₂] := by
   ext i; fin_cases i <;> simp
 
 @[simp]
-lemma toSSet_δ_two_affineMapMk₃ (y₀ y₁ y₂ : Y) :
+lemma toSSet.δ_two_affineMapMk₃ (y₀ y₁ y₂ : Y) :
     (toSSet R Y).δ 2 (StdSimplex.affineMapMk ![y₀, y₁, y₂]) =
       StdSimplex.affineMapMk ![y₀, y₁] := by
   ext i; fin_cases i <;> simp [Fin.succAbove]
+
+@[simp]
+lemma toSSet.δ_zero (y : Y) {n : ℕ} (s : ConvexSpace.AffineMap R (StdSimplex R (Fin (n + 1))) Y) :
+    (toSSet R Y).δ 0 (s.cone y) = s := by
+  ext
+  simp [SimplicialObject.δ_def, SimplexCategory.δ_apply,
+    AffineMap.cone_def, StdSimplex.affineMapMk_toFun]
+
+lemma toSSet.δ_affineMapMk {n : ℕ} (s : Fin (n + 2) → Y)
+    (i : Fin (n + 2)) :
+    (toSSet R Y).δ i (StdSimplex.affineMapMk s) = StdSimplex.affineMapMk (s ∘ i.succAbove) := by
+  aesop
 
 end
 
