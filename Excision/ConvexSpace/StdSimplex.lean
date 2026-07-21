@@ -280,10 +280,10 @@ lemma sd_eq_self
   obtain ⟨s, rfl⟩ := Fin.exists_vecCons₁ f
   simp [sd]
 
-/-- The `k`th iteration of `sd` on affine maps from the standard simplex to
-a convex space `Y`. The input involves a family `σ : Fin k → Equiv.Perm (Fin n)`
-of permutations. We first apply `sd` with `σ (k - 1)`, etc, until
-we apply `sd` with `σ 0`. -/
+/-- The composition `sd (σ 0) ∘ ... ∘ sd (σ (k - 1))` of `k` subdivision
+operators `sd` on affine maps from the standard simplex to
+a convex space `Y`, where `σ : Fin k → Equiv.Perm (Fin n)` is
+a family of permutations. -/
 @[no_expose]
 noncomputable def sdIter (f : ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y) {k : ℕ}
     (σ : Fin k → Equiv.Perm (Fin n)) :
