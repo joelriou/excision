@@ -115,6 +115,46 @@ lemma subIsobarycenter_single
     subIsobarycenter (K := K) {m} (by simp) = .single m := by
   aesop
 
+lemma map_subIsobarycenter_of_injective
+    {K : Type*} [Field K] [CharZero K] [LinearOrder K] [IsStrictOrderedRing K]
+    {M N : Type*} [DecidableEq N] (S : Finset M) (hS : S.Nonempty)
+    (f : M → N) (hf : Function.Injective f) :
+    map f (subIsobarycenter (K := K) S hS) =
+      subIsobarycenter (Finset.image f S) (by simpa) := by
+  -- there must be a better proof
+  ext n
+  simp only [weights_map, weights_subIsobarycenter, Finsupp.coe_finsetSum, Finset.sum_apply]
+  by_cases! hn : ∃ (m : M) (hm : m ∈ S), f m = n
+  · obtain ⟨m, hm, rfl⟩ := hn
+    rw [Finsupp.mapDomain_apply hf, Finset.sum_image hf.injOn,
+      Finsupp.coe_finsetSum, Finset.sum_apply]
+    congr
+    ext x
+    by_cases hx : m = x
+    · subst hx
+      simp [Finset.card_image_of_injective S hf]
+    · rw [Finsupp.single_eq_of_ne hx, Finsupp.single_eq_of_ne
+        (fun h ↦ hx (hf h))]
+  · rw [Finsupp.mapDomain_of_not_mem_image_support,
+      Finset.sum_eq_zero]
+    · intro x hx
+      simp only [Finset.mem_image] at hx
+      obtain ⟨x, hx, rfl⟩ := hx
+      rw [Finsupp.single_apply_eq_zero]
+      intro h
+      exact (hn x hx h.symm).elim
+    · simp only [Set.mem_image, SetLike.mem_coe, Finsupp.mem_support_iff, Finsupp.coe_finsetSum,
+        Finset.sum_apply, ne_eq, not_exists, not_and]
+      by_contra!
+      obtain ⟨m, hm, rfl⟩ := this
+      replace hn : m ∉ S := fun h ↦ by simpa using hn _ h
+      apply hm
+      rw [Finset.sum_eq_zero]
+      intro x hx
+      rw [Finsupp.single_apply_eq_zero]
+      rintro rfl
+      tauto
+
 /-- The isobarycenter of the standard simplex. -/
 noncomputable abbrev isobarycenter
     {K : Type*} [Field K] [CharZero K] [LinearOrder K] [IsStrictOrderedRing K]
@@ -155,6 +195,13 @@ lemma subIsobarycenter_single (m : M) :
     f.subIsobarycenter {m} (by simp) = f (.single m) := by
   simp [subIsobarycenter]
 
+lemma subIsobarycenter_comp_of_injective
+    [DecidableEq M] {N : Type*} (S : Finset N) (hS : S.Nonempty)
+    (g : N → M) (hg : Function.Injective g) :
+    (f.comp (StdSimplex.affineMap (R := K) g)).subIsobarycenter S hS =
+      f.subIsobarycenter (Finset.image g S) (by simpa) := by
+  simp [subIsobarycenter, StdSimplex.map_subIsobarycenter_of_injective _ _ _ hg]
+
 /-- The image of the isobarycenter of the standard simplex by an affine map. -/
 noncomputable abbrev isobarycenter [Nonempty M] [Fintype M] : Y := f .isobarycenter
 
@@ -171,7 +218,9 @@ lemma subIsobarycenter_mk_comp_of_injective {M N : Type*} [DecidableEq N]
     (StdSimplex.affineMapMk (R := K) (f ∘ g)).subIsobarycenter S hS =
       (StdSimplex.affineMapMk (R := K) f).subIsobarycenter (Finset.image g S)
         (by simpa) := by
-  sorry
+  rw [← subIsobarycenter_comp_of_injective _ _ hS _ hg]
+  congr
+  aesop
 
 section
 
