@@ -280,6 +280,38 @@ lemma sd_eq_self
   obtain ⟨s, rfl⟩ := Fin.exists_vecCons₁ f
   simp [sd]
 
+/-- The `k`th iteration of `sd` on affine maps from the standard simplex to
+a convex space `Y`. The input involves a family `σ : Fin k → Equiv.Perm (Fin n)`
+of permutations. We first apply `sd` with `σ (k - 1)`, etc, until
+we apply `sd` with `σ 0`. -/
+@[no_expose]
+noncomputable def sdIter (f : ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y) {k : ℕ}
+    (σ : Fin k → Equiv.Perm (Fin n)) :
+    ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y := by
+  induction k generalizing f with
+  | zero => exact f
+  | succ k hk => exact (hk f (σ ∘ Fin.succ)).sd (σ 0)
+
+@[simp]
+lemma sdIter_zero
+    (f : ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y)
+    (σ : Fin 0 → Equiv.Perm (Fin n)) :
+    f.sdIter σ = f := by
+  rfl
+
+lemma sdIter_succ
+    (f : ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y) {k : ℕ}
+    (σ : Fin (k + 1) → Equiv.Perm (Fin n)) :
+    f.sdIter σ = (f.sdIter (σ ∘ Fin.succ)).sd (σ 0) := by
+  rfl
+
+@[simp]
+lemma sdIter_one
+    (f : ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y)
+    (σ : Fin 1 → Equiv.Perm (Fin n)) :
+    f.sdIter σ = f.sd (σ 0) := by
+  rfl
+
 end
 
 end ConvexSpace.AffineMap

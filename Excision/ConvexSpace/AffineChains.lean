@@ -135,11 +135,61 @@ lemma ι_sd_f_eq_sum {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (F
       obtain ⟨k, rfl⟩ := (equivSuccSymm i σ).surjective k
       obtain rfl | ⟨k, rfl⟩ := k.eq_zero_or_eq_succ <;> simp
 
-example {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin (n + 1))) Y) :
-    SSet.ιChainComplex _ s ≫ (sd Y R).f n ≫ (sd Y R).f n = sorry := by
-  simp [ι_sd_f_eq_sum_assoc, Preadditive.sum_comp, ι_sd_f_eq_sum]
-  sorry
+/-- The `k`th iteration of the subdivision operator `ConvexSpace.toSSet.sd`. -/
+@[no_expose]
+noncomputable def sdIter (k : ℕ) :
+    (toSSet ℝ Y).chainComplex R ⟶ (toSSet ℝ Y).chainComplex R :=
+  letI x : End _ := sd Y R
+  x ^ k
 
+@[simp]
+lemma sdIter_zero :
+    sdIter Y R 0 = 𝟙 _ := by
+  simp [sdIter]
+
+@[simp]
+lemma sdIter_one :
+    sdIter Y R 1 = sd Y R := by
+  simp [sdIter]
+
+@[reassoc]
+lemma sdIter_add (k l : ℕ) :
+    sdIter Y R (k + l) = sdIter Y R k ≫ sdIter Y R l := by
+  simp [add_comm k l, sdIter, pow_add]
+
+@[reassoc]
+lemma sdIter_succ (k : ℕ) :
+    sdIter Y R (k + 1) = sdIter Y R k ≫ sd Y R := by
+  simp [sdIter_add]
+
+@[reassoc]
+lemma ι_sdIter_f {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin (n + 1))) Y) (k : ℕ) :
+    SSet.ιChainComplex _ s ≫ (sdIter Y R k).f n =
+      ∑ (σ : Fin k → Equiv.Perm (Fin (n + 1))),
+        (∏ (i : Fin k), (σ i).sign) •
+          (SSet.ιChainComplex _ (ConvexSpace.AffineMap.sdIter s σ)) := by
+  induction k with
+  | zero => simp
+  | succ k hk =>
+    let α : (Fin (k + 1) → Equiv.Perm (Fin (n + 1))) ≃
+        (Fin k → Equiv.Perm (Fin (n + 1))) × Equiv.Perm (Fin (n + 1)) :=
+      { toFun σ := ⟨σ ∘ Fin.succ, σ 0⟩
+        invFun := fun ⟨σ, σ'⟩ ↦ Fin.cases σ' σ
+        left_inv σ := by
+          ext l : 1
+          obtain rfl | ⟨l, rfl⟩ := l.eq_zero_or_eq_succ <;> rfl }
+    simp only [sdIter_succ, HomologicalComplex.comp_f, reassoc_of% hk, Preadditive.sum_comp,
+      Linear.units_smul_comp, ι_sd_f_eq_sum, Finset.smul_sum, smul_smul]
+    rw [Finset.sum_bijective
+      (g := fun ⟨σ, σ₀⟩ ↦ ((∏ i, Equiv.Perm.sign (σ i)) * Equiv.Perm.sign σ₀) •
+        (toSSet ℝ Y).ιChainComplex ((s.sdIter σ).sd σ₀)) (t := .univ) _ α.bijective (by simp) ?_,
+      Finset.sum_finset_product .univ .univ (fun _ ↦ .univ) (by simp)]
+    simp only [Finset.mem_univ, forall_const]
+    intro σ
+    congr
+    · rw [mul_comm]
+      simp [α, Fin.prod_univ_succ]
+    · simp [α, AffineMap.sdIter_succ]
 
 end ConvexSpace.toSSet
 
