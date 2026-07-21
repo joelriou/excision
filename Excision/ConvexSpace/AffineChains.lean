@@ -9,6 +9,7 @@ public import Mathlib.Algebra.Order.Archimedean.Real.Basic
 public import Mathlib.AlgebraicTopology.SimplicialSet.Homology.Basic
 public import Mathlib.GroupTheory.Perm.Sign
 public import Excision.ConvexSpace.ToSSet
+public import Excision.Perm.EquivSucc
 
 /-!
 # Affine chains and subdivision
@@ -113,6 +114,11 @@ lemma ι_sd_f_succ {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin
 
 variable {n : ℕ}
 
+-- to be moved
+lemma _root_.Nat.coe_uzpow (a : ℤˣ) (r : ℕ) :
+    ((a ^ r : ℤˣ) : ℤ) = a ^ r := rfl
+
+open Equiv.Perm in
 @[reassoc]
 lemma ι_sd_f_eq_sum {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin (n + 1))) Y) :
     SSet.ιChainComplex _ s ≫ (sd Y R).f n =
@@ -124,8 +130,26 @@ lemma ι_sd_f_eq_sum {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (F
     rw [ι_sd_f_succ]
     generalize hγ : s.isobarycenter = γ
     obtain ⟨s, rfl⟩ := StdSimplex.affineMapMk_surjective s
-    simp [δ_affineMapMk.{w}, Preadditive.sum_comp, reassoc_of% hn]
-    sorry
+    simp only [SSet.ιChainComplex_d_assoc, δ_affineMapMk.{w}, Preadditive.sum_comp,
+      Linear.smul_comp, reassoc_of% hn, ι_cone,
+      ← equivSucc.symm.sum_comp,
+      Finset.sum_finset_product .univ .univ (fun _ ↦ .univ) (by simp), Equiv.Perm.equivSucc_symm,
+      Finset.smul_sum, Units.smul_def, smul_smul, sign_equivSuccSymm, ]
+    congr 1
+    ext i
+    congr 1
+    ext σ
+    congr 2
+    ext j
+    obtain rfl | ⟨j, rfl⟩ := j.eq_zero_or_eq_succ
+    · simp [hγ]
+    · simp only [AffineMap.cone_single_succ, StdSimplex.affineMapMk_single,
+        AffineMap.sdVertex_def, Equiv.Perm.coe_inv,
+        AffineMap.subIsobarycenter_mk_comp_of_injective _ _ _ _ Fin.succAbove_right_injective]
+      congr 1
+      ext k
+      obtain ⟨k, rfl⟩ := (equivSuccSymm i σ).surjective k
+      obtain rfl | ⟨k, rfl⟩ := k.eq_zero_or_eq_succ <;> simp
 
 end ConvexSpace.toSSet
 

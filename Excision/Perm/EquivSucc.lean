@@ -5,7 +5,9 @@ Authors: Joël Riou
 -/
 module
 
+public import Mathlib.GroupTheory.Perm.Sign
 public import Mathlib.Data.Finite.Perm
+public import Mathlib.Data.ZMod.IntUnitsPower
 
 /-!
 # Permutations
@@ -37,6 +39,16 @@ lemma equivSuccSymm_zero (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
 lemma equivSuccSymm_succ (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) (j : Fin (n + 1)) :
     equivSuccSymm i σ j.succ = i.succAbove (σ j) := rfl
 
+@[simp]
+lemma equivSuccSymm_symm_eq_zero (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
+    (equivSuccSymm i σ).symm i = 0 :=
+  (equivSuccSymm i σ).injective (by simp)
+
+@[simp]
+lemma equivSuccSymm_symm_succAbove (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) (j : Fin (n + 1)) :
+    (equivSuccSymm i σ).symm (i.succAbove (σ j)) = j.succ :=
+  (equivSuccSymm i σ).injective (by simp)
+
 variable (n) in
 lemma equivSuccSymm_uncurry_bijective : Function.Bijective (equivSuccSymm (n := n)).uncurry := by
   rw [Nat.bijective_iff_injective_and_card]
@@ -58,5 +70,10 @@ noncomputable def equivSucc : Perm (Fin (n + 2)) ≃ Fin (n + 2) × Perm (Fin (n
 @[simp]
 lemma equivSucc_symm (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
     equivSucc.symm ⟨i, σ⟩ = equivSuccSymm i σ := rfl
+
+@[simp]
+lemma sign_equivSuccSymm (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
+    (equivSuccSymm i σ).sign = (-1) ^ i.val * σ.sign := by
+  sorry
 
 end Equiv.Perm

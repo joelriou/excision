@@ -50,6 +50,21 @@ lemma AffineMap.cone_def
     {n : ℕ} (s : ConvexSpace.AffineMap R (StdSimplex R (Fin n)) Y) (y : Y) :
     s.cone y = StdSimplex.affineMapMk (Fin.cases y (fun i ↦ s (.single i))) := rfl
 
+variable {Y} in
+@[simp]
+lemma AffineMap.cone_single_zero
+    {n : ℕ} (s : ConvexSpace.AffineMap R (StdSimplex R (Fin n)) Y) (y : Y) :
+    s.cone y (.single 0) = y := by
+  simp [cone_def]
+
+variable {Y} in
+@[simp]
+lemma AffineMap.cone_single_succ
+    {n : ℕ} (s : ConvexSpace.AffineMap R (StdSimplex R (Fin n)) Y) (y : Y)
+    (j : Fin n) :
+    s.cone y (.single j.succ) = s (.single j) := by
+  simp [cone_def]
+
 @[simp]
 lemma AffineMap.cone_mk₁ (y y₀ : Y) :
     (StdSimplex.affineMapMk (R := R) ![y₀]).cone y =

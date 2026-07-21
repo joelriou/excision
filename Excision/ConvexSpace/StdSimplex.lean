@@ -161,9 +161,17 @@ noncomputable abbrev isobarycenter [Nonempty M] [Fintype M] : Y := f .isobarycen
 end
 
 @[simp]
-lemma isobarycenter_mk_one (f : ConvexSpace.AffineMap K (StdSimplex K (Fin 1)) Y) :
+lemma isobarycenter_fin_one (f : ConvexSpace.AffineMap K (StdSimplex K (Fin 1)) Y) :
     f.isobarycenter = f (.single 0) := by
   simp [isobarycenter]
+
+lemma subIsobarycenter_mk_comp_of_injective {M N : Type*} [DecidableEq N]
+    (f : N → Y) (S : Finset M) (hS : S.Nonempty) (g : M → N)
+    (hg : Function.Injective g) :
+    (StdSimplex.affineMapMk (R := K) (f ∘ g)).subIsobarycenter S hS =
+      (StdSimplex.affineMapMk (R := K) f).subIsobarycenter (Finset.image g S)
+        (by simpa) := by
+  sorry
 
 section
 
@@ -178,12 +186,17 @@ noncomputable def sdVertex
     (σ : Equiv.Perm (Fin n)) (i : Fin n) : Y :=
   f.subIsobarycenter { x : Fin n | i ≤ σ⁻¹ x} ⟨σ i, by simp⟩
 
+lemma sdVertex_def (f : ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y)
+    (σ : Equiv.Perm (Fin n)) (i : Fin n) :
+    f.sdVertex σ i = f.subIsobarycenter { x : Fin n | i ≤ σ⁻¹ x} ⟨σ i, by simp⟩ :=
+  rfl
+
 @[simp]
 lemma sdVertex_zero
     (f : ConvexSpace.AffineMap K (StdSimplex K (Fin (n + 1))) Y)
     (σ : Equiv.Perm (Fin (n + 1))) :
     f.sdVertex σ 0 = f.isobarycenter := by
-  simp [sdVertex, subIsobarycenter]
+  simp [sdVertex_def, subIsobarycenter]
 
 @[simp]
 lemma sdVertex_last
@@ -193,13 +206,13 @@ lemma sdVertex_last
   have : ({ x | σ.symm x = Fin.last n } : Finset _) = {σ (Fin.last n)} := by
     ext
     simp [Equiv.symm_apply_eq]
-  simp [sdVertex, this]
+  simp [sdVertex_def, this]
 
 @[simp]
 lemma sdVertex_mk_one (y : Y) (σ : Equiv.Perm (Fin 1)) :
     (StdSimplex.affineMapMk (R := K) ![y]).sdVertex σ = ![y] := by
   ext
-  simp [sdVertex]
+  simp [sdVertex_def]
 
 /-- Given an affine map `f` from the standard simplex of dimension `n` to `Y` and
 a permutation `σ` of `Fin n`, this is the subdivision of `f` corresponding to `σ`:
