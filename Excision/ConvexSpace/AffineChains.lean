@@ -100,10 +100,6 @@ lemma ι_sd_f_succ {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin
 
 variable {n : ℕ}
 
--- to be moved
-lemma _root_.Nat.coe_uzpow (a : ℤˣ) (r : ℕ) :
-    ((a ^ r : ℤˣ) : ℤ) = a ^ r := rfl
-
 open Equiv.Perm in
 @[reassoc]
 lemma ι_sd_f_eq_sum {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin (n + 1))) Y) :
