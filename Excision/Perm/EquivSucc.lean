@@ -5,7 +5,7 @@ Authors: Joël Riou
 -/
 module
 
-public import Mathlib.GroupTheory.Perm.Sign
+public import Mathlib.GroupTheory.Perm.Fin
 public import Mathlib.Data.Finite.Perm
 public import Mathlib.Data.ZMod.IntUnitsPower
 
@@ -15,6 +15,15 @@ public import Mathlib.Data.ZMod.IntUnitsPower
 -/
 
 @[expose] public section
+
+@[simp]
+lemma Fin.succAbove_le_iff {n : ℕ} (p : Fin (n + 1)) (i : Fin n) :
+    p.succAbove i ≤ p ↔ i.castSucc < p := by
+  by_cases! hp : i.castSucc < p
+  · rw [succAbove_of_castSucc_lt _ _ hp]
+    have := hp.le
+    tauto
+  · rw [succAbove_of_le_castSucc _ _ hp, castSucc_lt_iff_succ_le]
 
 namespace Equiv.Perm
 
@@ -74,6 +83,27 @@ lemma equivSucc_symm (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
 @[simp]
 lemma sign_equivSuccSymm (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
     (equivSuccSymm i σ).sign = (-1) ^ i.val * σ.sign := by
-  sorry
+  rw [Equiv.Perm.sign_eq_prod_prod_Ioi, Fin.prod_univ_succ]
+  congr
+  · let S : Finset (Fin (n + 1)) := { x | i.succAbove (σ x) ≤ i }
+    have : S = Finset.image σ.symm { x | x.castSucc < i } := by
+      aesop
+    have hS : S.card = i.val := by
+      simp only [this, Finset.card_image_of_injective _ (Equiv.injective _)]
+      exact Finset.card_eq_of_bijective (fun j hj ↦ ⟨j, by grind⟩) (by grind) (by grind) (by simp)
+    trans ∏ j ∈ S, -1
+    · simp only [Fin.Ioi_zero_eq_map, equivSuccSymm_zero, Finset.prod_map, Fin.coe_succEmb,
+        equivSuccSymm_succ, ← S.prod_mul_prod_compl, Finset.prod_const]
+      trans ((-1 : ℤˣ) ^ S.card) * 1
+      · congr 1
+        · trans ∏ i ∈ S, -1
+          · exact Finset.prod_congr rfl (by simp [S])
+          · simp
+            rfl
+        · simp [Finset.prod_eq_one, S]
+      · exact mul_one _
+    · simp [hS]
+      rfl
+  · simp [Equiv.Perm.sign_eq_prod_prod_Ioi]
 
 end Equiv.Perm
