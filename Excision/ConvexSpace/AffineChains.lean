@@ -5,10 +5,10 @@ Authors: Joël Riou
 -/
 module
 
-public import Excision.ConvexSpace.ToSSet
-public import Excision.Fin.Vec
 public import Mathlib.Algebra.Order.Archimedean.Real.Basic
 public import Mathlib.AlgebraicTopology.SimplicialSet.Homology.Basic
+public import Mathlib.GroupTheory.Perm.Sign
+public import Excision.ConvexSpace.ToSSet
 
 /-!
 # ...
@@ -88,7 +88,7 @@ lemma sd_f_succ (n : ℕ) :
   simp [sd, Homotopy.nullHomotopicMap_f (ComplexShape.down_mk (n + 2) (n + 1) rfl)
     (ComplexShape.down_mk (n + 1) n rfl), sub_sub]
 
-@[reassoc (attr := simp)]
+@[reassoc]
 lemma ι_sd_f_succ {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin (n + 2))) Y) :
     SSet.ιChainComplex _ s ≫ (sd Y R).f (n + 1) =
       SSet.ιChainComplex _ s ≫ ((toSSet ℝ Y).chainComplex R).d (n + 1) n ≫
@@ -111,7 +111,17 @@ lemma ι_sd_f_succ {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin
     abel
   · simp [sd_f_succ, ι_hSd_succ_assoc, cone_comp_d_eq_sub]
 
-end ConvexSpace.toSSet
+variable {n : ℕ}
 
+@[reassoc]
+lemma ι_sd_f_eq_sum {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin (n + 1))) Y) :
+    SSet.ιChainComplex _ s ≫ (sd Y R).f n =
+      ∑ (σ : Equiv.Perm (Fin (n + 1))),
+        σ.sign • (SSet.ιChainComplex _ (ConvexSpace.AffineMap.sd s σ)) := by
+  induction n with
+  | zero => simp
+  | succ => sorry
+
+end ConvexSpace.toSSet
 
 end Convexity

@@ -6,6 +6,7 @@ Authors: Joël Riou
 module
 
 public import Excision.ConvexSpace.AffineMap
+public import Excision.Fin.Vec
 
 /-!
 # API for the standard simplex
@@ -19,6 +20,31 @@ namespace Convexity
 namespace StdSimplex
 
 variable {R : Type*} [PartialOrder R] [Semiring R] [IsStrictOrderedRing R]
+
+instance {M : Type*} [IsEmpty M] : IsEmpty (StdSimplex R M) where
+  false x := by
+    have hx : x.weights = 0 := by ext m; exfalso; exact IsEmpty.false m
+    simpa [hx] using x.total
+
+lemma eq_single_of_subsingleton
+    {M : Type*} [Subsingleton M] (x : StdSimplex R M) (m : M) :
+    x = .single m := by
+  ext i
+  obtain rfl := Subsingleton.elim m i
+  simp only [weights_single, Finsupp.single_eq_same, ← x.total]
+  rw [Finsupp.sum_eq_single _ ?_ (by simp)]
+  intro i
+  obtain rfl := Subsingleton.elim m i
+  simp
+
+instance {M : Type*} [Subsingleton M] :
+    Subsingleton (StdSimplex R M) where
+  allEq x y := by
+    by_cases h : IsEmpty M
+    · exfalso
+      exact IsEmpty.false x
+    · simp only [not_isEmpty_iff] at h
+      simp [eq_single_of_subsingleton _ (Classical.arbitrary _)]
 
 @[simp]
 lemma iConvexComb_single {M : Type*} (x : StdSimplex R M) :
@@ -84,19 +110,41 @@ noncomputable def subIsobarycenter
     rw [← Finsupp.sum_finsetSum_index (by simp) (by simp)]
     simpa using IsUnit.mul_inv_cancel (Ne.isUnit (by simpa [← Finset.nonempty_iff_ne_empty]))
 
+@[simp]
+lemma subIsobarycenter_single
+    {K : Type*} [Field K] [CharZero K] [LinearOrder K] [IsStrictOrderedRing K]
+    {M : Type*} (m : M) :
+    subIsobarycenter (K := K) {m} (by simp) = .single m := by
+  aesop
+
 /-- The isobarycenter of the standard simplex. -/
 noncomputable abbrev isobarycenter
     {K : Type*} [Field K] [CharZero K] [LinearOrder K] [IsStrictOrderedRing K]
     {M : Type*} [Nonempty M] [Fintype M] : StdSimplex K M :=
   subIsobarycenter .univ (by simp)
 
+lemma isobarycenter_of_unique
+    {K : Type*} [Field K] [CharZero K] [LinearOrder K] [IsStrictOrderedRing K]
+    {M : Type*} [Unique M] :
+    isobarycenter (K := K) (M := M) = .single default := by
+  subsingleton
+
+@[simp]
+lemma isobarycenter_fin_one
+    {K : Type*} [Field K] [CharZero K] [LinearOrder K] [IsStrictOrderedRing K] :
+    isobarycenter (K := K) (M := Fin 1) = .single 0 :=
+  isobarycenter_of_unique
+
 end StdSimplex
 
 namespace ConvexSpace.AffineMap
 
 variable {K : Type*} [Field K] [CharZero K] [LinearOrder K] [IsStrictOrderedRing K]
-  {Y : Type*} [ConvexSpace K Y] {M : Type*}
-  (f : ConvexSpace.AffineMap K (StdSimplex K M) Y)
+  {Y : Type*} [ConvexSpace K Y]
+
+section
+
+variable {M : Type*} (f : ConvexSpace.AffineMap K (StdSimplex K M) Y)
 
 /-- Given an affine map from the standard simplex with vertices `M` and
 a nonempty finite subset `S` of `M`, this is the image of the isobarycenter
@@ -104,8 +152,75 @@ of the face of the standard simplex corresponding to `S`. -/
 noncomputable def subIsobarycenter (S : Finset M) (hS : S.Nonempty) : Y :=
   f (.subIsobarycenter S hS)
 
+@[simp]
+lemma subIsobarycenter_single (m : M) :
+    f.subIsobarycenter {m} (by simp) = f (.single m) := by
+  simp [subIsobarycenter]
+
 /-- The image of the isobarycenter of the standard simplex by an affine map. -/
 noncomputable abbrev isobarycenter [Nonempty M] [Fintype M] : Y := f .isobarycenter
+
+end
+
+@[simp]
+lemma isobarycenter_mk_one (f : ConvexSpace.AffineMap K (StdSimplex K (Fin 1)) Y) :
+    f.isobarycenter = f (.single 0) := by
+  simp [isobarycenter]
+
+section
+
+variable {n : ℕ}
+
+/-- Given an affine map `f` from the standard simplex of dimension `n - 1`,
+a permutation `σ` of `Fin n` and `i : Fin n`, this is the image by `f`
+of the isobarycenter of the face of the standard simplex corresponding
+to `{ x : Fin n | i ≤ σ⁻¹ x}` (i.e. `{σ i, σ (i + 1), ..., σ (n - 1)}`). -/
+noncomputable def sdVertex
+    (f : ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y)
+    (σ : Equiv.Perm (Fin n)) (i : Fin n) : Y :=
+  f.subIsobarycenter { x : Fin n | i ≤ σ⁻¹ x} ⟨σ i, by simp⟩
+
+@[simp]
+lemma sdVertex_zero
+    (f : ConvexSpace.AffineMap K (StdSimplex K (Fin (n + 1))) Y)
+    (σ : Equiv.Perm (Fin (n + 1))) :
+    f.sdVertex σ 0 = f.isobarycenter := by
+  simp [sdVertex, subIsobarycenter]
+
+@[simp]
+lemma sdVertex_last
+    (f : ConvexSpace.AffineMap K (StdSimplex K (Fin (n + 1))) Y)
+    (σ : Equiv.Perm (Fin (n + 1))) :
+    f.sdVertex σ (Fin.last n) = f (.single (σ (Fin.last n))) := by
+  have : ({ x | σ.symm x = Fin.last n } : Finset _) = {σ (Fin.last n)} := by
+    ext
+    simp [Equiv.symm_apply_eq]
+  simp [sdVertex, this]
+
+@[simp]
+lemma sdVertex_mk_one (y : Y) (σ : Equiv.Perm (Fin 1)) :
+    (StdSimplex.affineMapMk (R := K) ![y]).sdVertex σ = ![y] := by
+  ext
+  simp [sdVertex]
+
+/-- Given an affine map `f` from the standard simplex of dimension `n` to `Y` and
+a permutation `σ` of `Fin n`, this is the subdivision of `f` corresponding to `σ`:
+this is again an affine map from the standard simplex of dimension `n`, and the
+images of the vertices are given by `f.sdVertex σ : Fin n → Y` -/
+noncomputable abbrev sd
+    (f : ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y) (σ : Equiv.Perm (Fin n)) :
+    ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y :=
+  StdSimplex.affineMapMk (f.sdVertex σ)
+
+@[simp]
+lemma sd_eq_self
+    (f : ConvexSpace.AffineMap K (StdSimplex K (Fin 1)) Y) (σ : Equiv.Perm (Fin 1)) :
+    f.sd σ = f := by
+  obtain ⟨f, rfl⟩ := StdSimplex.affineMapMk_surjective f
+  obtain ⟨s, rfl⟩ := Fin.exists_vecCons₁ f
+  simp [sd]
+
+end
 
 end ConvexSpace.AffineMap
 
