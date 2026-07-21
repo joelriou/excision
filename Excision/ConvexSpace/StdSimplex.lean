@@ -72,27 +72,40 @@ lemma affineMapMk_surjective {M : Type*} {Y : Type*} [ConvexSpace R Y]
 
 open BigOperators
 
-/-- The isobarycenter of the standard simplex. -/
+/-- In the standard simplex with vertices `M`, this is the isobarycenter of
+a nonempty finite subset `S` of `M`. -/
 @[simps]
-noncomputable def isobarycenter
+noncomputable def subIsobarycenter
     {K : Type*} [Field K] [CharZero K] [LinearOrder K] [IsStrictOrderedRing K]
-    {M : Type*} [Nonempty M] [Fintype M] : StdSimplex K M where
-  weights := ∑ (m : M), .single m (Fintype.card M)⁻¹
+    {M : Type*} (S : Finset M) (hS : S.Nonempty) : StdSimplex K M where
+  weights := S.sum (fun m ↦ .single m S.card⁻¹)
   nonneg := Finset.sum_nonneg (by simp)
   total := by
-    rw [Finsupp.sum_fintype _ _ (by simp)]
-    simp
+    rw [← Finsupp.sum_finsetSum_index (by simp) (by simp)]
+    simpa using IsUnit.mul_inv_cancel (Ne.isUnit (by simpa [← Finset.nonempty_iff_ne_empty]))
+
+/-- The isobarycenter of the standard simplex. -/
+noncomputable abbrev isobarycenter
+    {K : Type*} [Field K] [CharZero K] [LinearOrder K] [IsStrictOrderedRing K]
+    {M : Type*} [Nonempty M] [Fintype M] : StdSimplex K M :=
+  subIsobarycenter .univ (by simp)
 
 end StdSimplex
 
 namespace ConvexSpace.AffineMap
 
 variable {K : Type*} [Field K] [CharZero K] [LinearOrder K] [IsStrictOrderedRing K]
-  {M : Type*} [Nonempty M] [Fintype M] {Y : Type*} [ConvexSpace K Y]
+  {Y : Type*} [ConvexSpace K Y] {M : Type*}
   (f : ConvexSpace.AffineMap K (StdSimplex K M) Y)
 
+/-- Given an affine map from the standard simplex with vertices `M` and
+a nonempty finite subset `S` of `M`, this is the image of the isobarycenter
+of the face of the standard simplex corresponding to `S`. -/
+noncomputable def subIsobarycenter (S : Finset M) (hS : S.Nonempty) : Y :=
+  f (.subIsobarycenter S hS)
+
 /-- The image of the isobarycenter of the standard simplex by an affine map. -/
-noncomputable abbrev isobarycenter : Y := f .isobarycenter
+noncomputable abbrev isobarycenter [Nonempty M] [Fintype M] : Y := f .isobarycenter
 
 end ConvexSpace.AffineMap
 
