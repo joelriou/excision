@@ -13,4 +13,5 @@ import Excision.SimplicialSet.ChainComplexAb
 import Excision.SimplicialSet.ULift
 import Excision.SingularHomology.Basic
 import Excision.SingularHomology.NatTransOfFinsupp
+import Excision.SingularHomology.Subdivision
 import Excision.SmallSimplices

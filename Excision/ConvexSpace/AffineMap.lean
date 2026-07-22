@@ -52,6 +52,12 @@ lemma isAffineMap
     IsAffineMap R f :=
   f.isAffineMap_toFun
 
+/-- The identity map, as a bundled affine map of convex spaces. -/
+@[simps, implicit_reducible]
+def id (X : Type*) [ConvexSpace R X] :
+    ConvexSpace.AffineMap R X X where
+  toFun := _root_.id
+
 /-- The composition of bundled affine maps between convex spaces. -/
 @[simps, implicit_reducible]
 def comp
