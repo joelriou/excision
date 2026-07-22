@@ -80,6 +80,7 @@ noncomputable def equivSucc : Perm (Fin (n + 2)) ≃ Fin (n + 2) × Perm (Fin (n
 lemma equivSucc_symm (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
     equivSucc.symm ⟨i, σ⟩ = equivSuccSymm i σ := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma sign_equivSuccSymm (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
     (equivSuccSymm i σ).sign = (-1) ^ i.val * σ.sign := by
@@ -98,11 +99,9 @@ lemma sign_equivSuccSymm (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
         · trans ∏ i ∈ S, -1
           · exact Finset.prod_congr rfl (by simp [S])
           · simp
-            rfl
         · simp [Finset.prod_eq_one, S]
       · exact mul_one _
     · simp [hS]
-      rfl
   · simp [Equiv.Perm.sign_eq_prod_prod_Ioi]
 
 end Equiv.Perm

@@ -54,6 +54,7 @@ lemma hSd'_zero (R : C) (n m : ℕ) (h : n + 1 ≠ m) : hSd' R n m = 0 := by gri
 
 end singularChainComplexFunctor
 
+set_option backward.isDefEq.respectTransparency false in
 open singularChainComplexFunctor in
 /-- The subdivision operator on the singular chain complexes of
 topological spaces as an endomorphism of the functor

@@ -162,6 +162,7 @@ lemma sdIter_succ (k : ℕ) :
     sdIter Y R (k + 1) = sdIter Y R k ≫ sd Y R := by
   simp [sdIter_add]
 
+set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma ι_sdIter_f {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin (n + 1))) Y) (k : ℕ) :
     SSet.ιChainComplex _ s ≫ (sdIter Y R k).f n =
