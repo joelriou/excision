@@ -86,8 +86,7 @@ lemma sign_equivSuccSymm (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
   rw [Equiv.Perm.sign_eq_prod_prod_Ioi, Fin.prod_univ_succ]
   congr
   · let S : Finset (Fin (n + 1)) := { x | i.succAbove (σ x) ≤ i }
-    have : S = Finset.image σ.symm { x | x.castSucc < i } := by
-      aesop
+    have : S = Finset.image σ.symm { x | x.castSucc < i } := by aesop
     have hS : S.card = i.val := by
       simp only [this, Finset.card_image_of_injective _ (Equiv.injective _)]
       exact Finset.card_eq_of_bijective (fun j hj ↦ ⟨j, by grind⟩) (by grind) (by grind) (by simp)
