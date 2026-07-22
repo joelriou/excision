@@ -5,8 +5,8 @@ Authors: Joël Riou
 -/
 module
 
-public import Mathlib.Analysis.Convex.StdSimplex
-public import Mathlib.Geometry.Convex.ConvexSpace.Defs
+public import Mathlib.AlgebraicTopology.SingularSet
+public import Excision.ConvexSpace.ToSSet
 
 /-!
 # ...
@@ -14,6 +14,8 @@ public import Mathlib.Geometry.Convex.ConvexSpace.Defs
 -/
 
 @[expose] public section
+
+open CategoryTheory
 
 namespace Convexity
 
@@ -51,5 +53,22 @@ noncomputable def StdSimplex.equiv
     simp only [Finsupp.coe_finsetSum, Finset.sum_apply]
     rw [Finset.sum_eq_single i (by aesop) (by simp)]
     simp
+
+/-- The continuous map in `C(stdSimplex ℝ ι₁, stdSimplex ℝ ι₂)` that is given
+by an affine map from `StdSimplex ℝ ι₁` to `StdSimplex ℝ ι₂`. -/
+noncomputable def ConvexSpace.AffineMap.toContinuousMap
+    {ι₁ ι₂ : Type*} [Fintype ι₁] [Fintype ι₂]
+    (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ ι₁) (StdSimplex ℝ ι₂)) :
+    C(stdSimplex ℝ ι₁, stdSimplex ℝ ι₂) where
+  toFun := StdSimplex.equiv ∘ s ∘ StdSimplex.equiv.symm
+  continuous_toFun := sorry
+
+/-- The inclusion of affine maps into continuous maps between standard simplices,
+as a morphism of simplicial sets. -/
+noncomputable def StdSimplex.toSSetNatTrans (ι : Type*) [Fintype ι] :
+    ConvexSpace.toSSet ℝ (StdSimplex ℝ ι) ⟶
+      TopCat.toSSet.obj (.of (stdSimplex ℝ ι)) where
+  app d := ↾((TopCat.toSSetObjEquiv _ _).symm ∘ ConvexSpace.AffineMap.toContinuousMap)
+  naturality := sorry
 
 end Convexity
