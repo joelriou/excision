@@ -5,7 +5,9 @@ Authors: Joël Riou
 -/
 module
 
+public import Mathlib.Geometry.Convex.ConvexSpace.Module
 public import Excision.ConvexSpace.AffineMap
+public import Excision.Finsupp.Basic
 public import Excision.Fin.Vec
 
 /-!
@@ -45,6 +47,36 @@ instance {M : Type*} [Subsingleton M] :
       exact IsEmpty.false x
     · simp only [not_isEmpty_iff] at h
       simp [eq_single_of_subsingleton _ (Classical.arbitrary _)]
+
+instance {M : Type*} [Nonempty M] :
+    Nonempty (StdSimplex R M) :=
+  ⟨.single (Classical.arbitrary _)⟩
+
+@[elab_as_elim, induction_eliminator]
+lemma rec' {M : Type*} {motive : StdSimplex R M → Prop}
+    (sum : ∀ (n : ℕ) (w : Fin n → R) (m : Fin n → M)
+      (hw₀ : ∀ i, 0 ≤ w i) (hw : ∑ i, w i = 1),
+      motive
+        { weights := ∑ i, .single (m i) (w i)
+          nonneg := Finset.sum_nonneg (by simpa)
+          total := by
+            rw [Finsupp.sum_finsetSum _ _ _ (by simp) (by simp)]
+            simpa })
+    (s : StdSimplex R M) : motive s := by
+  induction s with
+  | mk w hw₀ hw =>
+    induction w using Finsupp.rec' with
+    | sum n m a ha =>
+      refine sum n a m (fun i ↦ ?_) ?_
+      · rw [Finsupp.le_def] at hw₀
+        specialize hw₀ (m i)
+        simp only [Finsupp.coe_zero, Pi.zero_apply, Finsupp.coe_finsetSum,
+          Finset.sum_apply] at hw₀
+        rw [Finset.sum_eq_single i (fun j _ hj ↦ Finsupp.single_eq_of_ne' (ha.ne hj))
+          (by simp)] at hw₀
+        simpa using hw₀
+      · rw [← hw, Finsupp.sum_finsetSum _ _ _ (by simp) (by simp)]
+        simp
 
 @[simp]
 lemma iConvexComb_single {M : Type*} (x : StdSimplex R M) :
@@ -178,7 +210,7 @@ end StdSimplex
 namespace ConvexSpace.AffineMap
 
 variable {K : Type*} [Field K] [CharZero K] [LinearOrder K] [IsStrictOrderedRing K]
-  {Y : Type*} [ConvexSpace K Y]
+  {Y : Type*} [ConvexSpace K Y] {Z : Type*} [ConvexSpace K Z]
 
 section
 
@@ -311,6 +343,24 @@ lemma sdIter_one
     (σ : Fin 1 → Equiv.Perm (Fin n)) :
     f.sdIter σ = f.sd (σ 0) := by
   rfl
+
+variable (f : ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y)
+  (σ : Equiv.Perm (Fin n))
+  (g : ConvexSpace.AffineMap K Y Z)
+
+lemma comp_sd (f : ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y)
+    (σ : Equiv.Perm (Fin n)) (g : ConvexSpace.AffineMap K Y Z) :
+    g.comp (f.sd σ) = (g.comp f).sd σ := by
+  dsimp [sd]
+  sorry
+
+lemma comp_sdIter (f : ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y)
+    {k : ℕ} (σ : Fin k → Equiv.Perm (Fin n))
+    (g : ConvexSpace.AffineMap K Y Z) :
+    g.comp (f.sdIter σ) = (g.comp f).sdIter σ := by
+  induction k with
+  | zero => simp
+  | succ k hk => simp [sdIter_succ, comp_sd, hk]
 
 end
 

@@ -66,6 +66,12 @@ def comp
     ConvexSpace.AffineMap R X Z where
   toFun := g ∘ f
 
+@[simp]
+lemma coe_comp
+    {X Y Z : Type*} [ConvexSpace R X] [ConvexSpace R Y] [ConvexSpace R Z]
+    (g : ConvexSpace.AffineMap R Y Z) (f : ConvexSpace.AffineMap R X Y) :
+    ⇑(g.comp f) = g ∘ f := rfl
+
 /-- A constant map between convex spaces, as a bundled affine map. -/
 @[simps, implicit_reducible]
 def const {X Y : Type*} [ConvexSpace R X] [ConvexSpace R Y] (y : Y) :

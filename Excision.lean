@@ -1,20 +1,23 @@
-import Excision.ConvexSpace.AffineChains
-import Excision.ConvexSpace.AffineMap
-import Excision.ConvexSpace.StdSimplex
-import Excision.ConvexSpace.ToSSet
-import Excision.ConvexSpace.Top
-import Excision.Fin.Vec
-import Excision.HomotopyCategory.ChainComplex
-import Excision.Limits.SigmaConst
-import Excision.Linear.ULift
-import Excision.Perm.EquivSucc
-import Excision.SimplexCategory.Basic
-import Excision.SimplicialSet.ChainComplexAb
-import Excision.SimplicialSet.ULift
-import Excision.SingularHomology.Basic
-import Excision.SingularHomology.NatTrans
-import Excision.SingularHomology.Subdivision
-import Excision.SingularHomology.SubdivisionDiam
-import Excision.SingularHomology.ULift
-import Excision.SmallSimplices
-import Excision.Topology.LebesgueNumber
+module  -- shake: keep-all --deprecated_module: ignore
+
+public import Excision.ConvexSpace.AffineChains
+public import Excision.ConvexSpace.AffineMap
+public import Excision.ConvexSpace.Diameter
+public import Excision.ConvexSpace.StdSimplex
+public import Excision.ConvexSpace.ToSSet
+public import Excision.ConvexSpace.Top
+public import Excision.Fin.Vec
+public import Excision.Finsupp.Basic
+public import Excision.HomotopyCategory.ChainComplex
+public import Excision.Limits.SigmaConst
+public import Excision.Linear.ULift
+public import Excision.Perm.EquivSucc
+public import Excision.SimplexCategory.Basic
+public import Excision.SimplicialSet.ChainComplexAb
+public import Excision.SimplicialSet.ULift
+public import Excision.SingularHomology.Basic
+public import Excision.SingularHomology.NatTrans
+public import Excision.SingularHomology.Subdivision
+public import Excision.SingularHomology.ULift
+public import Excision.SmallSimplices
+public import Excision.Topology.LebesgueNumber
