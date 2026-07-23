@@ -89,7 +89,7 @@ lemma StdSimplex.equiv_apply_apply
     {R ι : Type*} [Semiring R] [PartialOrder R] [IsOrderedAddMonoid R] [Fintype ι]
     (s : StdSimplex R ι) (i : ι) :
     equiv s i = s.weights i := by
-  sorry
+  rfl
 
 private lemma StdSimplex.equiv_comp_affineMapMk_comp_equiv_symm
     {ι₁ ι₂ : Type*} [Fintype ι₁] [Fintype ι₂]
