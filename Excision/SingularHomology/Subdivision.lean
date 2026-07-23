@@ -19,7 +19,7 @@ universe w
 
 @[expose] public section
 
-open CategoryTheory Limits AlgebraicTopology HomologicalComplex Convexity
+open CategoryTheory Limits AlgebraicTopology HomologicalComplex Convexity Simplicial
 
 variable {C : Type*} [Category* C] [Preadditive C] [HasCoproducts.{w} C]
 
@@ -92,5 +92,113 @@ noncomputable def singularChainComplexHomotopyIdSd :
     (.trans (.ofEq (by simp [singularChainComplexSd, singularChainComplexFunctorSd]))
       (Homotopy.nullHomotopy (fun n m ↦ (hSd' R n m).app X)
         (fun n m h ↦ by simp [hSd'_zero _ _ _ h])))
+
+namespace toSSet
+
+variable {X}
+
+/-- The subdivisions of a singular `n`-simplex of a topological space. It takes
+a permutation of `Fin (n + 1)` as an input. -/
+noncomputable def sd {n : ℕ} (s : (toSSet.obj X) _⦋n⦌) (σ : Equiv.Perm (Fin (n + 1))) :
+    (toSSet.obj X) _⦋n⦌ :=
+  (TopCat.toSSetObjEquiv _ _).symm
+    ((TopCat.toSSetObjEquiv _ _ s).comp
+      ((ConvexSpace.AffineMap.id (StdSimplex ℝ (Fin (n + 1)))).sd σ).toContinuousMap)
+
+/-- The `k`-iterated subdivisions of a singular `n`-simplex of a topological space.
+It takes a family of `k` permutations of `Fin (n + 1)` as an input. -/
+@[no_expose]
+noncomputable def sdIter
+    {n : ℕ} (s : (toSSet.obj X) _⦋n⦌) {k : ℕ} (σ : Fin k → Equiv.Perm (Fin (n + 1))) :
+    (toSSet.obj X) _⦋n⦌ := by
+  induction k generalizing s with
+  | zero => exact s
+  | succ k hk => exact sd (hk s (σ ∘ Fin.succ)) (σ 0)
+
+@[simp]
+lemma sdIter_zero
+    {n : ℕ} (s : (toSSet.obj X) _⦋n⦌) (σ : Fin 0 → Equiv.Perm (Fin (n + 1))) :
+    sdIter s σ = s := by
+  rfl
+
+lemma sdIter_succ
+    {n : ℕ} (s : (toSSet.obj X) _⦋n⦌) {k : ℕ} (σ : Fin (k + 1) → Equiv.Perm (Fin (n + 1))) :
+    sdIter s σ = sd (sdIter s (σ ∘ Fin.succ)) (σ 0) := by
+  rfl
+
+@[simp]
+lemma sdIter_one
+    {n : ℕ} (s : (toSSet.obj X) _⦋n⦌) (σ : Fin 1 → Equiv.Perm (Fin (n + 1))) :
+    sdIter s σ = sd s (σ 0) := by
+  rfl
+
+end toSSet
+
+/-- The `k`th iteration of the subdivision operator `TopCat.singularChainComplexSd`. -/
+@[no_expose]
+noncomputable def singularChainComplexSdIter (k : ℕ) :
+    X.singularChainComplex R ⟶ X.singularChainComplex R :=
+  letI x : End _ := singularChainComplexSd (R := R) X
+  x ^ k
+
+@[simp]
+lemma singularChainComplexSdIter_zero :
+    singularChainComplexSdIter (R := R) X 0 = 𝟙 _ := by
+  simp [singularChainComplexSdIter]
+
+@[simp high]
+lemma singularChainComplexSdIter_one :
+    singularChainComplexSdIter (R := R) X 1 = singularChainComplexSd X := by
+  simp [singularChainComplexSdIter]
+
+@[simp]
+lemma singularChainComplexSdIter_add (k l : ℕ) :
+    singularChainComplexSdIter (R := R) X (k + l) =
+      singularChainComplexSdIter X k ≫ singularChainComplexSdIter X l := by
+  simp [add_comm k l, singularChainComplexSdIter, pow_add]
+
+@[simp]
+lemma singularChainComplexSdIter_succ (k : ℕ) :
+    singularChainComplexSdIter (R := R) X (k + 1) =
+      singularChainComplexSdIter X k ≫ singularChainComplexSd X := by
+  simp [singularChainComplexSdIter_add]
+
+@[reassoc]
+lemma ι_singularChainComplexSd_f {n : ℕ} (s : (toSSet.obj X) _⦋n⦌) :
+    ιSingularChainComplex _ s ≫ (singularChainComplexSd X (R := R)).f n =
+      ∑ (σ : Equiv.Perm (Fin (n + 1))),
+        σ.sign • ιSingularChainComplex _ (toSSet.sd s σ) := by
+  sorry
+
+@[reassoc]
+lemma ι_singularChainComplexSdIter_f {n : ℕ} (s : (toSSet.obj X) _⦋n⦌) (k : ℕ) :
+    ιSingularChainComplex _ s ≫ (singularChainComplexSdIter X (R := R) k).f n =
+      ∑ (σ : Fin k → Equiv.Perm (Fin (n + 1))),
+        (∏ (i : Fin k), (σ i).sign) •
+          ιSingularChainComplex _ (toSSet.sdIter s σ) := by
+  induction k with
+  | zero => simp
+  | succ k hk =>
+    let α : (Fin (k + 1) → Equiv.Perm (Fin (n + 1))) ≃
+        (Fin k → Equiv.Perm (Fin (n + 1))) × Equiv.Perm (Fin (n + 1)) :=
+      { toFun σ := ⟨σ ∘ Fin.succ, σ 0⟩
+        invFun := fun ⟨σ, σ'⟩ ↦ Fin.cases σ' σ
+        left_inv σ := by
+          ext l : 1
+          obtain rfl | ⟨l, rfl⟩ := l.eq_zero_or_eq_succ <;> rfl }
+    simp only [singularChainComplexSdIter_succ, HomologicalComplex.comp_f, reassoc_of% hk,
+      Preadditive.sum_comp, Linear.units_smul_comp, ι_singularChainComplexSd_f,
+      Finset.smul_sum, smul_smul]
+    rw [Finset.sum_bijective
+      (g := fun ⟨σ, σ₀⟩ ↦ ((∏ i, Equiv.Perm.sign (σ i)) * Equiv.Perm.sign σ₀) •
+        ιSingularChainComplex _ (toSSet.sd (toSSet.sdIter s σ) σ₀))
+        (t := .univ) _ α.bijective (by simp) ?_,
+      Finset.sum_finset_product .univ .univ (fun _ ↦ .univ) (by simp)]
+    simp only [Finset.mem_univ, forall_const]
+    intro σ
+    congr
+    rw [mul_comm]
+    simp [α, Fin.prod_univ_succ]
+    rfl
 
 end TopCat

@@ -21,22 +21,22 @@ universe w
 
 open CategoryTheory Limits HomologicalComplex
 
-namespace TopCat.toSSet
+namespace TopCat
 
 variable {X : TopCat.{w}} {ι : Type*} (U : ι → Set X)
 
 /-- Let `U : ι → Set X` be a family of subsets of a topological space `X : TopCat`.
 This is the subcomplex of the singular simplicial set `toSSet.obj X` of `X`
 consisting of simplices that are contained in some `U i`. -/
-noncomputable def subcomplexOfSets : (toSSet.obj X).Subcomplex :=
+noncomputable def toSSet.subcomplexOfSets : (toSSet.obj X).Subcomplex :=
   ⨆ (i : ι), SSet.Subcomplex.range (toSSet.map (ofHom (X := U i) ⟨Subtype.val, by fun_prop⟩))
 
 variable {C : Type*} [Category* C] [Preadditive C] [HasCoproducts.{w} C]
 
-lemma homotopyEquivalences_chainComplexMap_subComplexOfSet_ι
+lemma toSSet.homotopyEquivalences_chainComplexMap_subComplexOfSets_ι
     (hU : ⋃ (i : ι), interior (U i) = Set.univ) (R : C) :
     homotopyEquivalences _ _
       (SSet.chainComplexMap (TopCat.toSSet.subcomplexOfSets U).ι R) := by
   sorry
 
-end TopCat.toSSet
+end TopCat
