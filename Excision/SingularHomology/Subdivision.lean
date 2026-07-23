@@ -7,7 +7,8 @@ module
 
 public import Excision.ConvexSpace.AffineChains
 public import Excision.ConvexSpace.Top
-public import Excision.SingularHomology.NatTransOfFinsupp
+public import Excision.SingularHomology.NatTrans
+public import Excision.SingularHomology.ULift
 
 /-!
 # The subdivision endomorphism of the singular chain complex
@@ -35,11 +36,8 @@ noncomputable def hSd (R : C) (n : ℕ) :
   haveI : HasCoproducts.{0} C := hasCoproducts_shrink
   natTransMk (SSet.ιChainComplex _ (ConvexSpace.AffineMap.id _) ≫
     ConvexSpace.toSSet.hSd (R := R) (Y := StdSimplex ℝ (Fin (n + 1))) n ≫
-      (SSet.chainComplexMap (StdSimplex.toSSetNatTrans _) R).f (n + 1) ≫ by
-        change ((TopCat.of (stdSimplex ℝ (Fin (n + 1)))).singularChainComplex R).X (n + 1) ⟶
-          ((TopCat.of (ULift.{w} (stdSimplex ℝ (Fin (n + 1))))).singularChainComplex R).X (n + 1)
-        -- this is a ulift iso for the singular chain complex
-        sorry)
+      (SSet.chainComplexMap (StdSimplex.toSSetNatTrans _) R).f (n + 1) ≫
+        (TopCat.singularChainComplexULiftIso.{w} _ R).inv.f (n + 1))
 
 @[inherit_doc hSd]
 noncomputable def hSd' (R : C) (n m : ℕ) :

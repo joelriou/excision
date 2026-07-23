@@ -55,7 +55,7 @@ lemma natTrans_ext
     f = g := by
   ext X
   refine Sigma.hom_ext _ _ (fun s ↦ ?_)
-  simpa [Category.assoc, ← NatTrans.naturality] using! h =≫ F.map s.down
+  simpa [← NatTrans.naturality] using! h =≫ F.map s.down
 
 end singularChainComplexFunctor
 

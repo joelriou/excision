@@ -37,16 +37,14 @@ noncomputable def chainComplexFunctorULiftIso :
 /-- The isomorphism `(uliftFunctor.{v}.obj X).chainComplex R ≅ X.chainComplex R`
 for `X : SSet.{u}` and a fixed `R : C`, as a natural isomorphism of
 functors `SSet.{u} ⥤ ChainComplex C ℕ`. -/
-noncomputable def uliftFunctorCompChainComplexFunctorIso (R : C) :
+noncomputable abbrev uliftFunctorCompChainComplexFunctorIso (R : C) :
     haveI : HasCoproducts.{u} C := hasCoproducts_shrink
     uliftFunctor.{v, u} ⋙ (chainComplexFunctor.{max u v} C).obj R ≅
       (chainComplexFunctor.{u} C).obj R :=
   chainComplexFunctorULiftIso.app _
 
-variable {X : Type*}
-
 /-- Given `X : SSet.{u}` and `R : C`, the chain complex of `uliftFunctor.{v}.obj X`
-with coefficients is `R` is the same as the chain complex of `X`. -/
+with coefficients is `R` is isomorphic to the chain complex of `X`. -/
 noncomputable abbrev chainComplexULiftIso (X : SSet.{u}) (R : C) :
     haveI : HasCoproducts.{u} C := hasCoproducts_shrink
     (uliftFunctor.{v}.obj X).chainComplex R ≅ X.chainComplex R :=
