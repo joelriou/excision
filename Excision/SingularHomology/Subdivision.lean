@@ -183,6 +183,7 @@ lemma ι_singularChainComplexSd_f {n : ℕ} (s : (toSSet.obj X) _⦋n⦌) :
     ιSingularChainComplex _ s ≫ (singularChainComplexSd X (R := R)).f n =
       ∑ (σ : Equiv.Perm (Fin (n + 1))),
         σ.sign • ιSingularChainComplex _ (toSSet.sd s σ) := by
+  -- use `ConvexSpace.toSSet.ι_sd_f_eq_sum` and some naturality properties
   sorry
 
 @[reassoc]
