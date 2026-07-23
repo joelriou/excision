@@ -82,6 +82,11 @@ lemma SdIterIsSmall.succ {n : ℕ} {s : toSSet.obj X _⦋n⦌} {k : ℕ}
     rw [toSSet.sdIter_succ]
     exact toSSet.sd_mem_subcomplexOfSets _ (hs _) _
 
+lemma SdIterIsSmall.δ {n : ℕ} {s : toSSet.obj X _⦋n + 1⦌} {k : ℕ}
+    (hs : SdIterIsSmall U s k) (i : Fin (n + 2)) :
+    SdIterIsSmall U ((toSSet.obj X).δ i s) k := by
+  sorry
+
 lemma SdIterIsSmall.of_le {n : ℕ} {s : toSSet.obj X _⦋n⦌} {k k' : ℕ}
     (hs : SdIterIsSmall U s k) (h : k ≤ k') :
     SdIterIsSmall U s k' := by
@@ -164,6 +169,11 @@ lemma m_eq_zero_iff {n : ℕ} (s : toSSet.obj X _⦋n⦌) :
   refine ⟨fun h ↦ ?_, fun h ↦ le_antisymm ?_ (by simp)⟩
   · simpa only [← h] using hU.sdIterIsSmall_m s
   · rwa [← sdIterIsSmall_iff_m_le]
+
+lemma m_δ_le {n : ℕ} (s : toSSet.obj X _⦋n + 1⦌) (i : Fin (n + 2)) :
+    hU.m ((toSSet.obj X).δ i s) ≤ hU.m s := by
+  rw [← sdIterIsSmall_iff_m_le]
+  exact (hU.sdIterIsSmall_m s).δ i
 
 variable {C : Type*} [Category* C] [Preadditive C] [HasCoproducts.{w} C]
 
