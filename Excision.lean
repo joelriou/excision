@@ -14,5 +14,7 @@ import Excision.SimplicialSet.ULift
 import Excision.SingularHomology.Basic
 import Excision.SingularHomology.NatTrans
 import Excision.SingularHomology.Subdivision
+import Excision.SingularHomology.SubdivisionDiam
 import Excision.SingularHomology.ULift
 import Excision.SmallSimplices
+import Excision.Topology.LebesgueNumber

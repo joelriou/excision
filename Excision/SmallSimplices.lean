@@ -5,7 +5,8 @@ Authors: Joël Riou
 -/
 module
 
-public import Excision.SingularHomology.Subdivision
+public import Excision.SingularHomology.SubdivisionDiam
+public import Excision.Topology.LebesgueNumber
 
 /-!
 # Small simplices lemma
@@ -97,9 +98,37 @@ lemma sdIterIsSmall_zero_iff {n : ℕ} (s : toSSet.obj X _⦋n⦌) :
   simp [SdIterIsSmall]
 
 include hU in
+open Convexity in
 lemma exists_sdIterIsSmall {n : ℕ} (s : toSSet.obj X _⦋n⦌) :
     ∃ (k : ℕ), SdIterIsSmall U s k := by
-  sorry
+  obtain ⟨f, rfl⟩ := (toSSetObjEquiv _ _).symm.surjective s
+  let V (i : ι) : Set (stdSimplex ℝ (Fin (n + 1))) := f ⁻¹' (interior (U i))
+  obtain ⟨ε, hε₀, hε⟩ := CompactSpace.lebesgue_number_lemma V
+    (fun i ↦ f.continuous.isOpen_preimage _ isOpen_interior)
+    (by simp [V, ← Set.preimage_iUnion, hU.iUnion_interior])
+  let s₀ := ConvexSpace.AffineMap.id (R := ℝ) (StdSimplex ℝ (Fin (n + 1)))
+  suffices ∃ (k : ℕ), ∀ (σ : Fin k → Equiv.Perm (Fin (n + 1))),
+      (s₀.sdIter σ).diam ≤ ε by
+    obtain ⟨k, hk⟩ := this
+    refine ⟨k, fun σ ↦ ?_⟩
+    rw [toSSet.mem_subcomplexOfSets_iff]
+    obtain ⟨i, hi⟩ := hε (Set.range (s₀.sdIter σ).toContinuousMap) (Set.range_nonempty _) (hk _)
+    refine ⟨i, ?_⟩
+    rintro _ ⟨x, rfl⟩
+    have := hi (Set.mem_range_self x)
+    simp only [Set.mem_preimage, V] at this
+    refine interior_subset ?_
+    convert this using 1
+    sorry
+  obtain h | h := s₀.zero_le_diam.lt_or_eq'
+  · have hε' : 0 < ε / s₀.diam := by positivity
+    obtain ⟨k, hk⟩ := exists_pow_lt_of_lt_one hε' (y := (n / (n + 1) : ℝ)) (by
+      rw [div_lt_one (by positivity)]
+      simp)
+    exact ⟨k, fun σ ↦ (s₀.diam_sdIter_le σ).trans
+      (le_of_le_of_eq (mul_le_mul_of_nonneg_right hk.le s₀.zero_le_diam)
+        (div_mul_cancel₀ ε h.ne'))⟩
+  · exact ⟨0, by simp [h, hε₀.le]⟩
 
 include hU in
 lemma nonempty_ofPred_sdIterIsSmall {n : ℕ} (s : toSSet.obj X _⦋n⦌) :
