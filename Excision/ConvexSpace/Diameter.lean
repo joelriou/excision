@@ -21,23 +21,6 @@ namespace Convexity
 
 namespace ConvexSpace
 
-section
-
-variable {R M : Type*} [Semiring R] [PartialOrder R] [IsStrictOrderedRing R]
-  [AddCommMonoid M] [Module R M] [ConvexSpace R M]
-
-variable (R M) in
-/-- The property that the convex space structure on a `R`-module `M`
-is induced by this module structure. -/
-class IsModuleConvexSpace : Prop where
-  sConvexComb_eq (w : StdSimplex R M) :
-    sConvexComb w = w.weights.sum fun m r ↦ r • m
-
-instance (ι : Type*) : IsModuleConvexSpace R (ι → R) where
-  sConvexComb_eq w := by ext; simp [Finsupp.sum]
-
-end
-
 namespace AffineMap
 
 variable {n : ℕ} {X E : Type*} [ConvexSpace ℝ X] [NormedAddCommGroup E]
@@ -74,24 +57,6 @@ lemma diam_sdIter_le
 end AffineMap
 
 end ConvexSpace
-
-/-- The inclusion of `StdSimplex ℝ α` to `α → ℝ`, as an affine map. -/
-@[simps]
-def StdSimplex.ι {α : Type*} :
-    ConvexSpace.AffineMap ℝ (StdSimplex ℝ α) (α → ℝ) where
-  toFun s := s.weights
-  isAffineMap_toFun.map_sConvexComb s := by
-    ext i
-    induction s using StdSimplex.rec' with
-    | sum n w m hw₀ hw =>
-      dsimp
-      simp only [weights_sConvexComb, Finsupp.sum_apply, Finsupp.coe_smul, Pi.smul_apply,
-        smul_eq_mul, iConvexComb_eq_sum, weights_map, Finsupp.mapDomain_finsetSum,
-        Finsupp.mapDomain_single]
-      rw [Finsupp.sum_finsetSum _ _ _ (by simp) (by simp [add_mul]),
-        Finsupp.sum_finsetSum _ _ _ (by simp) (by simp [add_mul])]
-      congr
-      simp
 
 @[simp]
 lemma StdSimplex.diam_equiv_image_range_affineMap

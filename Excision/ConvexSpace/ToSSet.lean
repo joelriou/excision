@@ -136,7 +136,7 @@ lemma toSSet.δ_zero (y : Y) {n : ℕ} (s : ConvexSpace.AffineMap R (StdSimplex 
     (toSSet R Y).δ 0 (s.cone y) = s := by
   ext
   simp [SimplicialObject.δ_def, SimplexCategory.δ_apply,
-    AffineMap.cone_def, StdSimplex.affineMapMk_toFun]
+    AffineMap.cone_def, StdSimplex.affineMapMk_apply]
 
 lemma toSSet.δ_affineMapMk {n : ℕ} (s : Fin (n + 2) → Y)
     (i : Fin (n + 2)) :
@@ -155,7 +155,7 @@ noncomputable abbrev toSSetAugmented : SSet.Augmented where
 
 attribute [local simp] SimplicialObject.δ_def SimplexCategory.δ_apply
   SimplicialObject.σ_def SimplexCategory.σ_apply AffineMap.cone_def
-  StdSimplex.affineMapMk_toFun in
+  StdSimplex.affineMapMk_apply in
 variable {Y} in
 /-- Given a convex space `Y` (over a semiring `R`) and `y : Y`, this is an extra degeneracy
 for `ConvexSpace.toSSetAugmented R Y`. In degree `0`, it is given by `[y]`, and otherwise

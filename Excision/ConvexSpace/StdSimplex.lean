@@ -95,10 +95,14 @@ lemma affineMap_ext {M : Type*} {Y : Type*} [ConvexSpace R Y]
 
 /-- The (bundled) affine map `StdSimplex R M → StdSimplex R N` induced
 by a map `f : M → N`. -/
-@[simps, implicit_reducible]
+@[implicit_reducible]
 noncomputable def affineMap {M N : Type*} (f : M → N) :
     ConvexSpace.AffineMap R (StdSimplex R M) (StdSimplex R N) where
   toFun := map f
+
+@[simp]
+lemma coe_affineMap {M N : Type*} (f : M → N) :
+    ⇑(affineMap (R := R) f) = map f := rfl
 
 @[simp]
 lemma sConvexComb_map_iConvexComb {M : Type*} {Y : Type*} [ConvexSpace R Y] (f : M → Y)
@@ -111,22 +115,38 @@ lemma sConvexComb_map_iConvexComb {M : Type*} {Y : Type*} [ConvexSpace R Y] (f :
           iConvexComb_map]
 
 /-- Constructor for (bundled) affine maps from a standard simplex to a convex space. -/
---@[simps, implicit_reducible]
-@[simps -isSimp]
 noncomputable def affineMapMk {M : Type*} {Y : Type*} [ConvexSpace R Y] (f : M → Y) :
     ConvexSpace.AffineMap R (StdSimplex R M) Y where
   toFun s := iConvexComb s f
   isAffineMap_toFun.map_sConvexComb s := by simp
 
+lemma affineMapMk_apply {M : Type*} {Y : Type*} [ConvexSpace R Y] (f : M → Y)
+    (s : StdSimplex R M) :
+    affineMapMk (R := R) f s = iConvexComb s f := rfl
+
+
 @[simp]
 lemma affineMapMk_single {M : Type*} {Y : Type*} [ConvexSpace R Y] (f : M → Y) (m : M) :
     affineMapMk (R := R) f (.single m) = f m := by
-  simp [affineMapMk_toFun]
+  simp [affineMapMk_apply]
 
 lemma affineMapMk_surjective {M : Type*} {Y : Type*} [ConvexSpace R Y]
     (s : ConvexSpace.AffineMap R (StdSimplex R M) Y) :
     ∃ (f : M → Y), affineMapMk f = s :=
-  ⟨fun i ↦ s (single i), by ext; simp [affineMapMk_toFun]⟩
+  ⟨fun i ↦ s (single i), by ext; simp [affineMapMk_apply]⟩
+
+lemma comp_affineMapMk {M : Type*} {Y Z : Type*} [ConvexSpace R Y] [ConvexSpace R Z]
+    (f : ConvexSpace.AffineMap R Y Z) (g : M → Y) :
+    f.comp (affineMapMk g) = affineMapMk (f ∘ g) := by
+  aesop
+
+lemma affineMapMk_apply_eq_sum
+    {M : Type*} [Fintype M] {E : Type*} [AddCommMonoid E] [Module R E] [ConvexSpace R E]
+    [IsModuleConvexSpace R E]
+    (f : M → E) (s : StdSimplex R M) :
+    affineMapMk (R := R) f s = ∑ (m : M), s.weights m • f m := by
+  rw [affineMapMk_apply, iConvexComb_eq_sum,
+    Finsupp.sum_fintype _ _ (by simp)]
 
 /-- In the standard simplex with vertices `M`, this is the isobarycenter of
 a nonempty finite subset `S` of `M`. -/
@@ -351,8 +371,8 @@ variable (f : ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y)
 lemma comp_sd (f : ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y)
     (σ : Equiv.Perm (Fin n)) (g : ConvexSpace.AffineMap K Y Z) :
     g.comp (f.sd σ) = (g.comp f).sd σ := by
-  dsimp [sd]
-  sorry
+  rw [StdSimplex.comp_affineMapMk]
+  rfl
 
 lemma comp_sdIter (f : ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y)
     {k : ℕ} (σ : Fin k → Equiv.Perm (Fin n))
