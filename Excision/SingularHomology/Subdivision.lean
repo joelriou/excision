@@ -20,6 +20,7 @@ universe w
 @[expose] public section
 
 open CategoryTheory Limits AlgebraicTopology HomologicalComplex Convexity Simplicial
+  Opposite
 
 variable {C : Type*} [Category* C] [Preadditive C] [HasCoproducts.{w} C]
 
@@ -101,9 +102,23 @@ variable {X}
 a permutation of `Fin (n + 1)` as an input. -/
 noncomputable def sd {n : ℕ} (s : (toSSet.obj X) _⦋n⦌) (σ : Equiv.Perm (Fin (n + 1))) :
     (toSSet.obj X) _⦋n⦌ :=
-  (TopCat.toSSetObjEquiv _ _).symm
-    ((TopCat.toSSetObjEquiv _ _ s).comp
+  (toSSetObjEquiv _ _).symm
+    ((toSSetObjEquiv _ _ s).comp
       ((ConvexSpace.AffineMap.id (StdSimplex ℝ (Fin (n + 1)))).sd σ).toContinuousMap)
+
+lemma sd_toSSetObjEquiv_symm {n : ℕ} (s : C(stdSimplex ℝ (Fin (n + 1)), X))
+    (σ : Equiv.Perm (Fin (n + 1))) :
+    sd ((toSSetObjEquiv _ (op ⦋n⦌)).symm s) σ =
+      (toSSetObjEquiv _ (op ⦋n⦌)).symm
+        (s.comp ((ConvexSpace.AffineMap.id (StdSimplex ℝ (Fin (n + 1)))).sd σ).toContinuousMap) :=
+  rfl
+
+lemma range_toSSetObjEquiv_sd_subset
+    {n : ℕ} (s : (toSSet.obj X) _⦋n⦌) (σ : Equiv.Perm (Fin (n + 1))) :
+    Set.range (toSSetObjEquiv _ _ (sd s σ)) ⊆ Set.range (toSSetObjEquiv _ _ s) := by
+  obtain ⟨s, rfl⟩ := (toSSetObjEquiv  _ _).symm.surjective s
+  simp only [sd_toSSetObjEquiv_symm, Equiv.apply_symm_apply, ContinuousMap.coe_comp]
+  apply Set.range_comp_subset_range
 
 /-- The `k`-iterated subdivisions of a singular `n`-simplex of a topological space.
 It takes a family of `k` permutations of `Fin (n + 1)` as an input. -/
