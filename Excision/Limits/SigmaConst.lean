@@ -6,6 +6,7 @@ Authors: Joël Riou
 module
 
 public import Mathlib.CategoryTheory.Limits.Shapes.Products
+public import Mathlib.CategoryTheory.Preadditive.Basic
 
 /-!
 # ...
@@ -20,7 +21,11 @@ open CategoryTheory Limits
 
 namespace CategoryTheory
 
-variable {C : Type*} [Category* C] [HasCoproducts.{max u v} C]
+variable {C : Type*} [Category* C]
+
+section
+
+variable [HasCoproducts.{max u v} C]
 
 /-- The isomorphism `(sigmaConst.obj X).obj (ULift.{v} T) ≅ (sigmaConst.obj X).obj T`
 when `T : Type u`. -/
@@ -53,5 +58,20 @@ noncomputable def sigmaConstULiftIso :
   haveI : HasCoproducts.{u} C := hasCoproducts_shrink
   NatIso.ofComponents
     (fun X ↦ NatIso.ofComponents (sigmaConstObjObjULiftIso _))
+
+end
+
+open Classical in
+set_option backward.defeqAttrib.useBackward true in
+instance [HasCoproducts.{u} C] {T₁ T₂ : Type u} (f : T₁ ⟶ T₂) [Mono f] [Preadditive C] (X : C) :
+    IsSplitMono ((sigmaConst.obj X).map f) := by
+  have (t₂ : T₂) (ht₂ : t₂ ∈ Set.range f) : ∃ t₁, f t₁ = t₂ := ht₂
+  choose t₁ ht₁ using this
+  have (t : T₁) : t₁ (f t) (by simp) = t := injective_of_mono f (ht₁ _ _)
+  exact ⟨⟨{
+    retraction :=
+      Sigma.desc (fun t₂ ↦
+        if ht₂ : t₂ ∈ Set.range f then Sigma.ι (fun _ ↦ X) (t₁ t₂ ht₂) else 0)
+  }⟩⟩
 
 end CategoryTheory
