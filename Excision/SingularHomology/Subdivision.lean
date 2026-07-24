@@ -147,6 +147,32 @@ lemma sdIter_one
     sdIter s σ = sd s (σ 0) := by
   rfl
 
+lemma sdIter_toSSetObjEquiv_symm {n : ℕ} (s : C(stdSimplex ℝ (Fin (n + 1)), X))
+    {k : ℕ} (σ : Fin k → Equiv.Perm (Fin (n + 1))) :
+    sdIter ((toSSetObjEquiv _ (op ⦋n⦌)).symm s) σ =
+      (toSSetObjEquiv _ (op ⦋n⦌)).symm
+        (s.comp ((ConvexSpace.AffineMap.id _).sdIter σ).toContinuousMap) := by
+  induction k generalizing s with
+  | zero => simp
+  | succ k hk =>
+    simp [sdIter_succ, hk, sd_toSSetObjEquiv_symm,
+      ← ConvexSpace.AffineMap.toContinuousMap_comp,
+      ConvexSpace.AffineMap.comp_sd, ConvexSpace.AffineMap.sdIter_succ]
+
+lemma exists_sdIter_δ_eq
+    {n : ℕ} (s : (toSSet.obj X) _⦋n + 1⦌)
+    (i : Fin (n + 2)) {k : ℕ} (σ : Fin k → Equiv.Perm (Fin (n + 1))) :
+    ∃ (σ' : Fin k → Equiv.Perm (Fin (n + 2))) (i' : Fin (n + 2)),
+      sdIter ((toSSet.obj X).δ i s) σ =
+        (toSSet.obj X).δ i' (sdIter s σ') := by
+  obtain ⟨s, rfl⟩ := (toSSetObjEquiv _ (op ⦋n + 1⦌)).symm.surjective s
+  obtain ⟨σ', i', h⟩ := ConvexSpace.AffineMap.exists_sdIter_δ_eq (K := ℝ) (.id _) i σ
+  refine ⟨σ', i', ?_⟩
+  simp only [sdIter_toSSetObjEquiv_symm, TopCat.δ_toSSetObjEquiv_symm,
+    ContinuousMap.comp_assoc, ← ConvexSpace.AffineMap.toContinuousMap_comp,
+    ConvexSpace.AffineMap.comp_sdIter]
+  congr
+
 end toSSet
 
 /-- The `k`th iteration of the subdivision operator `TopCat.singularChainComplexSd`. -/

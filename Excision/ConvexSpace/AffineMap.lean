@@ -67,6 +67,18 @@ def comp
   toFun := g ∘ f
 
 @[simp]
+lemma id_comp
+    {X Y : Type*} [ConvexSpace R X] [ConvexSpace R Y]
+    (f : ConvexSpace.AffineMap R X Y) :
+    (AffineMap.id _).comp f = f := rfl
+
+@[simp]
+lemma comp_id
+    {X Y : Type*} [ConvexSpace R X] [ConvexSpace R Y]
+    (f : ConvexSpace.AffineMap R X Y) :
+    f.comp (.id _) = f := rfl
+
+@[simp]
 lemma coe_comp
     {X Y Z : Type*} [ConvexSpace R X] [ConvexSpace R Y] [ConvexSpace R Z]
     (g : ConvexSpace.AffineMap R Y Z) (f : ConvexSpace.AffineMap R X Y) :

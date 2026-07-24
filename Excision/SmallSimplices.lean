@@ -85,7 +85,10 @@ lemma SdIterIsSmall.succ {n : ℕ} {s : toSSet.obj X _⦋n⦌} {k : ℕ}
 lemma SdIterIsSmall.δ {n : ℕ} {s : toSSet.obj X _⦋n + 1⦌} {k : ℕ}
     (hs : SdIterIsSmall U s k) (i : Fin (n + 2)) :
     SdIterIsSmall U ((toSSet.obj X).δ i s) k := by
-  sorry
+  intro σ
+  obtain ⟨σ', i', h⟩ := toSSet.exists_sdIter_δ_eq s i σ
+  rw [h]
+  exact (toSSet.subcomplexOfSets U).map _ (hs _)
 
 lemma SdIterIsSmall.of_le {n : ℕ} {s : toSSet.obj X _⦋n⦌} {k k' : ℕ}
     (hs : SdIterIsSmall U s k) (h : k ≤ k') :

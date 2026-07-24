@@ -6,6 +6,7 @@ Authors: Joël Riou
 module
 
 public import Mathlib.Geometry.Convex.ConvexSpace.Module
+public import Excision.Perm.EquivSucc
 public import Excision.ConvexSpace.AffineMap
 public import Excision.Finsupp.Basic
 public import Excision.Fin.Vec
@@ -105,6 +106,11 @@ lemma coe_affineMap {M N : Type*} (f : M → N) :
     ⇑(affineMap (R := R) f) = map f := rfl
 
 @[simp]
+lemma affineMap_id (M : Type*) :
+    affineMap (R := R) (id : M → M) = .id _ := by
+  aesop
+
+@[simp]
 lemma sConvexComb_map_iConvexComb {M : Type*} {Y : Type*} [ConvexSpace R Y] (f : M → Y)
     (s : StdSimplex R (StdSimplex R M)) :
     sConvexComb (map (fun s ↦ iConvexComb s f) s) = iConvexComb (sConvexComb s) f :=
@@ -123,7 +129,6 @@ noncomputable def affineMapMk {M : Type*} {Y : Type*} [ConvexSpace R Y] (f : M �
 lemma affineMapMk_apply {M : Type*} {Y : Type*} [ConvexSpace R Y] (f : M → Y)
     (s : StdSimplex R M) :
     affineMapMk (R := R) f s = iConvexComb s f := rfl
-
 
 @[simp]
 lemma affineMapMk_single {M : Type*} {Y : Type*} [ConvexSpace R Y] (f : M → Y) (m : M) :
@@ -357,6 +362,19 @@ lemma sdIter_succ
     f.sdIter σ = (f.sdIter (σ ∘ Fin.succ)).sd (σ 0) := by
   rfl
 
+lemma sdIter_succ'
+    (f : ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y) {k : ℕ}
+    (σ : Fin (k + 1) → Equiv.Perm (Fin n)) :
+    f.sdIter σ = (f.sd (σ (Fin.last _))).sdIter (σ ∘ Fin.castSucc) := by
+  induction k generalizing f with
+  | zero => simp [sdIter_succ]
+  | succ k hk =>
+    rw [sdIter_succ]
+    nth_rw 2 [sdIter_succ]
+    congr 1
+    rw [hk]
+    rfl
+
 @[simp]
 lemma sdIter_one
     (f : ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y)
@@ -381,6 +399,60 @@ lemma comp_sdIter (f : ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y)
   induction k with
   | zero => simp
   | succ k hk => simp [sdIter_succ, comp_sd, hk]
+
+section
+
+variable {R : Type*} [PartialOrder R] [Semiring R] [IsStrictOrderedRing R] [ConvexSpace R Y]
+  (f : ConvexSpace.AffineMap R (StdSimplex R (Fin (n + 2))) Y) (i : Fin (n + 2))
+
+/-- A face of an affine map from the standard simplex. -/
+noncomputable def δ : ConvexSpace.AffineMap R (StdSimplex R (Fin (n + 1))) Y :=
+  f.comp (StdSimplex.affineMap i.succAbove)
+
+lemma δ_def : f.δ i = f.comp (StdSimplex.affineMap i.succAbove) := rfl
+
+@[simp]
+lemma δ_single (j : Fin (n + 1)) :
+    (f.δ i) (.single j) = f (.single (i.succAbove j)) := by
+  simp [δ_def]
+
+end
+
+open Equiv.Perm in
+lemma sd_δ
+    (f : ConvexSpace.AffineMap K (StdSimplex K (Fin (n + 2))) Y)
+    (i : Fin (n + 2)) (σ : Equiv.Perm (Fin (n + 1))) :
+    (f.δ i).sd σ = (f.sd (equivSuccSymm i σ)).δ 0 := by
+  ext j
+  simp only [δ_single, Fin.zero_succAbove, StdSimplex.affineMapMk_single,
+    sdVertex_def, f.δ_def]
+  rw [f.subIsobarycenter_comp_of_injective _ ⟨σ j, by simp⟩ _
+    Fin.succAbove_right_injective]
+  congr
+  ext k
+  simp only [coe_inv, Finset.mem_image, Finset.mem_filter, Finset.mem_univ, true_and]
+  refine ⟨?_, fun h ↦ ?_⟩
+  · rintro ⟨k, hk, rfl⟩
+    obtain ⟨k, rfl⟩ := σ.surjective k
+    simpa using hk
+  · obtain ⟨k, rfl⟩ := (equivSuccSymm i σ).surjective k
+    obtain ⟨k, rfl⟩ := k.eq_succ_of_ne_zero (by grind)
+    simpa using h
+
+open Equiv.Perm in
+lemma exists_sdIter_δ_eq
+    (f : ConvexSpace.AffineMap K (StdSimplex K (Fin (n + 2))) Y)
+    (i : Fin (n + 2)) {k : ℕ} (σ : Fin k → Equiv.Perm (Fin (n + 1))) :
+    ∃ (σ' : Fin k → Equiv.Perm (Fin (n + 2))) (i' : Fin (n + 2)), (f.δ i).sdIter σ =
+      (f.sdIter σ').δ i' := by
+  induction k generalizing n with
+  | zero => simp
+  | succ k hk =>
+    obtain ⟨σ', i', h⟩ := hk (f.sd (equivSuccSymm i (σ (Fin.last k)))) 0 (σ ∘ Fin.castSucc)
+    refine ⟨Fin.lastCases (equivSuccSymm i (σ (Fin.last k))) σ', i', ?_⟩
+    rw [sdIter_succ', sd_δ, h, sdIter_succ', Fin.lastCases_last]
+    congr
+    aesop
 
 end
 

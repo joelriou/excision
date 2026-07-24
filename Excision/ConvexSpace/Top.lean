@@ -15,17 +15,26 @@ public import Excision.ConvexSpace.ToSSet
 
 @[expose] public section
 
+namespace stdSimplex
+
 @[fun_prop]
-lemma stdSimplex.continuous_apply {ι : Type*} [Fintype ι] (i : ι) :
+lemma continuous_apply {ι : Type*} [Fintype ι] (i : ι) :
     Continuous (fun (s : stdSimplex ℝ ι) ↦ s i) :=
   (_root_.continuous_apply i).comp continuous_subtype_val
 
-lemma stdSimplex.total {ι : Type*} [Fintype ι] (s : stdSimplex ℝ ι) :
+lemma total {ι : Type*} [Fintype ι] (s : stdSimplex ℝ ι) :
     ∑ (i : ι), s i = 1 := s.2.2
 
-lemma stdSimplex.apply_nonneg {ι : Type*} [Fintype ι] (x : stdSimplex ℝ ι) (i : ι) :
+lemma apply_nonneg {ι : Type*} [Fintype ι] (x : stdSimplex ℝ ι) (i : ι) :
     0 ≤ x i :=
   x.2.1 i
+
+@[simp]
+lemma map_id {ι : Type*} [Fintype ι] :
+    stdSimplex.map (S := ℝ) (id : ι → ι) = id := by
+  aesop
+
+end stdSimplex
 
 open CategoryTheory
 
@@ -161,6 +170,13 @@ lemma StdSimplex.affineMap_toContinuousMap
   obtain ⟨s, rfl⟩ := equiv.surjective s
   simp [ConvexSpace.AffineMap.toContinuousMap]
 
+@[simp]
+lemma ConvexSpace.AffineMap.toContinuousMap_id
+    (ι : Type*) [Fintype ι] :
+    (ConvexSpace.AffineMap.id (StdSimplex ℝ ι)).toContinuousMap = .id _ :=
+  DFunLike.ext'
+    (by simpa using StdSimplex.affineMap_toContinuousMap (_root_.id : ι → ι))
+
 /-- The inclusion of affine maps into continuous maps between standard simplices,
 as a morphism of simplicial sets. -/
 noncomputable def StdSimplex.toSSetNatTrans (ι : Type*) [Fintype ι] :
@@ -179,3 +195,19 @@ noncomputable def StdSimplex.toSSetNatTrans (ι : Type*) [Fintype ι] :
     rfl
 
 end Convexity
+
+open Convexity
+
+namespace TopCat
+
+lemma δ_toSSetObjEquiv_symm {X : TopCat} {n : ℕ}
+    (x : C(stdSimplex ℝ (Fin (n + 2)), X)) (i : Fin (n + 2)) :
+    (toSSet.obj X).δ i ((toSSetObjEquiv _ _).symm x) =
+    (toSSetObjEquiv _ _).symm (x.comp
+      (Convexity.StdSimplex.affineMap i.succAbove).toContinuousMap) := by
+  trans (toSSetObjEquiv _ _).symm (x.comp ⟨_, stdSimplex.continuous_map i.succAbove⟩)
+  · rfl
+  · congr 2
+    exact DFunLike.ext' (StdSimplex.affineMap_toContinuousMap _).symm
+
+end TopCat
