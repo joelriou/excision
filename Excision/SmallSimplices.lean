@@ -129,8 +129,8 @@ lemma exists_sdIterIsSmall {n : ℕ} (s : toSSet.obj X _⦋n⦌) :
       have := hi (Set.mem_range_self (StdSimplex.equiv.symm x))
       simp only [Set.mem_preimage, V] at this
       refine interior_subset ?_
-      convert this using 1
-      sorry
+      rw [toSSet.sdIter_toSSetObjEquiv_symm]
+      exact this
   let δ := (StdSimplex.ι.comp s₀).diam
   have hδ : 0 ≤ δ := (StdSimplex.ι.comp s₀).diam_nonneg
   obtain h | h := hδ.lt_or_eq'
