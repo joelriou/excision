@@ -251,7 +251,7 @@ lemma chainComplexMap_ι_ρ' (R : C) :
   ext n ⟨x, hx⟩
   simpa using! hU.ι_ρ'_f R x hx
 
-set_option backward.isDefEq.respectTransparency false in
+set_option backward.isDefEq.respectTransparency false in -- necessary for `reassoc`
 @[reassoc (attr := simp)]
 lemma ρ'_chainComplexπ (R : C) :
     hU.ρ' R ≫ (sSetPairOfSets U).chainComplexπ R = 0 := by
