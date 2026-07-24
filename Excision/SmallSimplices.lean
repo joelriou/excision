@@ -126,11 +126,9 @@ lemma exists_sdIterIsSmall {n : ℕ} (s : toSSet.obj X _⦋n⦌) :
         (Set.range_nonempty _) (by simpa [Set.range_comp] using hk σ)
       refine ⟨i, ?_⟩
       rintro _ ⟨x, rfl⟩
-      have := hi (Set.mem_range_self (StdSimplex.equiv.symm x))
-      simp only [Set.mem_preimage, V] at this
       refine interior_subset ?_
-      rw [toSSet.sdIter_toSSetObjEquiv_symm]
-      exact this
+      simpa only [Set.mem_preimage, V, toSSet.sdIter_toSSetObjEquiv_symm] using!
+        hi (Set.mem_range_self (StdSimplex.equiv.symm x))
   let δ := (StdSimplex.ι.comp s₀).diam
   have hδ : 0 ≤ δ := (StdSimplex.ι.comp s₀).diam_nonneg
   obtain h | h := hδ.lt_or_eq'
