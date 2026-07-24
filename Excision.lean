@@ -14,6 +14,8 @@ public import Excision.Linear.ULift
 public import Excision.Perm.EquivSucc
 public import Excision.SimplexCategory.Basic
 public import Excision.SimplicialSet.ChainComplexAb
+public import Excision.SimplicialSet.Homology
+public import Excision.SimplicialSet.RelativeHomology
 public import Excision.SimplicialSet.ULift
 public import Excision.SingularHomology.Basic
 public import Excision.SingularHomology.NatTrans
