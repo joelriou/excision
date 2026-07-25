@@ -258,6 +258,8 @@ lemma singularChainComplexSdIter_succ (k : ℕ) :
       singularChainComplexSdIter X k ≫ singularChainComplexSd X := by
   simp [singularChainComplexSdIter_add]
 
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma ι_univObj_singularChainComplexSd_f (n : ℕ) :
     ιSingularChainComplex _ (TopCat.toSSet.univObj n) ≫
@@ -270,9 +272,20 @@ lemma ι_univObj_singularChainComplexSd_f (n : ℕ) :
   obtain _ | n := n
   · simp
     rfl
-  · dsimp [singularChainComplexSd, singularChainComplexFunctorSd]
-    -- use `ConvexSpace.toSSet.ι_sd_f_eq_sum` and some naturality properties
-    sorry
+  · have : HasCoproducts.{0} C := hasCoproducts_shrink
+    convert! ConvexSpace.toSSet.ι_sd_f_eq_sum R (n := n + 1) (s := .id _) =≫
+      ((SSet.chainComplexMap (StdSimplex.toSSetNatTrans _) R).f (n + 1) ≫
+      (TopCat.singularChainComplexULiftIso.{w} _ R).inv.f (n + 1)) using 1
+    · sorry
+    · simp only [Preadditive.sum_comp]
+      congr 1
+      ext σ
+      simp only [Iso.app_inv, Linear.units_smul_comp]
+      congr 1
+      rw [SSet.ι_chainComplexMap_f_assoc]
+      dsimp
+      erw [ι_uliftFunctorCompSingularChainComplexFunctorIso_inv_app]
+      rfl
 
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc]

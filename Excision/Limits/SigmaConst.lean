@@ -49,6 +49,15 @@ lemma ι_sigmaConstObjObjULiftIso_hom (X : C) {T : Type u} (t : ULift.{v} T) :
 
 set_option backward.isDefEq.respectTransparency false in
 set_option backward.defeqAttrib.useBackward true in
+@[reassoc (attr := simp)]
+lemma ι_sigmaConstObjObjULiftIso_inv (X : C) {T : Type u} (t : T) :
+    haveI : HasCoproducts.{u} C := hasCoproducts_shrink
+    dsimp% Sigma.ι _ t ≫ (sigmaConstObjObjULiftIso.{v} X T).inv =
+      Sigma.ι (fun _ ↦ X) (ULift.up.{v} t) := by
+  rw [← ι_sigmaConstObjObjULiftIso_hom_assoc.{v}, Iso.hom_inv_id, Category.comp_id]
+
+set_option backward.isDefEq.respectTransparency false in
+set_option backward.defeqAttrib.useBackward true in
 /-- The isomorphism `(sigmaConst.obj X).obj (ULift.{v} T) ≅ (sigmaConst.obj X).obj T`
 for `X : C` and `T : Type u`, as an isomorphism of functors `C ⥤ Type u ⥤ C`. -/
 @[simps!]
