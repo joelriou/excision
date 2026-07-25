@@ -52,6 +52,9 @@ lemma hSd'_eq (R : C) (n : ℕ) : hSd'.{w} R n (n + 1) = hSd R n := by simp [hSd
 
 lemma hSd'_eq_zero (R : C) (n m : ℕ) (h : n + 1 ≠ m) : hSd' R n m = 0 := by grind [hSd']
 
+@[simp]
+lemma hSd_zero (R : C) : hSd.{w} R 0 = 0 := by simp [hSd]
+
 end singularChainComplexFunctor
 
 set_option backward.isDefEq.respectTransparency false in
@@ -82,6 +85,23 @@ with coefficients in `R`. -/
 noncomputable abbrev singularChainComplexSd :
     X.singularChainComplex R ⟶ X.singularChainComplex R :=
   (singularChainComplexFunctorSd R).app X
+
+@[reassoc]
+lemma ι_map_app_singularChainComplexSd_f {n : ℕ} (x : toSSet.obj X _⦋n⦌) :
+    Y.ιSingularChainComplex (R := R) ((toSSet.map f).app _ x) ≫
+        Y.singularChainComplexSd.f n =
+    X.ιSingularChainComplex x ≫ X.singularChainComplexSd.f n ≫
+      (singularChainComplexMap f R).f n := by
+  rw [← comp_f, ← (singularChainComplexFunctorSd R).naturality f,
+    ← ι_singularChainComplexMap_assoc]
+  rfl
+
+set_option backward.isDefEq.respectTransparency false in
+@[simp]
+lemma singularChainComplexSd_f_zero :
+    X.singularChainComplexSd.f 0 = 𝟙 ((X.singularChainComplex R).X 0) := by
+  simp [singularChainComplexSd, singularChainComplexFunctorSd,
+    ChainComplex.nullHomotopicMap_f_zero]
 
 open singularChainComplexFunctor in
 set_option backward.isDefEq.respectTransparency false in
@@ -239,12 +259,34 @@ lemma singularChainComplexSdIter_succ (k : ℕ) :
   simp [singularChainComplexSdIter_add]
 
 @[reassoc]
+lemma ι_univObj_singularChainComplexSd_f (n : ℕ) :
+    ιSingularChainComplex _ (TopCat.toSSet.univObj n) ≫
+        (singularChainComplexSd _ (R := R)).f n =
+    ∑ (σ : Equiv.Perm (Fin (n + 1))),
+      σ.sign • ιSingularChainComplex _
+        ((toSSetObjEquiv _ _).symm
+          (ContinuousMap.comp ⟨ULift.up, by fun_prop⟩
+            ((ConvexSpace.AffineMap.id  _).sd σ).toContinuousMap)) := by
+  obtain _ | n := n
+  · simp
+    rfl
+  · dsimp [singularChainComplexSd, singularChainComplexFunctorSd]
+    -- use `ConvexSpace.toSSet.ι_sd_f_eq_sum` and some naturality properties
+    sorry
+
+set_option backward.isDefEq.respectTransparency false in
+@[reassoc]
 lemma ι_singularChainComplexSd_f {n : ℕ} (s : (toSSet.obj X) _⦋n⦌) :
     ιSingularChainComplex _ s ≫ (singularChainComplexSd X (R := R)).f n =
       ∑ (σ : Equiv.Perm (Fin (n + 1))),
         σ.sign • ιSingularChainComplex _ (toSSet.sd s σ) := by
-  -- use `ConvexSpace.toSSet.ι_sd_f_eq_sum` and some naturality properties
-  sorry
+  obtain ⟨f, rfl⟩ := toSSet.exists_map_app_univObj_eq s
+  rw [ι_map_app_singularChainComplexSd_f,
+    ι_univObj_singularChainComplexSd_f_assoc, Preadditive.sum_comp]
+  congr 1
+  ext σ
+  simp only [Linear.units_smul_comp, ι_singularChainComplexMap, smul_left_cancel_iff]
+  rfl
 
 @[reassoc]
 lemma ι_singularChainComplexSdIter_f {n : ℕ} (s : (toSSet.obj X) _⦋n⦌) (k : ℕ) :
@@ -276,11 +318,6 @@ lemma ι_singularChainComplexSdIter_f {n : ℕ} (s : (toSSet.obj X) _⦋n⦌) (k
     rw [mul_comm]
     simp [α, Fin.prod_univ_succ]
     rfl
-
-@[simp]
-lemma singularChainComplexSd_f_zero :
-    (singularChainComplexSd X (R := R)).f 0 = 𝟙 _ :=
-  singularChainComplexX_hom_ext (fun x ↦ by simp [ι_singularChainComplexSd_f])
 
 @[simp]
 lemma singularChainComplexSdIter_f_zero (k : ℕ) :

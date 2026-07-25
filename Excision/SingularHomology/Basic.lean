@@ -56,16 +56,21 @@ lemma ι_singularChainComplex_d
   simp [singularChainComplex, singularChainComplexFunctor, SSet.chainComplexFunctor,
     Preadditive.comp_sum]
 
-variable (n : ℕ)
-
 /-- The universal element in `(toSSet.obj (SimplexCategory.toTop ^⦋n⦌)) _⦋n⦌`. -/
 noncomputable def toSSet.univObj (n : ℕ) :
     (toSSet.obj (SimplexCategory.toTop ^⦋n⦌)) _⦋n⦌ := ⟨𝟙 _⟩
 
+lemma toSSet.exists_map_app_univObj_eq
+    {X : TopCat.{w}} {n : ℕ} (s : toSSet.obj X _⦋n⦌) :
+    ∃ (f : SimplexCategory.toTop ^⦋n⦌ ⟶ X),
+      (toSSet.map f).app _ (univObj n) = s := by
+  obtain ⟨s, rfl⟩ := (toSSetObjEquiv _ _).symm.surjective s
+  exact ⟨ofHom (s.comp ⟨ULift.down, by fun_prop⟩), rfl⟩
+
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
-lemma ι_SingularChainComplexMap
+lemma ι_singularChainComplexMap
     {X Y : TopCat.{w}} (f : X ⟶ Y) {R : C} {n : ℕ} (x : (toSSet.obj X) _⦋n⦌) :
     X.ιSingularChainComplex (R := R) x ≫ (singularChainComplexMap f R).f n =
         Y.ιSingularChainComplex ((toSSet.map f).app _ x) := by

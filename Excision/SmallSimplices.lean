@@ -322,7 +322,7 @@ lemma map_subtypeVal_chainComplexπ (i : ι) (n : ℕ) :
       ⟨Subtype.val, by fun_prop⟩) R).f n ≫
     ((sSetPairOfSets U).chainComplexπ R).f n = 0 :=
   singularChainComplexX_hom_ext (fun x ↦ by
-    simp only [ι_SingularChainComplexMap_assoc, comp_zero]
+    simp only [ι_singularChainComplexMap_assoc, comp_zero]
     apply SSetPair.ιChainComplex_π_f_eq_zero_of_subcomplex
     rw [toSSet.mem_subcomplexOfSets_iff']
     exact ⟨i, _, rfl⟩)

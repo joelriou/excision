@@ -57,6 +57,12 @@ lemma natTrans_ext
   refine Sigma.hom_ext _ _ (fun s ↦ ?_)
   simpa [← NatTrans.naturality] using! h =≫ F.map s.down
 
+set_option backward.isDefEq.respectTransparency false in
+@[simp]
+lemma natTransMk_zero :
+    natTransMk (0 : R ⟶ F.obj (SimplexCategory.toTop.{w} ^⦋n⦌)) = 0 :=
+  natTrans_ext (by simp)
+
 end singularChainComplexFunctor
 
 end AlgebraicTopology
