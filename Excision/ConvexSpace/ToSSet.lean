@@ -7,6 +7,7 @@ module
 
 public import Excision.ConvexSpace.StdSimplex
 public import Excision.SimplexCategory.Basic
+public import Excision.Preadditive.HasZeroObject
 public import Mathlib.AlgebraicTopology.ExtraDegeneracy
 public import Mathlib.AlgebraicTopology.SimplicialSet.Homology.Basic
 
@@ -20,15 +21,6 @@ universe w u
 @[expose] public section
 
 open CategoryTheory Limits
-
--- to be moved
-lemma CategoryTheory.Preadditive.hasZeroObject_of_hasCoproducts (C : Type*) [Category* C]
-    [Preadditive C]
-    [HasCoproduct (PEmpty.elim : PEmpty.{w + 1} → C)] :
-    HasZeroObject C :=
-  ⟨∐ (PEmpty.elim : PEmpty.{w + 1} → C), by
-    rw [IsZero.iff_id_eq_zero]
-    cat_disch⟩
 
 namespace Convexity
 

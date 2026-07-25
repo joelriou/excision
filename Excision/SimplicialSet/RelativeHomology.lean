@@ -5,7 +5,10 @@ Authors: Joël Riou
 -/
 module
 
+public import Mathlib
 public import Mathlib.AlgebraicTopology.SimplicialSet.Homology.Relative
+public import Excision.Limits.SigmaConst
+public import Excision.Preadditive.HasZeroObject
 
 /-!
 # ...
@@ -27,14 +30,18 @@ noncomputable def kernelForkChainComplexX (R : C) (n : ℕ) :
     KernelFork ((X.chainComplexπ R).f n) :=
   KernelFork.ofι _ (X.chainComplex_condition_f R n)
 
-def isLimitKernelForkChainComplexX (R : C) (n : ℕ) :
-    IsLimit (X.kernelForkChainComplexX R n) := by
-  sorry
+attribute [local instance] Preadditive.hasZeroObject_of_hasCoproducts in
+@[no_expose]
+noncomputable def isLimitKernelForkChainComplexX (R : C) (n : ℕ) :
+    IsLimit (X.kernelForkChainComplexX R n) :=
+  isLimitKernelForkOfIsColimitCokernelCoforkSigmaConst _ _ (injective_of_mono _)
+    (X.isColimitCokernelCoforkChainComplexX R n)
 
 noncomputable def kernelForkChainComplex (R : C) :
     KernelFork (X.chainComplexπ R) :=
   KernelFork.ofι _ (X.chainComplex_condition R)
 
+@[no_expose]
 noncomputable def isLimitKernelForkChainComplex (R : C) :
     IsLimit (X.kernelForkChainComplex R) :=
   HomologicalComplex.isLimitOfEval _ _

@@ -35,12 +35,14 @@ noncomputable abbrev ιSingularChainComplex
     R ⟶ (X.singularChainComplex R).X n :=
   Sigma.ι (fun _ ↦ R) x
 
+set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma ι_singularChainComplex_d
     (X : TopCat.{w}) {R : C} {n : ℕ} (x : (toSSet.obj X) _⦋n + 1⦌) :
     X.ιSingularChainComplex (R := R) x ≫ (X.singularChainComplex R).d (n + 1) n =
       ∑ (i : Fin (n + 2)), (-1 : ℤ) ^ (i : ℕ) • X.ιSingularChainComplex ((toSSet.obj X).δ i x) := by
-  sorry
+  simp [singularChainComplex, singularChainComplexFunctor, SSet.chainComplexFunctor,
+    Preadditive.comp_sum]
 
 variable (n : ℕ)
 

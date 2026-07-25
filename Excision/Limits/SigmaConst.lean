@@ -6,7 +6,9 @@ Authors: Joël Riou
 module
 
 public import Mathlib.CategoryTheory.Limits.Shapes.Products
+public import Mathlib.CategoryTheory.Limits.Preserves.SigmaConst
 public import Mathlib.CategoryTheory.Preadditive.Basic
+public import Mathlib.Algebra.Homology.ShortComplex.Exact
 
 /-!
 # ...
@@ -73,5 +75,69 @@ instance [HasCoproducts.{u} C] {T₁ T₂ : Type u} (f : T₁ ⟶ T₂) [Mono f]
       Sigma.desc (fun t₂ ↦
         if ht₂ : t₂ ∈ Set.range f then Sigma.ι (fun _ ↦ X) (t₁ t₂ ht₂) else 0)
   }⟩⟩
+
+namespace Limits
+
+variable [Preadditive C] (R : C)
+
+section
+
+variable {α β : Type*} (f : α → β) (hf : Function.Injective f)
+  [HasCoproduct (fun (_ : α) ↦ R)] [HasCoproduct (fun (_ : β) ↦ R)]
+  [HasCoproduct (fun (_ : ((Set.range f)ᶜ : Set _)) ↦ R)]
+
+noncomputable abbrev sigmaConstCokernelShortComplex : ShortComplex C :=
+    .mk _ _ (sigmaConstCokernelCofork R f).condition
+
+noncomputable def splittingSigmaConstCokernelShortComplex :
+    (sigmaConstCokernelShortComplex R f).Splitting := by
+  classical
+  have (b : β) (hb : b ∈ Set.range f) : ∃ a, f a = b := hb
+  choose ρ hρ using this
+  have hρ' (a : α) : ρ (f a) (by simp) = a := hf (hρ _ _)
+  exact
+  { r := Sigma.desc (fun b ↦
+      if hb : b ∈ Set.range f then Sigma.ι (fun _ ↦ R) (ρ b hb) else 0)
+    s := Sigma.desc (fun ⟨c, _⟩ ↦ Sigma.ι (fun _ ↦ R) c)
+    s_g := by
+      dsimp
+      ext ⟨c, hc⟩
+      simp only [Set.mem_compl_iff, Set.mem_range, not_exists] at hc
+      dsimp [sigmaConstCokernelCofork]
+      aesop
+    id := by
+      dsimp
+      ext b
+      by_cases hb : b ∈ Set.range f
+      · obtain ⟨a, rfl⟩ := hb
+        aesop
+      · dsimp [sigmaConstCokernelCofork]
+        rw [Preadditive.comp_add, Sigma.ι_desc_assoc, dif_neg hb,
+          Sigma.ι_desc_assoc, dif_pos (by simpa using hb)]
+        simp }
+
+@[no_expose]
+noncomputable def isLimitKernelForkOfIsColimitCokernelCoforkSigmaConst
+    [HasZeroObject C]
+    {c : CokernelCofork (Sigma.map' (f := fun (_ : α) ↦ R) (g := fun (_ : β) ↦ R) f (fun _ ↦ 𝟙 R))}
+    (hc : IsColimit c) :
+    IsLimit (KernelFork.ofι _ c.condition) := by
+  let iso := IsColimit.coconePointUniqueUpToIso (isColimitSigmaConstCokernelCofork R f) hc
+  have hiso : (sigmaConstCokernelCofork R f).π ≫ iso.hom = c.π :=
+    IsColimit.comp_coconePointUniqueUpToIso_hom (isColimitSigmaConstCokernelCofork R f) hc (.one)
+  let e : parallelPair (sigmaConstCokernelCofork R f).π 0 ≅
+      parallelPair c.π 0 :=
+    parallelPair.ext (Iso.refl _) iso (by simpa) (by simp)
+  refine IsLimit.ofIsoLimit
+    ((IsLimit.postcomposeHomEquiv e _).2
+    ((splittingSigmaConstCokernelShortComplex R f hf).fIsKernel))
+    (Fork.ext (Iso.refl _) ?_)
+  dsimp [Cone.postcompose, Fork.ι, parallelPair.ext, e]
+  cat_disch
+
+end
+
+end Limits
+
 
 end CategoryTheory

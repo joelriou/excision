@@ -12,6 +12,7 @@ public import Excision.HomotopyCategory.ChainComplex
 public import Excision.Limits.SigmaConst
 public import Excision.Linear.ULift
 public import Excision.Perm.EquivSucc
+public import Excision.Preadditive.HasZeroObject
 public import Excision.SimplexCategory.Basic
 public import Excision.SimplicialSet.ChainComplexAb
 public import Excision.SimplicialSet.Homology
