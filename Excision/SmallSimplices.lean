@@ -23,8 +23,7 @@ universe w
 -- to be moved
 @[to_additive]
 lemma Fin.prod_univ_eq_prod_of_le
-    {α : Type*} [CommMonoid α] {n : ℕ} (f : Fin n → α)
-    (k : ℕ) (hk : k ≤ n) :
+    {α : Type*} [CommMonoid α] {n : ℕ} (f : Fin n → α) (k : ℕ) (hk : k ≤ n) :
     ∏ i, f i = (∏ (i : Fin k), f (i.castLE hk)) *
       ∏ (i : Fin n) with k ≤ i.val, f i := by
   let s : Finset (Fin n) := { i | k ≤ i.val }
