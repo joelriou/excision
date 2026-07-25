@@ -28,6 +28,11 @@ noncomputable abbrev singularChainComplex (X : TopCat.{w}) (R : C) :
     ChainComplex C ℕ :=
   ((singularChainComplexFunctor C).obj R).obj X
 
+/-- The morphism of singular chain complexes that is induced by a morphism in `TopCat`. -/
+noncomputable abbrev singularChainComplexMap {X Y : TopCat.{w}} (f : X ⟶ Y) (R : C) :
+    X.singularChainComplex R ⟶ Y.singularChainComplex R :=
+  ((singularChainComplexFunctor C).obj R).map f
+
 /-- Inclusion of a summand of an object in the singular chain complex of
 a topological space. -/
 noncomputable abbrev ιSingularChainComplex
@@ -60,15 +65,14 @@ noncomputable def toSSet.univObj (n : ℕ) :
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
-lemma ιSingularChainComplex_map
+lemma ι_SingularChainComplexMap
     {X Y : TopCat.{w}} (f : X ⟶ Y) {R : C} {n : ℕ} (x : (toSSet.obj X) _⦋n⦌) :
-    X.ιSingularChainComplex (R := R) x ≫
-      (((singularChainComplexFunctor C).obj R).map f).f n =
+    X.ιSingularChainComplex (R := R) x ≫ (singularChainComplexMap f R).f n =
         Y.ιSingularChainComplex ((toSSet.map f).app _ x) := by
-  simp [singularChainComplexFunctor, ιSingularChainComplex,
+  simp [singularChainComplexFunctor, singularChainComplexMap, ιSingularChainComplex,
     SSet.chainComplexFunctor]
 
-/-- If `X : TopCat.{u}`, then the `0`-simplices of the simplicial set
+/-- If `X : TopCat`, then the `0`-simplices of the simplicial set
 `toSSet.obj X` identify to `X`. -/
 noncomputable def toSSetObj₀Equiv (X : TopCat.{w}) : (toSSet.obj X) _⦋0⦌ ≃ X :=
   (TopCat.toSSetObjEquiv _ _).trans

@@ -75,7 +75,7 @@ end AlgebraicTopology
 
 namespace TopCat
 
-variable (X : TopCat.{w}) {R : C}
+variable (X Y : TopCat.{w}) (f : X ⟶ Y) {R : C}
 
 /-- The subdivision endomorphism of the singular chain complex of a topological space `X`
 with coefficients in `R`. -/
@@ -94,6 +94,32 @@ noncomputable def singularChainComplexHomotopyIdSd :
     (.trans (.ofEq (by simp [singularChainComplexSd, singularChainComplexFunctorSd]))
       (Homotopy.nullHomotopy (fun n m ↦ (hSd' R n m).app X)
         (fun n m h ↦ by simp [hSd'_zero _ _ _ h])))
+
+private lemma singularChainComplexHomotopyIdSd_hom_eq_hSd' (n m : ℕ) :
+    (X.singularChainComplexHomotopyIdSd (R := R)).hom n m =
+      (singularChainComplexFunctor.hSd' R n m).app X := by
+  dsimp [singularChainComplexHomotopyIdSd, Homotopy.equivSubZero]
+  simp only [Homotopy.trans_hom, Homotopy.ofEq_hom, Pi.zero_apply, zero_add]
+  apply Homotopy.nullHomotopy_hom
+
+variable {X Y} in
+@[reassoc]
+lemma singularChainComplexHomotopyIdSd_hom_naturality (n m : ℕ) :
+    (singularChainComplexMap f R).f n ≫ Y.singularChainComplexHomotopyIdSd.hom n m =
+      X.singularChainComplexHomotopyIdSd.hom n m ≫ (singularChainComplexMap f R).f m := by
+  simp only [singularChainComplexHomotopyIdSd_hom_eq_hSd']
+  exact (singularChainComplexFunctor.hSd' R n m).naturality f
+
+variable {X Y} in
+@[reassoc]
+lemma ι_map_singularChainComplexHomotopyIdSd_hom
+    {n : ℕ} (x : toSSet.obj X _⦋n⦌) (m : ℕ) :
+    Y.ιSingularChainComplex (R := R) ((toSSet.map f).app _ x) ≫
+      Y.singularChainComplexHomotopyIdSd.hom n m =
+    X.ιSingularChainComplex x ≫ X.singularChainComplexHomotopyIdSd.hom n m ≫
+      (singularChainComplexMap f R).f m := by
+  simpa using X.ιSingularChainComplex (R := R) x ≫=
+    singularChainComplexHomotopyIdSd_hom_naturality f n m
 
 namespace toSSet
 

@@ -50,6 +50,19 @@ lemma mem_subcomplexOfSets_iff {n : ℕ} (s : toSSet.obj X _⦋n⦌) :
   · obtain ⟨f, rfl⟩ := (toSSetObjEquiv _ _).symm.surjective s
     exact ⟨(toSSetObjEquiv _ _).symm ⟨fun x ↦ ⟨f x, h (by simp)⟩, by fun_prop⟩, rfl⟩
 
+lemma mem_subcomplexOfSets_iff' {n : ℕ} (s : toSSet.obj X _⦋n⦌) :
+    s ∈ (subcomplexOfSets U).obj _ ↔
+      ∃ (i : ι) (t : toSSet.obj (of (U i)) _⦋n⦌),
+        (toSSet.map (ofHom ⟨Subtype.val, by fun_prop⟩)).app _ t = s := by
+  rw [mem_subcomplexOfSets_iff]
+  refine exists_congr (fun i ↦ ⟨fun h ↦ ?_, ?_⟩)
+  · obtain ⟨s, rfl⟩ := (toSSetObjEquiv _ _).symm.surjective s
+    exact ⟨(toSSetObjEquiv _ _).symm ⟨fun x ↦ ⟨s x, h (by simp)⟩, by fun_prop⟩, rfl⟩
+  · rintro ⟨t, rfl⟩
+    obtain ⟨t, rfl⟩ := (toSSetObjEquiv _ _).symm.surjective t
+    rintro _ ⟨x, rfl⟩
+    exact (t x).prop
+
 lemma sd_mem_subcomplexOfSets {n : ℕ} (s : toSSet.obj X _⦋n⦌)
     (hs : s ∈ (subcomplexOfSets U).obj _) (σ : Equiv.Perm (Fin (n + 1))) :
     sd s σ ∈ (subcomplexOfSets U).obj _ := by
@@ -299,9 +312,24 @@ lemma ι_singularChainComplexSdIter_π_eq_zero
     ((hU.sdIterIsSmall_m x).of_le hk σ)]
   rw [smul_zero]
 
+-- to be moved, as it does not depend on `hU`
 variable (U) in
 omit hU in
+set_option backward.isDefEq.respectTransparency false in -- necessary for `reassoc`
+@[reassoc (attr := simp)]
+lemma map_subtypeVal_chainComplexπ (i : ι) (n : ℕ) :
+    (singularChainComplexMap (ofHom (X := U i) (Y := X)
+      ⟨Subtype.val, by fun_prop⟩) R).f n ≫
+    ((sSetPairOfSets U).chainComplexπ R).f n = 0 :=
+  singularChainComplexX_hom_ext (fun x ↦ by
+    simp only [ι_SingularChainComplexMap_assoc, comp_zero]
+    apply SSetPair.ιChainComplex_π_f_eq_zero_of_subcomplex
+    rw [toSSet.mem_subcomplexOfSets_iff']
+    exact ⟨i, _, rfl⟩)
+
 -- to be moved, as it does not depend on `hU`
+variable (U) in
+omit hU in
 set_option backward.isDefEq.respectTransparency false in -- necessary for `reassoc`
 @[reassoc]
 lemma ι_singularChainComplexHomotopyIdSd_hom_π_eq_zero
@@ -309,10 +337,9 @@ lemma ι_singularChainComplexHomotopyIdSd_hom_π_eq_zero
     X.ιSingularChainComplex x ≫
       X.singularChainComplexHomotopyIdSd.hom n (n + 1) ≫
         ((sSetPairOfSets U).chainComplexπ R).f (n + 1) = 0 := by
-  rw [toSSet.mem_subcomplexOfSets_iff] at hx
-  obtain ⟨i, hi⟩ := hx
-  -- use the naturality of `singularChainComplexHomotopyIdSd` w.r.t. `U i ⟶ X`
-  sorry
+  rw [toSSet.mem_subcomplexOfSets_iff'] at hx
+  obtain ⟨i, f, rfl⟩ := hx
+  simp [ι_map_singularChainComplexHomotopyIdSd_hom_assoc]
 
 set_option backward.isDefEq.respectTransparency false in -- necessary for `reassoc`
 @[reassoc]
