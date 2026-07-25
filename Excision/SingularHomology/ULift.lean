@@ -21,6 +21,8 @@ open CategoryTheory Limits Simplicial
 
 namespace TopCat
 
+/-- The bijection between the singular simplices of `uliftFunctor.{v}.obj X` and
+the singular simplices of `X`. -/
 noncomputable def toSSetULiftEquiv {X : TopCat.{u}} {n : ℕ} :
     toSSet.obj (uliftFunctor.{v}.obj X) _⦋n⦌ ≃ toSSet.obj X _⦋n⦌ :=
   (TopCat.toSSetObjEquiv ..).trans
