@@ -5,6 +5,7 @@ Authors: Joël Riou
 -/
 module
 
+public import Excision.Fin.Prod
 public import Excision.ConvexSpace.Diameter
 public import Excision.SimplicialSet.Homology
 public import Excision.SimplicialSet.RelativeHomology
@@ -19,20 +20,6 @@ public import Excision.Topology.LebesgueNumber
 universe w
 
 @[expose] public section
-
--- to be moved
-@[to_additive]
-lemma Fin.prod_univ_eq_prod_of_le
-    {α : Type*} [CommMonoid α] {n : ℕ} (f : Fin n → α) (k : ℕ) (hk : k ≤ n) :
-    ∏ i, f i = (∏ (i : Fin k), f (i.castLE hk)) *
-      ∏ (i : Fin n) with k ≤ i.val, f i := by
-  let s : Finset (Fin n) := { i | k ≤ i.val }
-  have : sᶜ = ({ i | i.val < k } : Finset (Fin n)) := by aesop
-  rw [← s.prod_compl_mul_prod, this]
-  congr 1
-  apply Finset.prod_bij' (fun i hi ↦ ⟨i.val, by simpa using hi⟩)
-    (fun i hi ↦ i.castLE hk)
-  all_goals simp
 
 open AlgebraicTopology CategoryTheory Limits HomologicalComplex Simplicial Opposite
 

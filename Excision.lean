@@ -6,6 +6,7 @@ public import Excision.ConvexSpace.Diameter
 public import Excision.ConvexSpace.StdSimplex
 public import Excision.ConvexSpace.ToSSet
 public import Excision.ConvexSpace.Top
+public import Excision.Fin.Prod
 public import Excision.Fin.Vec
 public import Excision.Finsupp.Basic
 public import Excision.HomologicalComplex.NullHomotopy
