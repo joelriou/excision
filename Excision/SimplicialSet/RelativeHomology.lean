@@ -18,12 +18,15 @@ universe w
 
 @[expose] public section
 
-open CategoryTheory Limits
+open CategoryTheory Limits Simplicial
 
 namespace SSetPair
 
 variable {C : Type*} [Category* C] [Preadditive C] [HasCoproducts.{w} C]
-  (X : SSetPair.{w})
+
+section
+
+variable (X : SSetPair.{w})
 
 /-- If `X : SSetPair` and `n : ℕ`, this is the kernel fork with point `(X.left.chainComplex R).X n`
 for the map `(X.chainComplexπ R).f n : (X.right.chainComplex R).X n ⟶ (X.chainComplex R).X n`. -/
@@ -57,5 +60,25 @@ noncomputable def isLimitKernelForkChainComplex (R : C) :
   HomologicalComplex.isLimitOfEval _ _
     (fun n ↦ (KernelFork.isLimitMapConeEquiv _ _).2
       (X.isLimitKernelForkChainComplexX R n))
+
+end
+
+@[reassoc (attr := simp)]
+lemma ιChainComplex_π_f_eq_zero
+    (X : SSetPair.{w}) (R : C) {n : ℕ} (x : X.left _⦋n⦌) :
+    dsimp% X.right.ιChainComplex (X.hom.app _ x) ≫ (X.chainComplexπ R).f n = 0 := by
+  simpa only [comp_zero, SSet.ι_chainComplexMap_f_assoc] using
+    X.left.ιChainComplex x ≫= X.chainComplex_condition_f R n
+
+lemma ιChainComplex_π_f_eq_zero_of_mem_range
+    (X : SSetPair.{w}) (R : C) {n : ℕ} (x : X.right _⦋n⦌) (hx : x ∈ Set.range (X.hom.app _)) :
+    X.right.ιChainComplex x ≫ (X.chainComplexπ R).f n = 0 := by
+  obtain ⟨x, rfl⟩ := hx
+  rw [X.ιChainComplex_π_f_eq_zero]
+
+lemma ιChainComplex_π_f_eq_zero_of_subcomplex {X : SSet.{w}} (A : X.Subcomplex) (R : C) {n : ℕ}
+    (x : X _⦋n⦌) (hx : x ∈ A.obj _) :
+    X.ιChainComplex x ≫ (A.pair.chainComplexπ R).f n = 0 :=
+  A.pair.ιChainComplex_π_f_eq_zero_of_mem_range _ _ ⟨⟨x, hx⟩, rfl⟩
 
 end SSetPair

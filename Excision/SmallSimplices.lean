@@ -264,6 +264,20 @@ lemma chainComplexMap_ι_ρ' (R : C) :
   ext n ⟨x, hx⟩
   simpa using! hU.ι_ρ'_f R x hx
 
+set_option backward.isDefEq.respectTransparency false in
+@[reassoc]
+lemma ι_singularChainComplexSdIter_π_eq_zero
+    (R : C) {n : ℕ} (x : (toSSet.obj X) _⦋n⦌) (k : ℕ) (hk : hU.m x ≤ k) :
+    X.ιSingularChainComplex x ≫ (X.singularChainComplexSdIter k).f n ≫
+      ((sSetPairOfSets U).chainComplexπ R).f n = 0 := by
+  simp only [ι_singularChainComplexSdIter_f_assoc,
+    Preadditive.sum_comp, Linear.units_smul_comp]
+  rw [Finset.sum_eq_zero]
+  intro σ _
+  erw [SSetPair.ιChainComplex_π_f_eq_zero_of_subcomplex _ _ _
+    ((hU.sdIterIsSmall_m x).of_le hk σ)]
+  rw [smul_zero]
+
 set_option backward.isDefEq.respectTransparency false in -- necessary for `reassoc`
 @[reassoc (attr := simp)]
 lemma ρ'_chainComplexπ (R : C) :
