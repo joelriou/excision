@@ -88,7 +88,7 @@ set_option backward.isDefEq.respectTransparency false in
 `X.singularChainComplexSd` of the singular chain complex of a topological
 space `X` with coefficients in `R`. -/
 noncomputable def singularChainComplexHomotopyIdSd :
-    _root_.Homotopy (𝟙 _) (X.singularChainComplexSd (R := R)) :=
+    _root_.Homotopy (𝟙 (X.singularChainComplex R)) X.singularChainComplexSd :=
   Homotopy.equivSubZero.symm
     (.trans (.ofEq (by simp [singularChainComplexSd, singularChainComplexFunctorSd]))
       (Homotopy.nullHomotopy (fun n m ↦ (hSd' R n m).app X)
@@ -242,5 +242,25 @@ lemma ι_singularChainComplexSdIter_f {n : ℕ} (s : (toSSet.obj X) _⦋n⦌) (k
     rw [mul_comm]
     simp [α, Fin.prod_univ_succ]
     rfl
+
+/-- The homotopy from the identity to the `k`th iteration
+`X.singularChainComplexSdIter` of subdivision endomorphism of the singular
+chain complex of a topological space `X` with coefficients in `R`. -/
+noncomputable def singularChainComplexHomotopyIdSdIter (k : ℕ) :
+    _root_.Homotopy (𝟙 (X.singularChainComplex R)) (X.singularChainComplexSdIter k) :=
+  match k with
+  | .zero => .ofEq (by simp)
+  | .succ k => (singularChainComplexHomotopyIdSdIter k).trans
+    ((Homotopy.ofEq (by simp)).trans
+      (((Homotopy.refl (X.singularChainComplexSdIter k)).comp
+        X.singularChainComplexHomotopyIdSd).trans (.ofEq (by simp))))
+
+lemma singularChainComplexHomotopyIdSdIter_hom (k n m : ℕ) :
+    (X.singularChainComplexHomotopyIdSdIter (R := R) k).hom n m =
+      ∑ (i : Fin k), (X.singularChainComplexSdIter i.val).f n ≫
+          X.singularChainComplexHomotopyIdSd.hom n m := by
+  induction k with
+  | zero => simp [singularChainComplexHomotopyIdSdIter]
+  | succ k hk => simp [singularChainComplexHomotopyIdSdIter, hk, Fin.sum_univ_castSucc]
 
 end TopCat
