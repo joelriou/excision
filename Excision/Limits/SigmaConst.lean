@@ -86,9 +86,13 @@ variable {α β : Type*} (f : α → β) (hf : Function.Injective f)
   [HasCoproduct (fun (_ : α) ↦ R)] [HasCoproduct (fun (_ : β) ↦ R)]
   [HasCoproduct (fun (_ : ((Set.range f)ᶜ : Set _)) ↦ R)]
 
+/-- The short complex corresponding to the colimit cofork
+`sigmaConstCokernelCofork R f` for `f : α → β`. -/
 noncomputable abbrev sigmaConstCokernelShortComplex : ShortComplex C :=
     .mk _ _ (sigmaConstCokernelCofork R f).condition
 
+/-- When `f : α → β` is injective, the short complex
+`sigmaConstCokernelShortComplex R f` admits a splitting. -/
 noncomputable def splittingSigmaConstCokernelShortComplex :
     (sigmaConstCokernelShortComplex R f).Splitting := by
   classical
@@ -116,6 +120,9 @@ noncomputable def splittingSigmaConstCokernelShortComplex :
           Sigma.ι_desc_assoc, dif_pos (by simpa using hb)]
         simp }
 
+/-- Let `f : α → β` be an injective map and `R : C` an object in a category
+with suitable coproducts. Then, the map `∐ fun (a : α) ↦ R) ⟶ ∐ fun (b : β) ↦ R`
+is the kernel of the projection to its cokernel. -/
 @[no_expose]
 noncomputable def isLimitKernelForkOfIsColimitCokernelCoforkSigmaConst
     [HasZeroObject C]
@@ -138,6 +145,5 @@ noncomputable def isLimitKernelForkOfIsColimitCokernelCoforkSigmaConst
 end
 
 end Limits
-
 
 end CategoryTheory
