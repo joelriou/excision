@@ -304,10 +304,23 @@ lemma ι_singularChainComplexSdIter_π_eq_zero
   rw [smul_zero]
 
 set_option backward.isDefEq.respectTransparency false in -- necessary for `reassoc`
+@[reassoc]
+lemma ι_ρ'_f_π_f (R : C) {n : ℕ} (x : toSSet.obj X _⦋n⦌) :
+  X.ιSingularChainComplex x ≫ (hU.ρ' R).f n ≫ ((sSetPairOfSets U).chainComplexπ R).f n =
+    X.ιSingularChainComplex x ≫
+      (X.singularChainComplexSdIter (hU.m x)).f n ≫
+        ((sSetPairOfSets U).chainComplexπ R).f n := by
+  obtain _ | n := n
+  · simp
+  · sorry
+
+set_option backward.isDefEq.respectTransparency false in -- necessary for `reassoc`
 @[reassoc (attr := simp)]
 lemma ρ'_f_chainComplexπ_f (R : C) (n : ℕ) :
     (hU.ρ' R).f n ≫ ((sSetPairOfSets U).chainComplexπ R).f n = 0 := by
-  sorry
+  refine singularChainComplexX_hom_ext (fun x ↦ ?_)
+  rw [ι_ρ'_f_π_f, comp_zero,
+    hU.ι_singularChainComplexSdIter_π_eq_zero _ _ _ (by simp)]
 
 set_option backward.isDefEq.respectTransparency false in -- necessary for `reassoc`
 @[reassoc (attr := simp)]

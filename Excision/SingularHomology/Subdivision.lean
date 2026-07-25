@@ -113,6 +113,13 @@ lemma sd_toSSetObjEquiv_symm {n : ℕ} (s : C(stdSimplex ℝ (Fin (n + 1)), X))
         (s.comp ((ConvexSpace.AffineMap.id (StdSimplex ℝ (Fin (n + 1)))).sd σ).toContinuousMap) :=
   rfl
 
+@[simp]
+lemma sd_zero (s : (toSSet.obj X) _⦋0⦌)
+    (σ : Equiv.Perm (Fin 1)) :
+    sd s σ = s := by
+  obtain ⟨x, rfl⟩ := (TopCat.toSSetObj₀Equiv _).symm.surjective s
+  rfl
+
 lemma range_toSSetObjEquiv_sd_subset
     {n : ℕ} (s : (toSSet.obj X) _⦋n⦌) (σ : Equiv.Perm (Fin (n + 1))) :
     Set.range (toSSetObjEquiv _ _ (sd s σ)) ⊆ Set.range (toSSetObjEquiv _ _ s) := by
@@ -242,6 +249,18 @@ lemma ι_singularChainComplexSdIter_f {n : ℕ} (s : (toSSet.obj X) _⦋n⦌) (k
     rw [mul_comm]
     simp [α, Fin.prod_univ_succ]
     rfl
+
+@[simp]
+lemma singularChainComplexSd_f_zero :
+    (singularChainComplexSd X (R := R)).f 0 = 𝟙 _ :=
+  singularChainComplexX_hom_ext (fun x ↦ by simp [ι_singularChainComplexSd_f])
+
+@[simp]
+lemma singularChainComplexSdIter_f_zero (k : ℕ) :
+    (singularChainComplexSdIter X (R := R) k).f 0 = 𝟙 _ := by
+  induction k with
+  | zero => simp
+  | succ k hk => simp [hk]
 
 /-- The homotopy from the identity to the `k`th iteration
 `X.singularChainComplexSdIter` of subdivision endomorphism of the singular
