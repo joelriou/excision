@@ -261,7 +261,7 @@ lemma singularChainComplexSdIter_succ (k : ℕ) :
 @[reassoc]
 lemma ι_univObj_singularChainComplexSd_f (n : ℕ) :
     ιSingularChainComplex _ (TopCat.toSSet.univObj n) ≫
-        (singularChainComplexSd _ (R := R)).f n =
+      (singularChainComplexSd _ (R := R)).f n =
     ∑ (σ : Equiv.Perm (Fin (n + 1))),
       σ.sign • ιSingularChainComplex _
         ((toSSetObjEquiv _ _).symm
