@@ -279,7 +279,7 @@ set_option backward.isDefEq.respectTransparency false in
 lemma ι_singularChainComplexSd_f {n : ℕ} (s : (toSSet.obj X) _⦋n⦌) :
     ιSingularChainComplex _ s ≫ (singularChainComplexSd X (R := R)).f n =
       ∑ (σ : Equiv.Perm (Fin (n + 1))),
-        σ.sign • ιSingularChainComplex _ (toSSet.sd s σ) := by
+        σ.sign • X.ιSingularChainComplex (toSSet.sd s σ) := by
   obtain ⟨f, rfl⟩ := toSSet.exists_map_app_univObj_eq s
   rw [ι_map_app_singularChainComplexSd_f,
     ι_univObj_singularChainComplexSd_f_assoc, Preadditive.sum_comp]
