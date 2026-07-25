@@ -20,7 +20,7 @@ universe w
 
 @[expose] public section
 
-open AlgebraicTopology CategoryTheory Limits HomologicalComplex Simplicial
+open AlgebraicTopology CategoryTheory Limits HomologicalComplex Simplicial Opposite
 
 namespace TopCat
 
@@ -75,6 +75,24 @@ structure SmallSimplicesCondition : Prop where
 namespace SmallSimplicesCondition
 
 variable (hU : SmallSimplicesCondition U)
+
+include hU in
+protected lemma iUnion : ⋃ (i : ι), U i = Set.univ := by
+  rw [← Set.univ_subset_iff, ← hU.iUnion_interior]
+  exact Set.iUnion_subset (fun i ↦ interior_subset.trans (Set.subset_iUnion _ _))
+
+include hU in
+lemma subcomplexOfSets_obj_zero :
+    (toSSet.subcomplexOfSets U).obj (op ⦋0⦌) = Set.univ := by
+  ext x
+  obtain ⟨x, rfl⟩ := X.toSSetObj₀Equiv.symm.surjective x
+  have := Set.mem_univ x
+  rw [← hU.iUnion, Set.mem_iUnion] at this
+  obtain ⟨i, hi⟩ := this
+  simp only [toSSet.mem_subcomplexOfSets_iff, Set.mem_univ, iff_true]
+  refine ⟨i, ?_⟩
+  rintro _ ⟨s, rfl⟩
+  exact hi
 
 variable (U) in
 /-- Let `U : ι → Set X` be a family of subsets of a topological sapce `X`.
@@ -255,6 +273,13 @@ lemma ι_ρ'_f (R : C) {n : ℕ} (x : (toSSet.obj X) _⦋n⦌)
     have := lt_of_lt_of_le hj (hU.m_δ_le _ _)
     simp [hx] at this
 
+@[simp]
+lemma ρ'_zero (R : C) :
+    (hU.ρ' R).f 0 = 𝟙 _ :=
+  singularChainComplexX_hom_ext (fun x ↦ by
+    rw [Category.comp_id, ι_ρ'_f]
+    simp [hU.subcomplexOfSets_obj_zero])
+
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma chainComplexMap_ι_ρ' (R : C) :
@@ -280,9 +305,15 @@ lemma ι_singularChainComplexSdIter_π_eq_zero
 
 set_option backward.isDefEq.respectTransparency false in -- necessary for `reassoc`
 @[reassoc (attr := simp)]
+lemma ρ'_f_chainComplexπ_f (R : C) (n : ℕ) :
+    (hU.ρ' R).f n ≫ ((sSetPairOfSets U).chainComplexπ R).f n = 0 := by
+  sorry
+
+set_option backward.isDefEq.respectTransparency false in -- necessary for `reassoc`
+@[reassoc (attr := simp)]
 lemma ρ'_chainComplexπ (R : C) :
     hU.ρ' R ≫ (sSetPairOfSets U).chainComplexπ R = 0 := by
-  sorry
+  cat_disch
 
 /-- Given a family `U : ι → Set X` of subsets of a topological space `X` which
 satisfies the condition `SmallSimplicesCondition U`, this is the retraction

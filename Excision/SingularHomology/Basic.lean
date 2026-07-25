@@ -35,6 +35,13 @@ noncomputable abbrev ιSingularChainComplex
     R ⟶ (X.singularChainComplex R).X n :=
   Sigma.ι (fun _ ↦ R) x
 
+lemma singularChainComplexX_hom_ext {X : TopCat.{w}} {R : C} {n : ℕ} {T : C}
+    {f g : (X.singularChainComplex R).X n ⟶ T}
+    (h : ∀ (x : (toSSet.obj X) _⦋n⦌),
+      X.ιSingularChainComplex x ≫ f = X.ιSingularChainComplex x ≫ g) :
+    f = g :=
+  Sigma.hom_ext _ _ h
+
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma ι_singularChainComplex_d
@@ -60,5 +67,16 @@ lemma ιSingularChainComplex_map
         Y.ιSingularChainComplex ((toSSet.map f).app _ x) := by
   simp [singularChainComplexFunctor, ιSingularChainComplex,
     SSet.chainComplexFunctor]
+
+/-- If `X : TopCat.{u}`, then the `0`-simplices of the simplicial set
+`toSSet.obj X` identify to `X`. -/
+noncomputable def toSSetObj₀Equiv (X : TopCat.{w}) : (toSSet.obj X) _⦋0⦌ ≃ X :=
+  (TopCat.toSSetObjEquiv _ _).trans
+    { toFun f := f (default : stdSimplex ℝ (Fin 1))
+      invFun x := .const _ x
+      left_inv f := by
+        ext (y : stdSimplex ℝ (Fin 1))
+        obtain rfl : y = default := by subsingleton
+        rfl }
 
 end TopCat
