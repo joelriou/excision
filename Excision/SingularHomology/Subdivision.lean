@@ -50,7 +50,7 @@ noncomputable def hSd' (R : C) (n m : ℕ) :
 @[simp]
 lemma hSd'_eq (R : C) (n : ℕ) : hSd'.{w} R n (n + 1) = hSd R n := by simp [hSd']
 
-lemma hSd'_zero (R : C) (n m : ℕ) (h : n + 1 ≠ m) : hSd' R n m = 0 := by grind [hSd']
+lemma hSd'_eq_zero (R : C) (n m : ℕ) (h : n + 1 ≠ m) : hSd' R n m = 0 := by grind [hSd']
 
 end singularChainComplexFunctor
 
@@ -93,7 +93,7 @@ noncomputable def singularChainComplexHomotopyIdSd :
   Homotopy.equivSubZero.symm
     (.trans (.ofEq (by simp [singularChainComplexSd, singularChainComplexFunctorSd]))
       (Homotopy.nullHomotopy (fun n m ↦ (hSd' R n m).app X)
-        (fun n m h ↦ by simp [hSd'_zero _ _ _ h])))
+        (fun n m h ↦ by simp [hSd'_eq_zero _ _ _ h])))
 
 private lemma singularChainComplexHomotopyIdSd_hom_eq_hSd' (n m : ℕ) :
     (X.singularChainComplexHomotopyIdSd (R := R)).hom n m =
