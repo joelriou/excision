@@ -59,6 +59,10 @@ lemma sd_mem_subcomplexOfSets {n : ℕ} (s : toSSet.obj X _⦋n⦌)
 end toSSet
 
 variable (U) in
+/-- Given a family of subsets `U : ι → Set X` of a topological space `X`,
+this is the pair of simplicial sets corresponding to the inclusion
+of the subcomplex `toSSet.subcomplexOfSets U` of `toSSet.obj X` consisting
+of simplices contained in some `U i`. -/
 noncomputable abbrev sSetPairOfSets : SSetPair.{w} :=
   SSetPair.of (toSSet.subcomplexOfSets U).ι
 
@@ -186,6 +190,11 @@ variable {C : Type*} [Category* C] [Preadditive C] [HasCoproducts.{w} C]
 
 include hU
 
+/-- Given a family `U : ι → Set X` of subsets of a topological space `X` which
+satisfies the condition `SmallSimplicesCondition U`, this is the data
+that is part of the homotopy involved in the definition of a retraction
+`ρ' : X.singularChainComplex R ⟶ (toSSet.subcomplexOfSets U).toSSet.chainComplex R`
+of the inclusion. -/
 noncomputable def hρ (R : C) (n : ℕ) :
     (X.singularChainComplex R).X n ⟶ (X.singularChainComplex R).X (n + 1) :=
   Limits.Sigma.desc (fun x ↦
@@ -201,6 +210,7 @@ lemma ι_hρ (R : C) {n : ℕ} (x : toSSet.obj X _⦋n⦌) :
           X.singularChainComplexHomotopyIdSd.hom _ _ :=
   Sigma.ι_desc ..
 
+@[inherit_doc hρ]
 noncomputable def hρ' (R : C) (n m : ℕ) :
     (X.singularChainComplex R).X n ⟶ (X.singularChainComplex R).X m :=
   if h : n + 1 = m then hU.hρ R n ≫ eqToHom (by simp [h]) else 0
@@ -210,11 +220,14 @@ lemma hρ'_eq (R : C) (n : ℕ) : hU.hρ' R n (n + 1) = hU.hρ R n := by simp [h
 
 lemma hρ'_zero (R : C) (n m : ℕ) (h : n + 1 ≠ m) : hU.hρ' R n m = 0 := by grind [hρ']
 
+/-- Auxiliary definition for
+`ρ : X.singularChainComplex R ⟶ (toSSet.subcomplexOfSets U).toSSet.chainComplex R`. -/
 noncomputable def ρ' (R : C) :
     X.singularChainComplex R ⟶ X.singularChainComplex R :=
   𝟙 _ - Homotopy.nullHomotopicMap (hU.hρ' R)
 
 set_option backward.isDefEq.respectTransparency false in
+/-- The morphism `ρ'` is homotopic to the identity. -/
 noncomputable def homotopyρ'Id (R : C) :
     _root_.Homotopy (hU.ρ' R) (𝟙 _) :=
   (Homotopy.equivSubZero.symm
@@ -257,6 +270,12 @@ lemma ρ'_chainComplexπ (R : C) :
     hU.ρ' R ≫ (sSetPairOfSets U).chainComplexπ R = 0 := by
   sorry
 
+/-- Given a family `U : ι → Set X` of subsets of a topological space `X` which
+satisfies the condition `SmallSimplicesCondition U`, this is the retraction
+`X.singularChainComplex R ⟶ (toSSet.subcomplexOfSets U).toSSet.chainComplex R`
+to the inclusion that is part of the definition of the homotopy equivalence
+`homotopyEquiv` (see below) between `(toSSet.subcomplexOfSets U).toSSet.chainComplex R`
+and the singular chain complex of `X`. -/
 @[no_expose]
 noncomputable def ρ (R : C) :
     X.singularChainComplex R ⟶
@@ -279,15 +298,21 @@ lemma ι_ρ (R : C) :
   simp [← cancel_mono (SSet.chainComplexMap (TopCat.toSSet.subcomplexOfSets U).ι R)]
 
 set_option backward.isDefEq.respectTransparency false in
+/-- Given a family `U : ι → Set X` of subsets of a topological space `X` which
+satisfies the condition `SmallSimplicesCondition U`, the inclusion of
+`(toSSet.subcomplexOfSets U).toSSet.chainComplex R` in the singular chain
+complex of `X` is an homotopy equivalence. -/
+@[simps]
 noncomputable def homotopyEquiv (R : C) :
     HomotopyEquiv
       ((toSSet.subcomplexOfSets U).toSSet.chainComplex R)
-      ((toSSet.obj X).chainComplex R) where
+      (X.singularChainComplex R) where
   hom := SSet.chainComplexMap (TopCat.toSSet.subcomplexOfSets U).ι R
   inv := hU.ρ R
   homotopyHomInvId := .ofEq (by simp)
   homotopyInvHomId := .trans (.ofEq (by simp)) (hU.homotopyρ'Id R)
 
+@[inherit_doc homotopyEquiv]
 lemma homotopyEquivalences (R : C) :
     homotopyEquivalences _ _
       (SSet.chainComplexMap (TopCat.toSSet.subcomplexOfSets U).ι R) :=
