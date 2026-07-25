@@ -20,6 +20,21 @@ universe w
 
 @[expose] public section
 
+-- to be moved
+@[to_additive]
+lemma Fin.prod_univ_eq_prod_of_le
+    {α : Type*} [CommMonoid α] {n : ℕ} (f : Fin n → α)
+    (k : ℕ) (hk : k ≤ n) :
+    ∏ i, f i = (∏ (i : Fin k), f (i.castLE hk)) *
+      ∏ (i : Fin n) with k ≤ i.val, f i := by
+  let s : Finset (Fin n) := { i | k ≤ i.val }
+  have : sᶜ = ({ i | i.val < k } : Finset (Fin n)) := by aesop
+  rw [← s.prod_compl_mul_prod, this]
+  congr 1
+  apply Finset.prod_bij' (fun i hi ↦ ⟨i.val, by simpa using hi⟩)
+    (fun i hi ↦ i.castLE hk)
+  all_goals simp
+
 open AlgebraicTopology CategoryTheory Limits HomologicalComplex Simplicial Opposite
 
 namespace TopCat
@@ -225,14 +240,6 @@ lemma ι_hρ {n : ℕ} (x : toSSet.obj X _⦋n⦌) :
         (X.singularChainComplexHomotopyIdSdIter (hU.m x)).hom n (n + 1) :=
   Sigma.ι_desc ..
 
---@[reassoc]
---lemma ι_hρ' {n : ℕ} (x : toSSet.obj X _⦋n⦌) :
---    X.ιSingularChainComplex x ≫ hU.hρ (R := R) n =
---      ∑ (i : Fin (hU.m x)),
---        X.ιSingularChainComplex x ≫ (X.singularChainComplexSdIter i.val).f n ≫
---          X.singularChainComplexHomotopyIdSd.hom _ _ :=
---  sorry--Sigma.ι_desc ..
-
 @[inherit_doc hρ]
 noncomputable def hρ' (n m : ℕ) :
     (X.singularChainComplex R).X n ⟶ (X.singularChainComplex R).X m :=
@@ -374,7 +381,8 @@ lemma ι_comp_sdIter_f_sub_ρ' {n : ℕ} (x : toSSet.obj X _⦋n + 1⦌) :
             Preadditive.comp_sum]
           dsimp [t]
         _ = - ∑ (j : Fin (hU.m x)) with hU.m y ≤ j.val, t j := by
-          sorry
+          rw [Fin.sum_univ_eq_sum_of_le _ _ hy']
+          abel
 
 set_option backward.isDefEq.respectTransparency false in -- necessary for `reassoc`
 @[reassoc]
