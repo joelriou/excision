@@ -9,6 +9,7 @@ public import Excision.ConvexSpace.AffineChains
 public import Excision.ConvexSpace.Top
 public import Excision.SingularHomology.NatTrans
 public import Excision.SingularHomology.ULift
+public import Excision.HomologicalComplex.NullHomotopy
 
 /-!
 # The subdivision endomorphism of the singular chain complex
