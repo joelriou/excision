@@ -20,7 +20,7 @@ universe w u
 
 @[expose] public section
 
-open CategoryTheory Limits
+open CategoryTheory Limits Simplicial
 
 namespace Convexity
 
@@ -28,7 +28,7 @@ variable {R : Type u} [PartialOrder R] [Semiring R] [IsStrictOrderedRing R]
 
 namespace ConvexSpace
 
-variable (Y : Type w) [ConvexSpace R Y]
+variable (Y Z : Type w) [ConvexSpace R Y] [ConvexSpace R Z]
 
 variable {Y} in
 /-- The cone of an affine map from the standard simplex. -/
@@ -75,6 +75,12 @@ lemma AffineMap.cone_mk₂ (y y₀ y₁ : Y) :
   ext i
   fin_cases i <;> aesop
 
+lemma AffineMap.comp_cone {n : ℕ} (φ : ConvexSpace.AffineMap R Y Z)
+    (ψ : ConvexSpace.AffineMap R (StdSimplex R (Fin (n + 1))) Y) (y : Y) :
+    (φ.comp ψ).cone (φ y) = φ.comp (ψ.cone y) := by
+  ext i
+  obtain rfl | ⟨i, rfl⟩ := i.eq_zero_or_eq_succ <;> simp
+
 variable (R) in
 /-- Given a convex space `Y`, this is the simplicial set whose `n`-simplices are
 affine maps from the `n`-dimensional standard simplex to `Y`. -/
@@ -86,6 +92,14 @@ noncomputable abbrev toSSet : SSet where
     dsimp
     rw [← StdSimplex.map_comp]
     rfl
+
+variable {Y Z} in
+/-- The morphism `toSSet R Y ⟶ toSSet R Z` of simplicial sets of
+affine simplices that is induced by an affine map from `Y` to `Z`. -/
+@[simps]
+noncomputable def AffineMap.toSSetMap (φ : ConvexSpace.AffineMap R Y Z) :
+    toSSet R Y ⟶ toSSet R Z where
+  app n := ↾fun g ↦ φ.comp g
 
 section
 
@@ -163,7 +177,7 @@ noncomputable def toSSet.extraDegeneracy (y : Y) :
   s_comp_δ _ _ := by ext _ j; obtain rfl | ⟨j, rfl⟩ := j.eq_zero_or_eq_succ <;> simp
   s_comp_σ _ _ := by ext _ j; obtain rfl | ⟨j, rfl⟩ := j.eq_zero_or_eq_succ <;> simp
 
-variable {Y} {C : Type*} [Category* C] [Preadditive C] [HasCoproducts.{max u w} C]
+variable {Y Z} {C : Type*} [Category* C] [Preadditive C] [HasCoproducts.{max u w} C]
 
 /-- Given a convex space `Y`, `y : Y` and `n : ℕ`, this is the morphism from
 affine `n`-chains (with coefficients in `M`) to affine `n + 1`-chains which
@@ -206,6 +220,14 @@ lemma toSSet.ι_cone
     SSet.ιChainComplex _ s ≫ toSSet.cone (R := R) y M n =
       SSet.ιChainComplex _ (s.cone y) := by
   simp [cone, SimplicialObject.Augmented.ExtraDegeneracy.map, SSet.ιChainComplex]
+
+@[reassoc]
+lemma AffineMap.cone_naturality
+    (φ : ConvexSpace.AffineMap R Y Z) (y : Y) (M : C) (n : ℕ) :
+    (SSet.chainComplexMap φ.toSSetMap M).f n ≫ toSSet.cone (φ y) M n =
+    toSSet.cone y M n ≫ (SSet.chainComplexMap φ.toSSetMap M).f (n + 1) := by
+  ext x
+  simp [AffineMap.comp_cone]
 
 end ConvexSpace
 

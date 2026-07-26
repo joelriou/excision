@@ -23,7 +23,8 @@ open CategoryTheory Limits
 namespace Convexity
 
 variable {C : Type*} [Category C] [Preadditive C] [HasCoproducts.{w} C]
-  (Y : Type w) [ConvexSpace ℝ Y] (R : C)
+  (Y : Type w) [ConvexSpace ℝ Y] {Z : Type w} [ConvexSpace ℝ Z]
+  (φ : ConvexSpace.AffineMap ℝ Y Z) (R : C)
 
 namespace ConvexSpace.toSSet
 
@@ -51,10 +52,25 @@ variable {Y} in
 lemma ι_hSd_succ {n : ℕ}
     (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin (n + 2))) Y) :
     SSet.ιChainComplex _ s ≫ hSd Y R (n + 1) =
-      (SSet.ιChainComplex _ s - SSet.ιChainComplex _ s ≫
+      (SSet.ιChainComplex (toSSet ℝ Y) s - SSet.ιChainComplex _ s ≫
         ((toSSet ℝ Y).chainComplex R).d (n + 1) n ≫ hSd Y R n) ≫
           toSSet.cone s.isobarycenter _ (n + 1) :=
   Sigma.ι_desc ..
+
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
+@[reassoc]
+lemma hSd_naturality (n : ℕ) :
+    (SSet.chainComplexMap φ.toSSetMap R).f n ≫ hSd Z R n =
+    hSd Y R n ≫ (SSet.chainComplexMap φ.toSSetMap R).f (n + 1) := by
+  induction n with
+  | zero => simp
+  | succ n hn =>
+    ext x
+    simp only [ι_hSd_succ_assoc, ← AffineMap.cone_naturality, Preadditive.sub_comp,
+      Category.assoc, ← reassoc_of% hn, SSet.ι_chainComplexMap_f_assoc,
+      ι_hSd_succ, AffineMap.toSSetMap_app, ← (SSet.chainComplexMap φ.toSSetMap R).comm_assoc]
+    dsimp
 
 @[inherit_doc hSd]
 noncomputable def hSd' (n m : ℕ) :
