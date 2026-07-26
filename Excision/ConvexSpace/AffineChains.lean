@@ -18,7 +18,7 @@ public import Excision.Perm.EquivSucc
 
 @[expose] public section
 
-open CategoryTheory Limits
+open CategoryTheory Limits Simplicial
 
 namespace Convexity
 
@@ -59,6 +59,7 @@ lemma ι_hSd_succ {n : ℕ}
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
+variable {Y} in
 @[reassoc]
 lemma hSd_naturality (n : ℕ) :
     (SSet.chainComplexMap φ.toSSetMap R).f n ≫ hSd Z R n =
@@ -100,6 +101,25 @@ lemma homotopyIdSd_hom_eq_hSd' (n m : ℕ) :
   simp only [homotopyIdSd, Homotopy.equivSubZero, Equiv.symm_mk, Equiv.coe_fn_mk,
     Homotopy.trans_hom, Homotopy.ofEq_hom, Pi.zero_apply, zero_add]
   apply Homotopy.nullHomotopy_hom
+
+variable {Y} in
+@[reassoc]
+lemma homotopyIdSd_hom_naturality (n m : ℕ) :
+    (SSet.chainComplexMap φ.toSSetMap R).f n ≫ (homotopyIdSd Z R).hom n m =
+    (homotopyIdSd Y R).hom n m ≫ (SSet.chainComplexMap φ.toSSetMap R).f m := by
+  by_cases hm : n + 1 = m
+  · subst hm
+    simp only [homotopyIdSd_hom_eq_hSd', hSd'_eq, hSd_naturality]
+  · rw [Homotopy.zero _ _ _ (by simpa), Homotopy.zero _ _ _ (by simpa),
+      comp_zero, zero_comp]
+
+variable {Y} in
+@[reassoc]
+lemma ι_toSSetMap_app_homotopyIdSd_hom {n : ℕ} (x : toSSet ℝ Y _⦋n⦌) (m : ℕ) :
+    SSet.ιChainComplex _ (φ.toSSetMap.app _ x) ≫ (homotopyIdSd Z R).hom n m =
+    SSet.ιChainComplex _ x ≫ (homotopyIdSd Y R).hom n m ≫
+      (SSet.chainComplexMap φ.toSSetMap R).f m := by
+  simpa using SSet.ιChainComplex _ x ≫= homotopyIdSd_hom_naturality φ R n m
 
 @[simp]
 lemma sd_f_0 : (sd Y R).f 0 = 𝟙 _ := by

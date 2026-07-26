@@ -15,6 +15,14 @@ public import Excision.ConvexSpace.ToSSet
 
 @[expose] public section
 
+open CategoryTheory Opposite Simplicial
+
+lemma TopCat.toSSet_map_app_toSSetObjEquiv_symm
+    {Y Z : TopCat.{w}} (f : Y ⟶ Z) {n : ℕ}
+    (x : C(stdSimplex ℝ (Fin (n + 1)), Y)) :
+    (toSSet.map f).app (op ⦋n⦌) ((toSSetObjEquiv _ _).symm x) =
+    (toSSetObjEquiv _ _).symm (f.hom.comp x) := rfl
+
 namespace stdSimplex
 
 @[fun_prop]
@@ -35,8 +43,6 @@ lemma map_id {ι : Type*} [Fintype ι] :
   aesop
 
 end stdSimplex
-
-open CategoryTheory
 
 namespace Convexity
 
@@ -193,6 +199,29 @@ noncomputable def StdSimplex.toSSetNatTrans (ι : Type*) [Fintype ι] :
     dsimp
     rw [StdSimplex.affineMap_toContinuousMap]
     rfl
+
+@[simp]
+lemma StdSimplex.toSSetNatTrans_app_apply {n : ℕ} {ι : Type*} [Fintype ι]
+    (x : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin (n + 1))) (StdSimplex ℝ ι)) :
+    (StdSimplex.toSSetNatTrans ι).app (op ⦋n⦌) x =
+      (TopCat.toSSetObjEquiv _ _).symm x.toContinuousMap := rfl
+
+set_option backward.isDefEq.respectTransparency false in
+set_option backward.defeqAttrib.useBackward true in
+@[reassoc]
+lemma StdSimplex.toSSetNatTrans_naturality {n m : ℕ} (f : ⦋n⦌ ⟶ ⦋m⦌) :
+    (StdSimplex.affineMap f).toSSetMap ≫ StdSimplex.toSSetNatTrans _ =
+    StdSimplex.toSSetNatTrans _ ≫
+      TopCat.toSSet.map (SimplexCategory.toTop₀.map f) := by
+  ext ⟨⟨k⟩⟩ g
+  dsimp at g ⊢
+  rw [StdSimplex.toSSetNatTrans_app_apply,
+    StdSimplex.toSSetNatTrans_app_apply,
+    TopCat.toSSet_map_app_toSSetObjEquiv_symm]
+  congr 1
+  rw [ConvexSpace.AffineMap.toContinuousMap_comp]
+  congr 1
+  exact DFunLike.ext' (StdSimplex.affineMap_toContinuousMap _)
 
 end Convexity
 

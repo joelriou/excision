@@ -28,9 +28,8 @@ namespace TopCat
 open ConvexSpace
 
 -- to be moved
-@[simp]
 lemma toSSetULiftEquiv_symm_toSSetNatTrans_affineMapId (n : ℕ) :
-    toSSetULiftEquiv.symm ((StdSimplex.toSSetNatTrans _).app _  (.id _)) =
+    dsimp% toSSetULiftEquiv.symm ((StdSimplex.toSSetNatTrans _).app _  (.id _)) =
     toSSet.univObj.{w} n := by
   simp [StdSimplex.toSSetNatTrans]
   rfl
@@ -322,7 +321,20 @@ lemma ι_univObj_singularChainComplexSd_f (n : ℕ) :
           ext i
           congr 1
           erw [toSSet.δ_univObj, ι_map_app_singularChainComplexHomotopyIdSd_hom]
-          sorry
+          rw [ι_univObj_singularChainComplexHomotopyIdSd_hom_assoc,
+            SimplicialObject.δ_def, ConvexSpace.toSSet_map]
+          dsimp only [TypeCat.Fun.coe_mk, TypeCat.hom_ofHom, Quiver.Hom.unop_op]
+          rw [ConvexSpace.AffineMap.id_comp,
+            dsimp% reassoc_of% ConvexSpace.toSSet.ι_toSSetMap_app_homotopyIdSd_hom
+            (φ := StdSimplex.affineMap (R := ℝ) (SimplexCategory.δ i)) (x := .id _) (m := n + 1)]
+          congr 2
+          simp only [← HomologicalComplex.comp_f]
+          congr 1
+          erw [← NatTrans.naturality]
+          simp only [← Category.assoc]
+          congr 1
+          erw [← Functor.map_comp, ← Functor.map_comp]
+          rw [StdSimplex.toSSetNatTrans_naturality]
         · erw [ι_univObj_singularChainComplexHomotopyIdSd_hom_assoc,
             ← HomologicalComplex.Hom.comm_assoc, HomologicalComplex.Hom.comm]
           rfl

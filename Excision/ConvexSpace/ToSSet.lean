@@ -84,6 +84,7 @@ lemma AffineMap.comp_cone {n : ℕ} (φ : ConvexSpace.AffineMap R Y Z)
 variable (R) in
 /-- Given a convex space `Y`, this is the simplicial set whose `n`-simplices are
 affine maps from the `n`-dimensional standard simplex to `Y`. -/
+@[simps -isSimp]
 noncomputable abbrev toSSet : SSet where
   obj n := ConvexSpace.AffineMap R (StdSimplex R (Fin (n.unop.len + 1))) Y
   map f := ↾fun g ↦ g.comp (StdSimplex.affineMap f.unop)
