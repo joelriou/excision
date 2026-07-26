@@ -58,7 +58,12 @@ lemma ι_singularChainComplex_d
 
 /-- The universal element in `(toSSet.obj (SimplexCategory.toTop ^⦋n⦌)) _⦋n⦌`. -/
 noncomputable def toSSet.univObj (n : ℕ) :
-    (toSSet.obj (SimplexCategory.toTop ^⦋n⦌)) _⦋n⦌ := ⟨𝟙 _⟩
+    (toSSet.{w}.obj (SimplexCategory.toTop ^⦋n⦌)) _⦋n⦌ := ⟨𝟙 _⟩
+
+lemma toSSet.δ_univObj {n : ℕ} (i : Fin (n + 2)) :
+    (toSSet.{w}.obj (SimplexCategory.toTop ^⦋n + 1⦌)).δ i (univObj.{w} (n + 1)) =
+      (toSSet.map (SimplexCategory.toTop.{w}.map (SimplexCategory.δ i))).app _ (univObj.{w} n) :=
+  rfl
 
 lemma toSSet.exists_map_app_univObj_eq
     {X : TopCat.{w}} {n : ℕ} (s : toSSet.obj X _⦋n⦌) :

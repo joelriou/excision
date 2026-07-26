@@ -321,6 +321,7 @@ lemma ι_univObj_singularChainComplexSd_f (n : ℕ) :
         · congr 1
           ext i
           congr 1
+          erw [toSSet.δ_univObj, ι_map_app_singularChainComplexHomotopyIdSd_hom]
           sorry
         · erw [ι_univObj_singularChainComplexHomotopyIdSd_hom_assoc,
             ← HomologicalComplex.Hom.comm_assoc, HomologicalComplex.Hom.comm]
