@@ -22,7 +22,6 @@ lemma Finsupp.sum_finsetSum
     (∑ i ∈ s, f i).sum g = ∑ i ∈ s, (f i).sum g :=
   map_sum (liftAddHom (fun a ↦ { toFun := g a, map_zero' := h₁ a, map_add' := h₂ a })) f s
 
-
 lemma Finsupp.rec' {α M : Type*} [AddCommMonoid M]
     {motive : (α →₀ M) → Prop}
     (sum : ∀ (n : ℕ) (a : Fin n → α) (m : Fin n → M) (_ : Function.Injective a)
