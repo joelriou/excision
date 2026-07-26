@@ -23,6 +23,20 @@ universe w
 open CategoryTheory Limits AlgebraicTopology HomologicalComplex Convexity Simplicial
   Opposite
 
+namespace TopCat
+
+open ConvexSpace
+
+-- to be moved
+@[simp]
+lemma toSSetULiftEquiv_symm_toSSetNatTrans_affineMapId (n : ℕ) :
+    toSSetULiftEquiv.symm ((StdSimplex.toSSetNatTrans _).app _  (.id _)) =
+    toSSet.univObj.{w} n := by
+  simp [StdSimplex.toSSetNatTrans]
+  rfl
+
+end TopCat
+
 variable {C : Type*} [Category* C] [Preadditive C] [HasCoproducts.{w} C]
 
 namespace AlgebraicTopology
@@ -132,7 +146,7 @@ lemma singularChainComplexHomotopyIdSd_hom_naturality (n m : ℕ) :
 
 variable {X Y} in
 @[reassoc]
-lemma ι_map_singularChainComplexHomotopyIdSd_hom
+lemma ι_map_app_singularChainComplexHomotopyIdSd_hom
     {n : ℕ} (x : toSSet.obj X _⦋n⦌) (m : ℕ) :
     Y.ιSingularChainComplex (R := R) ((toSSet.map f).app _ x) ≫
       Y.singularChainComplexHomotopyIdSd.hom n m =
@@ -140,6 +154,21 @@ lemma ι_map_singularChainComplexHomotopyIdSd_hom
       (singularChainComplexMap f R).f m := by
   simpa using X.ιSingularChainComplex (R := R) x ≫=
     singularChainComplexHomotopyIdSd_hom_naturality f n m
+
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
+open singularChainComplexFunctor in
+@[reassoc]
+lemma ι_univObj_singularChainComplexHomotopyIdSd_hom (n : ℕ) :
+    haveI : HasCoproducts.{0} C := hasCoproducts_shrink
+    ιSingularChainComplex (SimplexCategory.toTop.{w} ^⦋n⦌) (R := R) (toSSet.univObj.{w} n) ≫
+      (singularChainComplexHomotopyIdSd _).hom n (n + 1) =
+    SSet.ιChainComplex (ConvexSpace.toSSet ℝ _) (.id _) ≫
+      (ConvexSpace.toSSet.homotopyIdSd (StdSimplex ℝ (Fin (n + 1))) R).hom n (n + 1) ≫
+      (SSet.chainComplexMap (StdSimplex.toSSetNatTrans (Fin (n + 1))) R).f (n + 1) ≫
+      ((singularChainComplexFunctorULiftIso.{w}.inv.app R).app _).f (n + 1) := by
+  simp [singularChainComplexHomotopyIdSd_hom_eq_hSd', hSd'_eq, hSd,
+    ι_natTransMk, toSSet.univObj, ConvexSpace.toSSet.homotopyIdSd_hom_eq_hSd']
 
 namespace toSSet
 
@@ -276,7 +305,26 @@ lemma ι_univObj_singularChainComplexSd_f (n : ℕ) :
     convert! ConvexSpace.toSSet.ι_sd_f_eq_sum R (n := n + 1) (s := .id _) =≫
       ((SSet.chainComplexMap (StdSimplex.toSSetNatTrans _) R).f (n + 1) ≫
       (TopCat.singularChainComplexULiftIso.{w} _ R).inv.f (n + 1)) using 1
-    · sorry
+    · rw [(singularChainComplexHomotopyIdSd _).eq_sub_nullHomotopicMap,
+        (ConvexSpace.toSSet.homotopyIdSd ..).eq_sub_nullHomotopicMap]
+      dsimp
+      simp only [Preadditive.comp_sub, Category.comp_id, Preadditive.sub_comp,
+        SSet.ι_chainComplexMap_f_assoc, Category.assoc]
+      congr 1
+      · erw [ι_uliftFunctorCompSingularChainComplexFunctorIso_inv_app]
+        rw [toSSetULiftEquiv_symm_toSSetNatTrans_affineMapId]
+      · simp only [ChainComplex.nullHomotopicMap_f_succ,
+          Preadditive.comp_add, Preadditive.add_comp, Category.assoc,
+          SSet.ιChainComplex_d_assoc, ι_singularChainComplex_d_assoc,
+          Preadditive.sum_comp, Linear.smul_comp]
+        congr 1
+        · congr 1
+          ext i
+          congr 1
+          sorry
+        · erw [ι_univObj_singularChainComplexHomotopyIdSd_hom_assoc,
+            ← HomologicalComplex.Hom.comm_assoc, HomologicalComplex.Hom.comm]
+          rfl
     · simp only [Preadditive.sum_comp]
       congr 1
       ext σ

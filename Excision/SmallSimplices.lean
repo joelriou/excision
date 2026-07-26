@@ -339,7 +339,7 @@ lemma ι_singularChainComplexHomotopyIdSd_hom_π_eq_zero
         ((sSetPairOfSets U).chainComplexπ R).f (n + 1) = 0 := by
   rw [toSSet.mem_subcomplexOfSets_iff'] at hx
   obtain ⟨i, f, rfl⟩ := hx
-  simp [ι_map_singularChainComplexHomotopyIdSd_hom_assoc]
+  simp [ι_map_app_singularChainComplexHomotopyIdSd_hom_assoc]
 
 set_option backward.isDefEq.respectTransparency false in -- necessary for `reassoc`
 @[reassoc]
@@ -355,8 +355,6 @@ lemma ι_singularChainComplexSdIter_homotopyIdSd_hom_π_eq_zero
   rw [ι_singularChainComplexHomotopyIdSd_hom_π_eq_zero _ _
     ((hU.sdIterIsSmall_m x).of_le hk σ), smul_zero]
 
-open _root_.Homotopy in
--- this should be true up to a sign
 set_option backward.isDefEq.respectTransparency false in -- necessary for `reassoc`
 @[reassoc]
 lemma ι_comp_sdIter_f_sub_ρ' {n : ℕ} (x : toSSet.obj X _⦋n + 1⦌) :
@@ -368,7 +366,7 @@ lemma ι_comp_sdIter_f_sub_ρ' {n : ℕ} (x : toSSet.obj X _⦋n + 1⦌) :
           (X.singularChainComplexSdIter j.val).f n ≫
             X.singularChainComplexHomotopyIdSd.hom _ _ := by
   calc
-    _ = X.ιSingularChainComplex x ≫ (nullHomotopicMap (hU.hρ' -
+    _ = X.ιSingularChainComplex x ≫ (Homotopy.nullHomotopicMap (hU.hρ' -
         (X.singularChainComplexHomotopyIdSdIter (hU.m x)).hom)).f (n + 1) := by
       simp [ρ'_eq_sub,
         (X.singularChainComplexHomotopyIdSdIter (hU.m x)).eq_sub_nullHomotopicMap]

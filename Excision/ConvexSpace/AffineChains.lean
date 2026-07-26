@@ -79,6 +79,12 @@ noncomputable def homotopyIdSd : Homotopy (𝟙 _) (sd Y R) :=
   Homotopy.equivSubZero.symm
     (.trans (.ofEq (by simp [sd])) (.nullHomotopy (hSd' Y R) (hSd'_zero Y R)))
 
+lemma homotopyIdSd_hom_eq_hSd' (n m : ℕ) :
+    (homotopyIdSd Y R).hom n m = hSd' Y R n m := by
+  simp only [homotopyIdSd, Homotopy.equivSubZero, Equiv.symm_mk, Equiv.coe_fn_mk,
+    Homotopy.trans_hom, Homotopy.ofEq_hom, Pi.zero_apply, zero_add]
+  apply Homotopy.nullHomotopy_hom
+
 @[simp]
 lemma sd_f_0 : (sd Y R).f 0 = 𝟙 _ := by
   simp [sd, Homotopy.nullHomotopicMap_f_of_not_rel_left (ComplexShape.down_mk 1 0 rfl) (by simp)]
