@@ -55,11 +55,11 @@ instance {M : Type*} [Nonempty M] :
 
 @[elab_as_elim, induction_eliminator]
 lemma rec' {M : Type*} {motive : StdSimplex R M → Prop}
-    (sum : ∀ (n : ℕ) (w : Fin n → R) (m : Fin n → M)
-      (hw₀ : ∀ i, 0 ≤ w i) (hw : ∑ i, w i = 1),
+    (sum : ∀ (n : ℕ) (w : Fin n → R) (m : Fin n → M) (_ : Function.Injective m)
+      (hw₀ : ∀ i, 0 < w i) (hw : ∑ i, w i = 1),
       motive
         { weights := ∑ i, .single (m i) (w i)
-          nonneg := Finset.sum_nonneg (by simpa)
+          nonneg := Finset.sum_nonneg (fun i _ ↦ by simpa using (hw₀ i).le)
           total := by
             rw [Finsupp.sum_finsetSum _ _ _ (by simp) (by simp)]
             simpa })
@@ -67,9 +67,11 @@ lemma rec' {M : Type*} {motive : StdSimplex R M → Prop}
   induction s with
   | mk w hw₀ hw =>
     induction w using Finsupp.rec' with
-    | sum n m a ha =>
-      refine sum n a m (fun i ↦ ?_) ?_
-      · rw [Finsupp.le_def] at hw₀
+    | sum n m a ha ha' =>
+      refine sum n a m ha (fun i ↦ ?_) ?_
+      · rw [lt_iff_le_and_ne']
+        refine ⟨?_, ha' _⟩
+        rw [Finsupp.le_def] at hw₀
         specialize hw₀ (m i)
         simp only [Finsupp.coe_zero, Pi.zero_apply, Finsupp.coe_finsetSum,
           Finset.sum_apply] at hw₀
@@ -78,7 +80,6 @@ lemma rec' {M : Type*} {motive : StdSimplex R M → Prop}
         simpa using hw₀
       · rw [← hw, Finsupp.sum_finsetSum _ _ _ (by simp) (by simp)]
         simp
-
 @[simp]
 lemma iConvexComb_single {M : Type*} (x : StdSimplex R M) :
     x.iConvexComb single = x := by
@@ -109,6 +110,52 @@ lemma coe_affineMap {M N : Type*} (f : M → N) :
 lemma affineMap_id (M : Type*) :
     affineMap (R := R) (id : M → M) = .id _ := by
   aesop
+
+lemma mem_range_affineMap {M N : Type*} (s : StdSimplex R N) (f : M → N)
+    (hf : ∀ (n : N), s.weights n ≠ 0 → n ∈ Set.range f) :
+    s ∈ Set.range (StdSimplex.affineMap f) := by
+  induction s using rec' with
+  | sum n w p hp hw₀ hw =>
+    have (i : Fin n) : ∃ (m : M), f m = p i :=
+      hf _ (by
+        dsimp
+        simp only [Finsupp.coe_finsetSum, Finset.sum_apply]
+        rw [Finset.sum_eq_single i (fun j _ hj ↦ by
+          rw [Finsupp.single_apply_eq_zero]
+          exact fun h ↦ (hj (hp h.symm)).elim) (by simp), Finsupp.single_eq_same]
+        exact (hw₀ i).ne')
+    choose m hm using this
+    refine ⟨{
+      weights := ∑ (i : Fin n), .single (m i) (w i)
+      nonneg := Finset.sum_nonneg' (fun i ↦ by simpa using (hw₀ i).le)
+      total := by
+        rw [Finsupp.sum_finsetSum _ _ _ (by simp) (by simp)]
+        simpa}, ?_⟩
+    ext x
+    simp only [coe_affineMap, weights_map, Finsupp.coe_finsetSum, Finset.sum_apply]
+    by_cases hx : x ∈ Set.range p
+    · obtain ⟨i, rfl⟩ := hx
+      nth_rw 2 [Finset.sum_eq_single i]
+      · simp only [Finsupp.mapDomain, Finsupp.sum_apply, Finsupp.single_eq_same]
+        rw [Finsupp.sum_finsetSum _ _ _ (by simp) (by simp)]
+        simp only [hm, Finsupp.single_zero, Finsupp.coe_zero, Pi.zero_apply,
+          Finsupp.sum_single_index]
+        rw [Finset.sum_eq_single i
+          (fun j _ hj ↦ Finsupp.single_eq_of_ne (hp.ne hj.symm)) (by simp), Finsupp.single_eq_same]
+      · intro j _ hj
+        exact Finsupp.single_eq_of_ne (fun h ↦ hj (hp h.symm))
+      · simp
+    · rw [Finsupp.mapDomain_of_not_mem_image_support,
+        Finset.sum_eq_zero (fun _ _ ↦ Finsupp.single_eq_of_ne (by grind))]
+      simp only [Set.mem_image, SetLike.mem_coe, Finsupp.mem_support_iff, Finsupp.coe_finsetSum,
+        Finset.sum_apply, ne_eq, not_exists, not_and]
+      intro x hx' rfl
+      apply hx'
+      rw [Finset.sum_eq_zero]
+      intro i _
+      apply Finsupp.single_eq_of_ne
+      rintro rfl
+      simp [← hm] at hx
 
 @[simp]
 lemma sConvexComb_map_iConvexComb {M : Type*} {Y : Type*} [ConvexSpace R Y] (f : M → Y)
@@ -165,8 +212,19 @@ noncomputable def subIsobarycenter
     rw [← Finsupp.sum_finsetSum_index (by simp) (by simp)]
     simpa using IsUnit.mul_inv_cancel (Ne.isUnit (by simpa [← Finset.nonempty_iff_ne_empty]))
 
+lemma subIsobarycenter_weights_apply_eq_zero
+    {K : Type*} [Field K] [CharZero K] [LinearOrder K] [IsStrictOrderedRing K]
+    {M : Type*} (S : Finset M) (hS : S.Nonempty) (m : M) (hm : m ∉ S) :
+    (subIsobarycenter (K := K) S hS).weights m = 0 := by
+  simp only [weights_subIsobarycenter, Finsupp.coe_finsetSum, Finset.sum_apply]
+  rw [Finset.sum_eq_zero]
+  intro x hx
+  rw [Finsupp.single_apply_eq_zero]
+  rintro rfl
+  exact (hm hx).elim
+
 @[simp]
-lemma subIsobarycenter_single
+lemma subIsobarycenter_singleton
     {K : Type*} [Field K] [CharZero K] [LinearOrder K] [IsStrictOrderedRing K]
     {M : Type*} (m : M) :
     subIsobarycenter (K := K) {m} (by simp) = .single m := by

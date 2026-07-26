@@ -25,13 +25,14 @@ lemma Finsupp.sum_finsetSum
 
 lemma Finsupp.rec' {α M : Type*} [AddCommMonoid M]
     {motive : (α →₀ M) → Prop}
-    (sum : ∀ (n : ℕ) (a : Fin n → α) (m : Fin n → M) (_ : Function.Injective a),
+    (sum : ∀ (n : ℕ) (a : Fin n → α) (m : Fin n → M) (_ : Function.Injective a)
+      (_ : ∀ a, m a ≠ 0),
       motive (∑ (i : Fin n), .single (a i) (m i)))
     (f : α →₀ M) :
     motive f := by
   convert sum f.support.card (fun i ↦ f.support.equivFin.symm i)
     (fun i ↦ f (f.support.equivFin.symm i))
-      (Subtype.val_injective.comp f.support.equivFin.symm.injective)
+      (Subtype.val_injective.comp f.support.equivFin.symm.injective) (by grind)
   ext j
   simp only [coe_finsetSum, Finset.sum_apply]
   by_cases hj : j ∈ f.support
