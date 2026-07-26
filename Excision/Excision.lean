@@ -37,7 +37,7 @@ lemma smallSimplicesCondition : SmallSimplicesCondition (Bool.rec A B) where
   iUnion_interior := by rw [← h.union_interior]; aesop
 
 -- TODO: The relative chain complex of `B` relative to `A ∩ B`
--- is homotopically equivalent to the chain complex of `X` relative to `B`
+-- is homotopically equivalent to the chain complex of `X` relative to `A`
 
 end ExcisionCondition
 
