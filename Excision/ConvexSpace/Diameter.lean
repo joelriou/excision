@@ -193,7 +193,6 @@ section
 
 lemma diam_sd_le (σ : Equiv.Perm (Fin (n + 1))) :
     (s.sd σ).diam ≤ n / (n + 1) * s.diam := by
-  have : IsModuleConvexSpace ℝ E := inferInstance
   suffices ∀ (i j : Fin (n + 1)) (hij : i ≤ j),
       dist (s.sdVertex σ i) (s.sdVertex σ j) ≤ (n / (n + 1)) * s.diam by
     obtain ⟨i, j, h⟩ := (s.sd σ).exists_diam_eq
