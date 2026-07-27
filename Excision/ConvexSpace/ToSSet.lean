@@ -188,8 +188,6 @@ noncomputable def toSSet.cone (y : Y) (M : C) (n : ℕ) :
       ((toSSet R Y).chainComplex M).X (n + 1) :=
   ((extraDegeneracy y).map (sigmaConst.obj M)).s n
 
-set_option backward.isDefEq.respectTransparency false in
-set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma toSSet.d_comp_cone_add_cone_comp_d (y : Y) (M : C) {n : ℕ} :
     ((toSSet R Y).chainComplex M).d (n + 1) n ≫ toSSet.cone y M n +
@@ -213,7 +211,6 @@ lemma toSSet.cone_comp_d_eq_sub (y : Y) (M : C) {n : ℕ} :
   rw [← d_comp_cone_add_cone_comp_d y]
   abel
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma toSSet.ι_cone
