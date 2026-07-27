@@ -5,6 +5,7 @@ Authors: Joël Riou
 -/
 module
 
+public import Mathlib.AlgebraicTopology.SimplicialSet.TopAdj
 public import Excision.ConvexSpace.AffineChains
 public import Excision.ConvexSpace.Top
 public import Excision.SingularHomology.NatTrans
@@ -192,7 +193,7 @@ lemma sd_toSSetObjEquiv_symm {n : ℕ} (s : C(stdSimplex ℝ (Fin (n + 1)), X))
 lemma sd_zero (s : (toSSet.obj X) _⦋0⦌)
     (σ : Equiv.Perm (Fin 1)) :
     sd s σ = s := by
-  obtain ⟨x, rfl⟩ := (TopCat.toSSetObj₀Equiv _).symm.surjective s
+  obtain ⟨x, rfl⟩ := TopCat.toSSetObj₀Equiv.symm.surjective s
   rfl
 
 lemma range_toSSetObjEquiv_sd_subset

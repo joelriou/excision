@@ -82,15 +82,4 @@ lemma ι_singularChainComplexMap
   simp [singularChainComplexFunctor, singularChainComplexMap, ιSingularChainComplex,
     SSet.chainComplexFunctor]
 
-/-- If `X : TopCat`, then the `0`-simplices of the simplicial set
-`toSSet.obj X` identify to `X`. -/
-noncomputable def toSSetObj₀Equiv (X : TopCat.{w}) : (toSSet.obj X) _⦋0⦌ ≃ X :=
-  (TopCat.toSSetObjEquiv _ _).trans
-    { toFun f := f (default : stdSimplex ℝ (Fin 1))
-      invFun x := .const _ x
-      left_inv f := by
-        ext (y : stdSimplex ℝ (Fin 1))
-        obtain rfl : y = default := by subsingleton
-        rfl }
-
 end TopCat
