@@ -15,6 +15,8 @@ If `X` and `Y` are convex spaces (over `R`), we introduce the type
 
 -/
 
+-- #42126
+
 @[expose] public section
 
 namespace Convexity
