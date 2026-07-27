@@ -97,7 +97,6 @@ lemma affineMap_ext {M : Type*} {Y : Type*} [ConvexSpace R Y]
 
 /-- The (bundled) affine map `StdSimplex R M → StdSimplex R N` induced
 by a map `f : M → N`. -/
-@[implicit_reducible]
 noncomputable def affineMap {M N : Type*} (f : M → N) :
     ConvexSpace.AffineMap R (StdSimplex R M) (StdSimplex R N) where
   toFun := map f

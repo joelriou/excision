@@ -10,6 +10,9 @@ public import Mathlib.Geometry.Convex.ConvexSpace.Defs
 /-!
 # Bundled affine maps between convex spaces
 
+If `X` and `Y` are convex spaces (over `R`), we introduce the type
+`ConvexSpace.AffineMap` of bundled affine maps from `X` to `Y`.
+
 -/
 
 @[expose] public section
@@ -40,6 +43,8 @@ instance {X Y : Type*} [ConvexSpace R X] [ConvexSpace R Y] :
   coe := ConvexSpace.AffineMap.toFun
   coe_injective := fun ⟨f, _⟩ ⟨g, _⟩ h ↦ by simpa
 
+initialize_simps_projections ConvexSpace.AffineMap (toFun → apply)
+
 @[ext]
 lemma ext {X Y : Type*} [ConvexSpace R X] [ConvexSpace R Y]
     {f g : ConvexSpace.AffineMap R X Y} (h : (f : X → Y) = g) : f = g :=
@@ -67,6 +72,12 @@ def comp
   toFun := g ∘ f
 
 @[simp]
+lemma coe_comp
+    {X Y Z : Type*} [ConvexSpace R X] [ConvexSpace R Y] [ConvexSpace R Z]
+    (g : ConvexSpace.AffineMap R Y Z) (f : ConvexSpace.AffineMap R X Y) :
+    ⇑(g.comp f) = g ∘ f := rfl
+
+@[simp]
 lemma id_comp
     {X Y : Type*} [ConvexSpace R X] [ConvexSpace R Y]
     (f : ConvexSpace.AffineMap R X Y) :
@@ -78,11 +89,12 @@ lemma comp_id
     (f : ConvexSpace.AffineMap R X Y) :
     f.comp (.id _) = f := rfl
 
-@[simp]
-lemma coe_comp
-    {X Y Z : Type*} [ConvexSpace R X] [ConvexSpace R Y] [ConvexSpace R Z]
-    (g : ConvexSpace.AffineMap R Y Z) (f : ConvexSpace.AffineMap R X Y) :
-    ⇑(g.comp f) = g ∘ f := rfl
+lemma assoc {X Y Z T : Type*}
+    [ConvexSpace R X] [ConvexSpace R Y] [ConvexSpace R Z] [ConvexSpace R T]
+    (f₁ : ConvexSpace.AffineMap R Z T) (f₂ : ConvexSpace.AffineMap R Y Z)
+    (f₃ : ConvexSpace.AffineMap R X Y) :
+    (f₁.comp f₂).comp f₃ = f₁.comp (f₂.comp f₃) :=
+  rfl
 
 /-- A constant map between convex spaces, as a bundled affine map. -/
 @[simps, implicit_reducible]

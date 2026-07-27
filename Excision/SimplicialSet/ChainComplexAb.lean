@@ -55,7 +55,7 @@ noncomputable def sigmaConstAddEquiv :
 
 @[simp]
 lemma sigmaConstAddEquiv_apply (i : ι) (m : M) :
-    sigmaConstAddEquiv (Sigma.ι (f := fun (_ : ι) ↦ of M) i m) =
+    dsimp% sigmaConstAddEquiv (Sigma.ι (f := fun (_ : ι) ↦ of M) i m) =
       Finsupp.single i m :=
   ConcreteCategory.congr_hom
     (IsColimit.comp_coconePointUniqueUpToIso_hom (colimit.isColimit _)
@@ -63,7 +63,7 @@ lemma sigmaConstAddEquiv_apply (i : ι) (m : M) :
 
 @[simp]
 lemma sigmaConstAddEquiv_symm_apply (i : ι) (m : M) :
-    sigmaConstAddEquiv.symm (Finsupp.single i m) =
+    dsimp% sigmaConstAddEquiv.symm (Finsupp.single i m) =
       Sigma.ι (f := fun (_ : ι) ↦ of M) i m :=
   ConcreteCategory.congr_hom
     (IsColimit.comp_coconePointUniqueUpToIso_inv (colimit.isColimit _)

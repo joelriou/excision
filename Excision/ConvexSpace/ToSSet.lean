@@ -211,7 +211,6 @@ lemma toSSet.cone_comp_d_eq_sub (y : Y) (M : C) {n : ℕ} :
   rw [← d_comp_cone_add_cone_comp_d y]
   abel
 
-set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma toSSet.ι_cone
     (y : Y) (M : C) {n : ℕ} (s : ConvexSpace.AffineMap R (StdSimplex R (Fin (n + 1))) Y) :
