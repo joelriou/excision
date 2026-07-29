@@ -33,4 +33,10 @@ instance {X Y : SSet.{w}} (f : X ⟶ Y) [Mono f] (R : C) :
     Mono (chainComplexMap f R) :=
   HomologicalComplex.mono_of_mono_f _ inferInstance
 
+/-- The isomorphism of chain complexes that is induced by an isomorphism of simplicial sets. -/
+noncomputable abbrev chainComplexMapIso {X Y : SSet.{w}} (e : X ≅ Y) (R : C) :
+    X.chainComplex R ≅ Y.chainComplex R where
+  hom := chainComplexMap e.hom R
+  inv := chainComplexMap e.inv R
+
 end SSet

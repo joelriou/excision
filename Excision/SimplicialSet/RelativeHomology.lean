@@ -26,6 +26,17 @@ variable {C : Type*} [Category* C] [Preadditive C] [HasCoproducts.{w} C]
 
 section
 
+/-- The isomorphism of chain complexes that is induced by an isomorphism of
+pairs of simplicial sets. -/
+noncomputable abbrev chainComplexMapIso {X Y : SSetPair.{w}} (e : X ≅ Y) (R : C) :
+    X.chainComplex R ≅ Y.chainComplex R where
+  hom := chainComplexMap e.hom R
+  inv := chainComplexMap e.inv R
+
+end
+
+section
+
 variable (X : SSetPair.{w})
 
 /-- If `X : SSetPair` and `n : ℕ`, this is the kernel fork with point `(X.left.chainComplex R).X n`
