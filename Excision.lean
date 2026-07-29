@@ -12,6 +12,7 @@ public import Excision.Fin.Vec
 public import Excision.Finsupp.Basic
 public import Excision.HomologicalComplex.NullHomotopy
 public import Excision.HomotopyCategory.ChainComplex
+public import Excision.HomotopyCategory.HomotopyEquivalences
 public import Excision.Limits.SigmaConst
 public import Excision.Linear.ULift
 public import Excision.Perm.EquivSucc
