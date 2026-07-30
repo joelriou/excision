@@ -121,9 +121,6 @@ def topPairHom (_ : ExcisionCondition A B) :
   TopPair.ofHom (TopCat.ofHom ⟨Subtype.val, continuous_subtype_val⟩)
     (TopCat.ofHom (ContinuousMap.inclusion Set.inter_subset_left)) rfl
 
--- TODO: The relative chain complex of `B` relative to `A ∩ B`
--- is homotopically equivalent to the chain complex of `X` relative to `A`
-
 lemma homotopyEquivalences (R : C) :
     homotopyEquivalences _ _
       (SSetPair.chainComplexMap (TopPair.toSSetPair.map h.topPairHom) R) := by
