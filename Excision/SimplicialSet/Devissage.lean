@@ -80,11 +80,39 @@ section
 
 variable {X : SSet.{w}} (A B : X.Subcomplex)
 
-/-- The morphism from the pair `(B, A ⊓ B)` to `(X, A)` when `A` and `B` are subcomplexes
-of `X`. -/
+/-- The morphism from the pair `(B, A ⊓ B)` to `(X, A)` when `A` and `B` are
+subcomplexes of a simplicial set `X`. -/
 def homOfSubcomplexes :
     of (SSet.Subcomplex.homOfLE (inf_le_right : A ⊓ B ≤ B)) ⟶ A.pair :=
-  MorphismProperty.Arrow.homMk (SSet.Subcomplex.homOfLE (by simp)) B.ι (by simp) (by simp) (by simp)
+  SSetPair.homMk (SSet.Subcomplex.homOfLE (by simp)) B.ι (by simp)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- When `A` and `B` are subcomplexes of a simplicial set `X`, this is
+a degreewise-split short complex which relates the chain complexes of
+the pairs `(B, A ⊓ B)`, `(X, A)` and `(X, A ⊔ B)`. -/
+noncomputable abbrev shortComplexHomOfSubcomplexes (R : C) :
+    ShortComplex (ChainComplex C ℕ) where
+  f := chainComplexMap (homOfSubcomplexes A B) R
+  X₃ := (of (A ⊔ B).ι).chainComplex R
+  g := chainComplexMap (SSetPair.homMk (SSet.Subcomplex.homOfLE (by simp)) (𝟙 X) (by simp)) R
+  zero := by
+    rw [← cancel_epi (chainComplexπ ..), ← Functor.map_comp,
+      chainComplexπ_naturality, comp_zero]
+    have h : A ⊓ B ≤ A ⊔ B := inf_left_le_sup_left
+    calc
+      _ = SSet.chainComplexMap (SSet.Subcomplex.homOfLE (by simp)) R ≫
+          SSet.chainComplexMap (of (A ⊔ B).ι).hom R ≫ (of (A ⊔ B).ι).chainComplexπ R := by
+        rw [← Functor.map_comp_assoc]
+        rfl
+      _ = _ := by
+        simp [dsimp% (of (A ⊔ B).ι).chainComplex_condition R]
+
+/-- When `A` and `B` are subcomplexes of a simplicial set `X`, this is
+the degreewise splitting of the short complex which relates the chain
+complexes of the pairs `(B, A ⊓ B)`, `(X, A)` and `(X, A ⊔ B)`. -/
+def splittingShortComplexHomOfSubcomplexesEval (R : C) (n : ℕ) :
+    ((shortComplexHomOfSubcomplexes A B R).map (eval _ _ n)).Splitting := by
+  sorry
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
@@ -95,8 +123,9 @@ lemma homotopyEquivalences_chainComplexMap_homOfSubcomplexes (R : C) :
   have : HasFiniteCoproducts C := hasFiniteCoproducts_of_hasCoproducts C
   have : HasBinaryBiproducts C := HasBinaryBiproducts.of_hasBinaryCoproducts
   rw [dsimp% ChainComplex.homotopyEquivalences_shortComplexF_iff_of_degreewiseSplit
-    _ ((of (A ⊔ B).ι).splittingChainComplexShortComplexEval R)]
-  sorry
+    _ ((of (A ⊔ B).ι).splittingChainComplexShortComplexEval R),
+    ChainComplex.homotopyEquivalences_shortComplexF_iff_of_degreewiseSplit
+      _ (splittingShortComplexHomOfSubcomplexesEval A B R)]
 
 end
 

@@ -92,4 +92,10 @@ lemma ιChainComplex_π_f_eq_zero_of_subcomplex {X : SSet.{w}} (A : X.Subcomplex
     X.ιChainComplex x ≫ (A.pair.chainComplexπ R).f n = 0 :=
   A.pair.ιChainComplex_π_f_eq_zero_of_mem_range _ _ ⟨⟨x, hx⟩, rfl⟩
 
+@[reassoc]
+lemma chainComplexπ_naturality {X Y : SSetPair.{w}} (f : X ⟶ Y) (R : C) :
+    X.chainComplexπ R ≫ chainComplexMap f _ =
+      SSet.chainComplexMap f.right _ ≫ Y.chainComplexπ R :=
+  (((chainComplexFunctorπ C).app R).naturality f).symm
+
 end SSetPair
