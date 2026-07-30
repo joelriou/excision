@@ -33,11 +33,43 @@ instance : TopPair.proj₁.{w}.Faithful where
       exact ConcreteCategory.congr_hom h (X.map x)
     · exact ConcreteCategory.congr_hom h x
 
+lemma Topology.IsEmbedding.to_isHomeomorph
+    {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y] {f : X → Y}
+    (hf : IsEmbedding f) (hf' : Function.Surjective f) :
+    IsHomeomorph f := by
+  rw [← Set.range_eq_univ] at hf'
+  exact (Homeomorph.trans (hf.toHomeomorph.trans (Homeomorph.setCongr hf'))
+    (Homeomorph.Set.univ Y)).isHomeomorph
+
+lemma TopCat.isIso_of_isEmbedding {X Y : TopCat.{w}} (f : X ⟶ Y)
+    (hf : IsEmbedding f) (hf' : Function.Surjective f) :
+    IsIso f :=
+  (TopCat.isoOfHomeo (hf.to_isHomeomorph hf').homeomorph).isIso_hom
+
+lemma TopPair.isIso_of_isIso {X Y : TopPair.{w}} (f : X ⟶ Y)
+    (h₁ : IsIso (Hom.fst f) := by infer_instance) (h₂ : IsIso (Hom.snd f) := by infer_instance) :
+    IsIso f := by
+  let φ : Y ⟶ X := TopPair.ofHom (inv (Hom.fst f)) (inv (Hom.snd f)) (by simpa using f.w.symm)
+  exact ⟨φ, TopPair.proj₁.map_injective (IsIso.hom_inv_id _),
+    TopPair.proj₁.map_injective (IsIso.inv_hom_id _)⟩
+
+lemma TopPair.isEmbedding_snd_of_isEmbedding_fst
+    {X Y : TopPair.{w}} {f : X ⟶ Y}
+    (hf : IsEmbedding (Hom.fst f)) :
+    IsEmbedding (Hom.snd f) := by
+  rw [← IsEmbedding.of_comp_iff (g := Y.map) Y.prop]
+  convert! hf.comp X.prop
+  ext x
+  exact ConcreteCategory.congr_hom f.w x
+
 lemma TopPair.isIso_of_isEmbedding {X Y : TopPair.{w}} (f : X ⟶ Y)
     (hf : IsEmbedding (Hom.fst f))
     (h₁ : Function.Surjective (Hom.fst f))
     (h₂ : Function.Surjective (Hom.snd f)) :
-    IsIso f := sorry
+    IsIso f :=
+  TopPair.isIso_of_isIso _
+    (TopCat.isIso_of_isEmbedding _ hf h₁)
+    (TopCat.isIso_of_isEmbedding _ (isEmbedding_snd_of_isEmbedding_fst hf) h₂)
 
 lemma TopCat.mono_toSSet_map {X Y : TopCat.{w}} (f : X ⟶ Y) (hf : Function.Injective f) :
     Mono (toSSet.map f) := by
@@ -123,7 +155,8 @@ lemma TopPair.homotopyEquivalences_of_excision {V X : TopPair} (g : V ⟶ X)
       TopPair.ofHom (𝟙 _) (TopCat.ofHom ⟨fun x ↦ ⟨X.map x, by aesop⟩, by fun_prop⟩)
     have : IsIso f₁ := by
       apply TopPair.isIso_of_isEmbedding
-      · sorry
+      · rw [← IsEmbedding.of_comp_iff (hg := IsEmbedding.subtypeVal)]
+        exact h₁
       · rintro ⟨x, hx⟩
         rw [← hB] at hx
         obtain ⟨y, rfl⟩ := hx
@@ -134,7 +167,7 @@ lemma TopPair.homotopyEquivalences_of_excision {V X : TopPair} (g : V ⟶ X)
         exact ⟨y, rfl⟩
     have : IsIso f₂ := by
       apply TopPair.isIso_of_isEmbedding
-      · sorry
+      · apply IsEmbedding.id
       · intro x
         exact ⟨x, rfl⟩
       · rintro ⟨x, hx⟩
