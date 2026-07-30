@@ -107,12 +107,26 @@ noncomputable abbrev shortComplexHomOfSubcomplexes (R : C) :
       _ = _ := by
         simp [dsimp% (of (A ⊔ B).ι).chainComplex_condition R]
 
+open Classical in
 /-- When `A` and `B` are subcomplexes of a simplicial set `X`, this is
 the degreewise splitting of the short complex which relates the chain
 complexes of the pairs `(B, A ⊓ B)`, `(X, A)` and `(X, A ⊔ B)`. -/
-def splittingShortComplexHomOfSubcomplexesEval (R : C) (n : ℕ) :
+noncomputable def splittingShortComplexHomOfSubcomplexesEval (R : C) (n : ℕ) :
     ((shortComplexHomOfSubcomplexes A B R).map (eval _ _ n)).Splitting := by
-  sorry
+  exact
+    { r := chainComplexXDesc
+        (fun x ↦
+          if hx : x ∈ B.obj _ then
+            (SSet.ιChainComplex _ (by exact ⟨x, hx⟩) ≫ (SSetPair.chainComplexπ _ _).f n)
+          else 0) (fun x ↦ by
+            split_ifs with hx
+            · exact (of (SSet.Subcomplex.homOfLE _)).ιChainComplex_π_f_eq_zero_of_mem_range
+                _ _ ⟨⟨x.val, ⟨x.prop, hx⟩⟩, rfl⟩
+            · simp)
+      s := sorry
+      f_r := sorry
+      s_g := sorry
+      id := sorry }
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in

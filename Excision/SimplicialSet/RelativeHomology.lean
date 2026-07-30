@@ -18,7 +18,7 @@ universe w
 
 @[expose] public section
 
-open CategoryTheory Limits Simplicial
+open CategoryTheory Limits Simplicial Opposite
 
 namespace SSetPair
 
@@ -81,16 +81,56 @@ lemma ιChainComplex_π_f_eq_zero
   simpa only [comp_zero, SSet.ι_chainComplexMap_f_assoc] using
     X.left.ιChainComplex x ≫= X.chainComplex_condition_f R n
 
+@[reassoc]
 lemma ιChainComplex_π_f_eq_zero_of_mem_range
     (X : SSetPair.{w}) (R : C) {n : ℕ} (x : X.right _⦋n⦌) (hx : x ∈ Set.range (X.hom.app _)) :
     X.right.ιChainComplex x ≫ (X.chainComplexπ R).f n = 0 := by
   obtain ⟨x, rfl⟩ := hx
   rw [X.ιChainComplex_π_f_eq_zero]
 
+@[reassoc]
 lemma ιChainComplex_π_f_eq_zero_of_subcomplex {X : SSet.{w}} (A : X.Subcomplex) (R : C) {n : ℕ}
     (x : X _⦋n⦌) (hx : x ∈ A.obj _) :
     X.ιChainComplex x ≫ (A.pair.chainComplexπ R).f n = 0 :=
   A.pair.ιChainComplex_π_f_eq_zero_of_mem_range _ _ ⟨⟨x, hx⟩, rfl⟩
+
+lemma chainComplexX_hom_ext {X : SSetPair.{w}} {R T : C} {n : ℕ}
+    {f g : (X.chainComplex R).X n ⟶ T}
+    (h : ∀ (x : X.right _⦋n⦌) (_ : x ∉ Set.range (X.hom.app (op ⦋n⦌))),
+      X.right.ιChainComplex x ≫ (X.chainComplexπ R).f n ≫ f =
+      X.right.ιChainComplex x ≫ (X.chainComplexπ R).f n ≫ g) : f = g := by
+  rw [← cancel_epi ((X.chainComplexπ R).f n)]
+  ext x
+  by_cases hx : x ∈ Set.range (X.hom.app (op ⦋n⦌))
+  · simp [X.ιChainComplex_π_f_eq_zero_of_mem_range_assoc _ x hx]
+  · exact h _ hx
+
+section
+
+variable {X : SSetPair.{w}} {R T : C} {n : ℕ}
+  (f : X.right _⦋n⦌ → (R ⟶ T))
+  (hf : ∀ (x : X.left _⦋n⦌), f (X.hom.app _ x) = 0)
+
+/-- Constructor for morphisms from the `n`-chains of a pair of simplicial sets. -/
+noncomputable def chainComplexXDesc :
+    (X.chainComplex R).X n ⟶ T :=
+  (CokernelCofork.IsColimit.desc' (X.isColimitCokernelCoforkChainComplexX R n)
+    (Sigma.desc f) (by
+      ext x
+      simp only [Functor.id_obj, SSet.ι_chainComplexMap_f_assoc, comp_zero]
+      exact (Sigma.ι_desc ..).trans (hf x))).1
+
+@[reassoc]
+lemma ι_chainComplexXDesc (x : X.right _⦋n⦌) :
+    X.right.ιChainComplex x ≫ (X.chainComplexπ R).f n ≫
+      chainComplexXDesc f hf = f x := by
+  have : (X.chainComplexπ R).f n ≫ chainComplexXDesc f hf = Sigma.desc f :=
+    (CokernelCofork.IsColimit.desc' (X.isColimitCokernelCoforkChainComplexX R n)
+      (Sigma.desc f) _).2
+  rw [this]
+  apply Sigma.ι_desc
+
+end
 
 @[reassoc]
 lemma chainComplexπ_naturality {X Y : SSetPair.{w}} (f : X ⟶ Y) (R : C) :
