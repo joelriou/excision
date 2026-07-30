@@ -138,4 +138,16 @@ lemma chainComplexπ_naturality {X Y : SSetPair.{w}} (f : X ⟶ Y) (R : C) :
       SSet.chainComplexMap f.right _ ≫ Y.chainComplexπ R :=
   (((chainComplexFunctorπ C).app R).naturality f).symm
 
+@[reassoc]
+lemma chainComplexπ_f_naturality {X Y : SSetPair.{w}} (f : X ⟶ Y) (R : C) (n : ℕ) :
+    (X.chainComplexπ R).f n ≫ (chainComplexMap f _).f n =
+      (SSet.chainComplexMap f.right _).f n ≫ (Y.chainComplexπ R).f n := by
+  simp only [← HomologicalComplex.comp_f, chainComplexπ_naturality]
+
+@[reassoc (attr := simp)]
+lemma ι_chainComplexMap_f {X Y : SSetPair.{w}} (f : X ⟶ Y) (R : C) {n : ℕ} (x : X.right _⦋n⦌) :
+    X.right.ιChainComplex x ≫ (X.chainComplexπ R).f n ≫ (chainComplexMap f R).f n =
+      Y.right.ιChainComplex (f.right.app _ x) ≫ (Y.chainComplexπ R).f n := by
+  simp [chainComplexπ_f_naturality]
+
 end SSetPair
