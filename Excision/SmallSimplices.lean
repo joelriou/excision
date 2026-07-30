@@ -29,26 +29,51 @@ variable {X : TopCat.{w}} {ι : Type*} {U : ι → Set X}
 
 namespace toSSet
 
+/-- Let `V : Set X` be a subset of a topological space `X : TopCat`.
+This is the subcomplex of the singular simplicial set `toSSet.obj X` of `X`
+consisting of simplices that are contained in `V`. -/
+noncomputable abbrev subcomplexOfSet (V : Set X) : (toSSet.obj X).Subcomplex :=
+  SSet.Subcomplex.range (toSSet.map (ofHom (X := V) ⟨Subtype.val, by fun_prop⟩))
+
+lemma mem_subcomplexOfSet_iff (V : Set X) {n : ℕ} (s : toSSet.obj X _⦋n⦌) :
+    s ∈ (subcomplexOfSet V).obj _ ↔
+      Set.range (toSSetObjEquiv _ _ s) ⊆ V := by
+  simp only [subcomplexOfSet, Subfunctor.range_obj, Set.mem_range]
+  refine ⟨?_, fun h ↦ ?_⟩
+  · rintro ⟨s, rfl⟩
+    obtain ⟨f, rfl⟩ := (toSSetObjEquiv _ _).symm.surjective s
+    change Set.range (Subtype.val ∘ f) ⊆ V
+    rintro _ ⟨u, rfl⟩
+    simp
+  · obtain ⟨f, rfl⟩ := (toSSetObjEquiv _ _).symm.surjective s
+    exact ⟨(toSSetObjEquiv _ _).symm ⟨fun x ↦ ⟨f x, h (by simp)⟩, by fun_prop⟩, rfl⟩
+
+lemma subcomplexOfSet_inter (V₁ V₂ : Set X) :
+    subcomplexOfSet (V₁ ∩ V₂) = subcomplexOfSet V₁ ⊓ subcomplexOfSet V₂ := by
+  ext ⟨⟨n⟩⟩
+  simp only [mem_subcomplexOfSet_iff, Set.subset_inter_iff, Subfunctor.min_obj, Set.mem_inter_iff]
+
 variable (U) in
 /-- Let `U : ι → Set X` be a family of subsets of a topological space `X : TopCat`.
 This is the subcomplex of the singular simplicial set `toSSet.obj X` of `X`
 consisting of simplices that are contained in some `U i`. -/
 noncomputable def subcomplexOfSets : (toSSet.obj X).Subcomplex :=
-  ⨆ (i : ι), SSet.Subcomplex.range (toSSet.map (ofHom (X := U i) ⟨Subtype.val, by fun_prop⟩))
+  ⨆ (i : ι), subcomplexOfSet (U i)
+
+lemma subcomplexOfSets_bool (U : Bool → Set X) :
+    subcomplexOfSets U = subcomplexOfSet (U false) ⊔ subcomplexOfSet (U true) := by
+  dsimp [subcomplexOfSets]
+  refine le_antisymm ?_ ?_
+  · simp
+  · simp only [sup_le_iff]
+    exact ⟨le_iSup (fun i ↦ subcomplexOfSet (U i)) false,
+      le_iSup (fun i ↦ subcomplexOfSet (U i)) true⟩
 
 lemma mem_subcomplexOfSets_iff {n : ℕ} (s : toSSet.obj X _⦋n⦌) :
     s ∈ (subcomplexOfSets U).obj _ ↔
       ∃ (i : ι), Set.range (toSSetObjEquiv _ _ s) ⊆ U i := by
-  simp only [subcomplexOfSets, Subfunctor.iSup_obj, Subfunctor.range_obj, Set.mem_iUnion,
-    Set.mem_range]
-  refine exists_congr (fun i ↦ ⟨?_, fun h ↦ ?_⟩)
-  · rintro ⟨s, rfl⟩
-    obtain ⟨f, rfl⟩ := (toSSetObjEquiv _ _).symm.surjective s
-    change Set.range (Subtype.val ∘ f) ⊆ U i
-    rintro _ ⟨u, rfl⟩
-    simp
-  · obtain ⟨f, rfl⟩ := (toSSetObjEquiv _ _).symm.surjective s
-    exact ⟨(toSSetObjEquiv _ _).symm ⟨fun x ↦ ⟨f x, h (by simp)⟩, by fun_prop⟩, rfl⟩
+  simp only [subcomplexOfSets, Subfunctor.iSup_obj, Set.mem_iUnion,
+    mem_subcomplexOfSet_iff]
 
 lemma mem_subcomplexOfSets_iff' {n : ℕ} (s : toSSet.obj X _⦋n⦌) :
     s ∈ (subcomplexOfSets U).obj _ ↔

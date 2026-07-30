@@ -7,6 +7,7 @@ module
 
 public import Mathlib.Topology.Category.TopPair
 public import Excision.HomotopyCategory.HomotopyEquivalences
+public import Excision.SimplicialSet.Devissage
 public import Excision.SmallSimplices
 
 /-!
@@ -126,7 +127,12 @@ def topPairHom (_ : ExcisionCondition A B) :
 lemma homotopyEquivalences (R : C) :
     homotopyEquivalences _ _
       (SSetPair.chainComplexMap (TopPair.toSSetPair.map h.topPairHom) R) := by
-  sorry
+  rw [SSetPair.homotopyEquivalence_chainComplexMap_iff_of_mono
+    (Z := toSSet.subcomplexOfSets (Bool.rec A B))]
+  · exact h.smallSimplicesCondition.homotopyEquivalences R
+  · exact toSSet.subcomplexOfSets_bool _
+  · exact mono_toSSet_map _ (fun _ _ hxy ↦ Subtype.ext_iff.2 hxy)
+  · exact toSSet.subcomplexOfSet_inter _ _
 
 end ExcisionCondition
 

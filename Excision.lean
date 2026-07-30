@@ -19,6 +19,7 @@ public import Excision.Perm.EquivSucc
 public import Excision.Preadditive.HasZeroObject
 public import Excision.SimplexCategory.Basic
 public import Excision.SimplicialSet.ChainComplexAb
+public import Excision.SimplicialSet.Devissage
 public import Excision.SimplicialSet.Homology
 public import Excision.SimplicialSet.RelativeHomology
 public import Excision.SimplicialSet.ULift
