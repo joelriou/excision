@@ -7,7 +7,9 @@ module
 
 public import Mathlib.Algebra.Homology.Homotopy
 public import Excision.SimplicialSet.RelativeHomology
+public import Excision.HomotopyCategory.ChainComplex
 public import Excision.HomotopyCategory.HomotopyEquivalences
+public import Excision.Limits.SigmaConst
 
 /-!
 # ...
@@ -18,7 +20,7 @@ universe w
 
 @[expose] public section
 
-open CategoryTheory Limits Simplicial HomologicalComplex
+open CategoryTheory Limits Simplicial HomologicalComplex Opposite
 
 namespace SSet.Subcomplex
 
@@ -62,6 +64,20 @@ variable {C : Type*} [Category* C] [Preadditive C] [HasCoproducts.{w} C]
 
 section
 
+variable (X : SSetPair.{w}) (R : C) (n : ℕ)
+
+/-- If `X : SSetPair` and `n : ℕ`, this is a splitting of the short complex
+relating the `n`-chains of `X.left`, `X.right` and `X`. -/
+noncomputable def splittingChainComplexShortComplexEval :
+    ((X.chainComplexShortComplex R).map (eval C _ n)).Splitting :=
+  splittingSigmaConstCokernelShortComplex' _ _
+    ((injective_of_mono _)) (X.isColimitCokernelCoforkChainComplexX R n)
+
+end
+
+
+section
+
 variable {X : SSet.{w}} (A B : X.Subcomplex)
 
 /-- The morphism from the pair `(B, A ⊓ B)` to `(X, A)` when `A` and `B` are subcomplexes
@@ -70,9 +86,16 @@ def homOfSubcomplexes :
     of (SSet.Subcomplex.homOfLE (inf_le_right : A ⊓ B ≤ B)) ⟶ A.pair :=
   MorphismProperty.Arrow.homMk (SSet.Subcomplex.homOfLE (by simp)) B.ι (by simp) (by simp) (by simp)
 
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
 lemma homotopyEquivalences_chainComplexMap_homOfSubcomplexes (R : C) :
     homotopyEquivalences _ _ (chainComplexMap (homOfSubcomplexes A B) R) ↔
       homotopyEquivalences _ _ (SSet.chainComplexMap (A ⊔ B).ι R) := by
+  have : HasZeroObject C := Preadditive.hasZeroObject_of_hasCoproducts C
+  have : HasFiniteCoproducts C := hasFiniteCoproducts_of_hasCoproducts C
+  have : HasBinaryBiproducts C := HasBinaryBiproducts.of_hasBinaryCoproducts
+  rw [dsimp% ChainComplex.homotopyEquivalences_shortComplexF_iff_of_degreewiseSplit
+    _ ((of (A ⊔ B).ι).splittingChainComplexShortComplexEval R)]
   sorry
 
 end

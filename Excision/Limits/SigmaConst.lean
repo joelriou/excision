@@ -129,6 +129,20 @@ noncomputable def splittingSigmaConstCokernelShortComplex :
           Sigma.ι_desc_assoc, dif_pos (by simpa using hb)]
         simp }
 
+/-- If `c` is a colimit cokernel cofork for a map `∐ fun (_ : α) ↦ R ⟶ ∐ fun (_ : β) ↦ R`
+induced by an injective map `f : α → β`, this is a splitting of the short complex
+given by the vanishing `c.condition`. -/
+noncomputable def splittingSigmaConstCokernelShortComplex'
+    {c : CokernelCofork (Sigma.map' (f := fun (_ : α) ↦ R) (g := fun (_ : β) ↦ R) f (fun _ ↦ 𝟙 R))}
+    (hc : IsColimit c) :
+    (ShortComplex.mk _ _ c.condition).Splitting :=
+  (splittingSigmaConstCokernelShortComplex R f hf).ofIso
+    ((ShortComplex.isoMk (Iso.refl _) (Iso.refl _)
+      (IsColimit.coconePointUniqueUpToIso (isColimitSigmaConstCokernelCofork R f) hc)
+      (by cat_disch) (by
+      simp [dsimp% (IsColimit.comp_coconePointUniqueUpToIso_hom
+        (isColimitSigmaConstCokernelCofork R f) hc) .one])))
+
 /-- Let `f : α → β` be an injective map and `R : C` an object in a category
 with suitable coproducts. Then, the map `∐ fun (a : α) ↦ R) ⟶ ∐ fun (b : β) ↦ R`
 is the kernel of the projection to its cokernel. -/
