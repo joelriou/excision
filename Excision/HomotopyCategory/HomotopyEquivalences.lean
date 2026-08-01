@@ -8,7 +8,7 @@ module
 public import Mathlib.Algebra.Homology.Homotopy
 
 /-!
-# Excision theorem
+# Properties of homotopy equivalences
 
 -/
 
