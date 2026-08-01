@@ -37,6 +37,13 @@ lemma homotopyEquivalences_shortComplexF_iff_of_splitting
     ← isIso_quotient_map_iff_homotopyEquivalences]
   exact (Triangle.isZero₃_iff_isIso₁ _ (trianglehOfDegreewiseSplit_distinguished S σ)).symm
 
+lemma homotopyEquivalences_shortComplexG_iff_of_splitting
+    (σ : ∀ n, (S.map (eval _ _ n)).Splitting) :
+    homotopyEquivalences _ _ S.g ↔ Nonempty (Homotopy (𝟙 S.X₁) 0) := by
+  rw [← HomotopyCategory.isZero_quotient_obj_iff,
+    ← isIso_quotient_map_iff_homotopyEquivalences]
+  exact (Triangle.isZero₁_iff_isIso₂ _ (trianglehOfDegreewiseSplit_distinguished S σ)).symm
+
 end CochainComplex
 
 namespace ChainComplex
