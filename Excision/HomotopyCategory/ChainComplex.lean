@@ -13,6 +13,8 @@ public import Mathlib.Algebra.Homology.HomotopyCategory.DegreewiseSplit
 
 -/
 
+-- #42323
+
 @[expose] public section
 
 open CategoryTheory Pretriangulated HomologicalComplex Limits
