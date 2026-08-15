@@ -27,6 +27,8 @@ lemma Fin.succAbove_le_iff {n : ℕ} (p : Fin (n + 1)) (i : Fin n) :
 
 namespace Equiv.Perm
 
+-- is this redundant with `Equiv.Perm.decomposeFin`?
+
 variable {n : ℕ}
 
 /-- Given `i : Fin (n + 2)` and `σ : Perm (Fin (n + 1)`, this is the permutation
