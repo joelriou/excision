@@ -12,6 +12,8 @@ public import Mathlib.Algebra.Homology.Homotopy
 
 -/
 
+-- #42791
+
 @[expose] public section
 
 open CategoryTheory
