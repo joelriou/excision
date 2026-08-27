@@ -12,6 +12,8 @@ public import Mathlib.Topology.MetricSpace.Bounded
 
 -/
 
+-- #43171
+
 public section
 
 -- From https://github.com/joelriou/topcat-model-category

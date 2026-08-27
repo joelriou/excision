@@ -14,6 +14,8 @@ public import Mathlib.Data.ZMod.IntUnitsPower
 
 -/
 
+-- #43168
+
 @[expose] public section
 
 @[simp]
@@ -26,8 +28,6 @@ lemma Fin.succAbove_le_iff {n : ℕ} (p : Fin (n + 1)) (i : Fin n) :
   · rw [succAbove_of_le_castSucc _ _ hp, castSucc_lt_iff_succ_le]
 
 namespace Equiv.Perm
-
--- is this redundant with `Equiv.Perm.decomposeFin`?
 
 variable {n : ℕ}
 
