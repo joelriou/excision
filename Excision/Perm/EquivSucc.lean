@@ -33,7 +33,7 @@ variable {n : ℕ}
 
 /-- Given `i : Fin (n + 2)` and `σ : Perm (Fin (n + 1)`, this is the permutation
 of `Fin (n + 2)` which sends `0` to `i` and `j.succ` to `i.succAbove (σ j)`. -/
-noncomputable def equivSuccSymm (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
+noncomputable def decomposeFin'Symm (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
     Perm (Fin (n + 2)) :=
   Equiv.ofBijective
     (Fin.cases i (Fin.succAbove i ∘ σ)) (by
@@ -43,25 +43,27 @@ noncomputable def equivSuccSymm (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
         obtain rfl | ⟨k, rfl⟩ := k.eq_zero_or_eq_succ <;> aesop)
 
 @[simp]
-lemma equivSuccSymm_zero (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
-    equivSuccSymm i σ 0 = i := rfl
+lemma decomposeFin'Symm_zero (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
+    decomposeFin'Symm i σ 0 = i := rfl
 
 @[simp]
-lemma equivSuccSymm_succ (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) (j : Fin (n + 1)) :
-    equivSuccSymm i σ j.succ = i.succAbove (σ j) := rfl
+lemma decomposeFin'Symm_succ (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) (j : Fin (n + 1)) :
+    decomposeFin'Symm i σ j.succ = i.succAbove (σ j) := rfl
 
 @[simp]
-lemma equivSuccSymm_symm_eq_zero (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
-    (equivSuccSymm i σ).symm i = 0 :=
-  (equivSuccSymm i σ).injective (by simp)
+lemma decomposeFin'Symm_symm_eq_zero (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
+    (decomposeFin'Symm i σ).symm i = 0 :=
+  (decomposeFin'Symm i σ).injective (by simp)
 
 @[simp]
-lemma equivSuccSymm_symm_succAbove (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) (j : Fin (n + 1)) :
-    (equivSuccSymm i σ).symm (i.succAbove (σ j)) = j.succ :=
-  (equivSuccSymm i σ).injective (by simp)
+lemma decomposeFin'Symm_symm_succAbove
+    (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) (j : Fin (n + 1)) :
+    (decomposeFin'Symm i σ).symm (i.succAbove (σ j)) = j.succ :=
+  (decomposeFin'Symm i σ).injective (by simp)
 
 variable (n) in
-lemma equivSuccSymm_uncurry_bijective : Function.Bijective (equivSuccSymm (n := n)).uncurry := by
+lemma decomposeFin'Symm_uncurry_bijective :
+    Function.Bijective (decomposeFin'Symm (n := n)).uncurry := by
   rw [Nat.bijective_iff_injective_and_card]
   refine ⟨fun ⟨i, σ⟩ ⟨i', σ'⟩ h ↦ ?_, ?_⟩
   · obtain rfl : i = i' := by simpa using DFunLike.congr_fun h 0
@@ -74,18 +76,18 @@ lemma equivSuccSymm_uncurry_bijective : Function.Bijective (equivSuccSymm (n := 
       Nat.factorial_succ (n + 1)]
 
 /-- A bijection between `Perm (Fin (n + 2))` and `Fin (n + 2) × Perm (Fin (n + 1))`.
-See `equivSuccSymm` for the definition of the inverse map. -/
-noncomputable def equivSucc : Perm (Fin (n + 2)) ≃ Fin (n + 2) × Perm (Fin (n + 1)) :=
-  (Equiv.ofBijective _ (equivSuccSymm_uncurry_bijective n)).symm
+See `decomposeFin'Symm` for the definition of the inverse map. -/
+noncomputable def decomposeFin' : Perm (Fin (n + 2)) ≃ Fin (n + 2) × Perm (Fin (n + 1)) :=
+  (Equiv.ofBijective _ (decomposeFin'Symm_uncurry_bijective n)).symm
 
 @[simp]
-lemma equivSucc_symm (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
-    equivSucc.symm ⟨i, σ⟩ = equivSuccSymm i σ := rfl
+lemma decomposeFin'_symm (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
+    decomposeFin'.symm ⟨i, σ⟩ = decomposeFin'Symm i σ := rfl
 
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
-lemma sign_equivSuccSymm (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
-    (equivSuccSymm i σ).sign = (-1) ^ i.val * σ.sign := by
+lemma sign_decomposeFin'Symm (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
+    (decomposeFin'Symm i σ).sign = (-1) ^ i.val * σ.sign := by
   rw [Equiv.Perm.sign_eq_prod_prod_Ioi, Fin.prod_univ_succ]
   congr
   · let S : Finset (Fin (n + 1)) := { x | i.succAbove (σ x) ≤ i }
@@ -94,8 +96,8 @@ lemma sign_equivSuccSymm (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
       simp only [this, Finset.card_image_of_injective _ (Equiv.injective _)]
       exact Finset.card_eq_of_bijective (fun j hj ↦ ⟨j, by grind⟩) (by grind) (by grind) (by simp)
     trans ∏ j ∈ S, -1
-    · simp only [Fin.Ioi_zero_eq_map, equivSuccSymm_zero, Finset.prod_map, Fin.coe_succEmb,
-        equivSuccSymm_succ, ← S.prod_mul_prod_compl, Finset.prod_const]
+    · simp only [Fin.Ioi_zero_eq_map, decomposeFin'Symm_zero, Finset.prod_map, Fin.coe_succEmb,
+        decomposeFin'Symm_succ, ← S.prod_mul_prod_compl, Finset.prod_const]
       trans ((-1 : ℤˣ) ^ S.card) * 1
       · congr 1
         · trans ∏ i ∈ S, -1

@@ -479,7 +479,7 @@ open Equiv.Perm in
 lemma sd_δ
     (f : ConvexSpace.AffineMap K (StdSimplex K (Fin (n + 2))) Y)
     (i : Fin (n + 2)) (σ : Equiv.Perm (Fin (n + 1))) :
-    (f.δ i).sd σ = (f.sd (equivSuccSymm i σ)).δ 0 := by
+    (f.δ i).sd σ = (f.sd (decomposeFin'Symm i σ)).δ 0 := by
   ext j
   simp only [δ_single, Fin.zero_succAbove, StdSimplex.affineMapMk_single,
     sdVertex_def, f.δ_def]
@@ -492,7 +492,7 @@ lemma sd_δ
   · rintro ⟨k, hk, rfl⟩
     obtain ⟨k, rfl⟩ := σ.surjective k
     simpa using hk
-  · obtain ⟨k, rfl⟩ := (equivSuccSymm i σ).surjective k
+  · obtain ⟨k, rfl⟩ := (decomposeFin'Symm i σ).surjective k
     obtain ⟨k, rfl⟩ := k.eq_succ_of_ne_zero (by grind)
     simpa using h
 
@@ -505,8 +505,8 @@ lemma exists_sdIter_δ_eq
   induction k generalizing n with
   | zero => simp
   | succ k hk =>
-    obtain ⟨σ', i', h⟩ := hk (f.sd (equivSuccSymm i (σ (Fin.last k)))) 0 (σ ∘ Fin.castSucc)
-    refine ⟨Fin.lastCases (equivSuccSymm i (σ (Fin.last k))) σ', i', ?_⟩
+    obtain ⟨σ', i', h⟩ := hk (f.sd (decomposeFin'Symm i (σ (Fin.last k)))) 0 (σ ∘ Fin.castSucc)
+    refine ⟨Fin.lastCases (decomposeFin'Symm i (σ (Fin.last k))) σ', i', ?_⟩
     rw [sdIter_succ', sd_δ, h, sdIter_succ', Fin.lastCases_last]
     congr
     aesop

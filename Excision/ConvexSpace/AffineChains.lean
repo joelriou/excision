@@ -158,9 +158,10 @@ lemma ι_sd_f_eq_sum {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (F
     obtain ⟨s, rfl⟩ := StdSimplex.affineMapMk_surjective s
     simp only [SSet.ιChainComplex_d_assoc, δ_affineMapMk.{w}, Preadditive.sum_comp,
       Linear.smul_comp, reassoc_of% hn, ι_cone,
-      ← equivSucc.symm.sum_comp,
-      Finset.sum_finset_product .univ .univ (fun _ ↦ .univ) (by simp), Equiv.Perm.equivSucc_symm,
-      Finset.smul_sum, Units.smul_def, smul_smul, sign_equivSuccSymm, ]
+      ← decomposeFin'.symm.sum_comp,
+      Finset.sum_finset_product .univ .univ (fun _ ↦ .univ) (by simp),
+      Equiv.Perm.decomposeFin'_symm, Finset.smul_sum, Units.smul_def,
+      smul_smul, sign_decomposeFin'Symm]
     congr 1
     ext i
     congr 1
@@ -174,7 +175,7 @@ lemma ι_sd_f_eq_sum {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (F
         AffineMap.subIsobarycenter_mk_comp_of_injective _ _ _ _ Fin.succAbove_right_injective]
       congr 1
       ext k
-      obtain ⟨k, rfl⟩ := (equivSuccSymm i σ).surjective k
+      obtain ⟨k, rfl⟩ := (decomposeFin'Symm i σ).surjective k
       obtain rfl | ⟨k, rfl⟩ := k.eq_zero_or_eq_succ <;> simp
 
 /-- The `k`th iteration of the subdivision operator `ConvexSpace.toSSet.sd`. -/
