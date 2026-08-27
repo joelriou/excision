@@ -84,7 +84,6 @@ noncomputable def decomposeFin' : Perm (Fin (n + 2)) ≃ Fin (n + 2) × Perm (Fi
 lemma decomposeFin'_symm (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
     decomposeFin'.symm ⟨i, σ⟩ = decomposeFin'Symm i σ := rfl
 
-set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma sign_decomposeFin'Symm (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
     (decomposeFin'Symm i σ).sign = (-1) ^ i.val * σ.sign := by
@@ -101,9 +100,11 @@ lemma sign_decomposeFin'Symm (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
       trans ((-1 : ℤˣ) ^ S.card) * 1
       · congr 1
         · trans ∏ i ∈ S, -1
-          · exact Finset.prod_congr rfl (by simp [S])
+          · refine Finset.prod_congr rfl (by grind [Fin.succAbove])
           · simp
-        · simp [Finset.prod_eq_one, S]
+        · rw [Finset.prod_eq_one]
+          simp [S]
+          grind [Fin.succAbove]
       · exact mul_one _
     · simp [hS]
   · simp [Equiv.Perm.sign_eq_prod_prod_Ioi]
