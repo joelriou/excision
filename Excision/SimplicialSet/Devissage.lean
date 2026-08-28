@@ -168,7 +168,7 @@ set_option backward.isDefEq.respectTransparency false in
 lemma homotopyEquivalences_chainComplexMap_homOfSubcomplexes (R : C) :
     homotopyEquivalences _ _ (chainComplexMap (homOfSubcomplexes A B) R) ↔
       homotopyEquivalences _ _ (SSet.chainComplexMap (A ⊔ B).ι R) := by
-  have : HasZeroObject C := Preadditive.hasZeroObject_of_hasCoproducts C
+  have : HasZeroObject C := Preadditive.hasZeroObject_of_hasCoproduct C
   have : HasFiniteCoproducts C := hasFiniteCoproducts_of_hasCoproducts C
   have : HasBinaryBiproducts C := HasBinaryBiproducts.of_hasBinaryCoproducts
   rw [dsimp% ChainComplex.homotopyEquivalences_shortComplexF_iff_of_degreewiseSplit

@@ -16,10 +16,14 @@ public import Mathlib.CategoryTheory.Preadditive.Basic
 
 open CategoryTheory Limits
 
-lemma CategoryTheory.Preadditive.hasZeroObject_of_hasCoproducts (C : Type*) [Category* C]
+-- #43173 (merged)
+
+/-
+lemma CategoryTheory.Preadditive.hasZeroObject_of_hasCoproduct (C : Type*) [Category* C]
     [Preadditive C]
     [HasCoproduct (PEmpty.elim : PEmpty.{w + 1} → C)] :
     HasZeroObject C :=
   ⟨∐ (PEmpty.elim : PEmpty.{w + 1} → C), by
     rw [IsZero.iff_id_eq_zero]
     cat_disch⟩
+-/

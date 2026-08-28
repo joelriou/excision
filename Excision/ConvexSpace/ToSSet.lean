@@ -192,7 +192,7 @@ noncomputable def toSSet.cone (y : Y) (M : C) (n : ℕ) :
 lemma toSSet.d_comp_cone_add_cone_comp_d (y : Y) (M : C) {n : ℕ} :
     ((toSSet R Y).chainComplex M).d (n + 1) n ≫ toSSet.cone y M n +
     toSSet.cone y M (n + 1) ≫ ((toSSet R Y).chainComplex M).d (n + 2) (n + 1) = 𝟙 _ := by
-  have := Preadditive.hasZeroObject_of_hasCoproducts C
+  have := Preadditive.hasZeroObject_of_hasCoproduct C
   have := (((extraDegeneracy (R := R) y).map
     (sigmaConst.obj M)).homotopyEquiv.homotopyHomInvId.symm.comm (n + 1)).symm
   rw [Homotopy.prevD_chainComplex, Homotopy.dNext_succ_chainComplex] at this

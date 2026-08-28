@@ -47,7 +47,7 @@ noncomputable def kernelForkChainComplexX (R : C) (n : ℕ) :
 
 variable (R : C) (n : ℕ)
 
-attribute [local instance] Preadditive.hasZeroObject_of_hasCoproducts in
+attribute [local instance] Preadditive.hasZeroObject_of_hasCoproduct in
 /-- If `X : SSetPair` and `n : ℕ`, the kernel of the morphism
 `(X.chainComplexπ R).f n : (X.right.chainComplex R).X n ⟶ (X.chainComplex R).X n`
 identifies to `(X.left.chainComplex R).X n`. -/
