@@ -81,7 +81,7 @@ lemma ι_uliftFunctorCompSingularChainComplexFunctorIso_inv_app (X : TopCat.{u})
     X.ιSingularChainComplex x ≫
       ((uliftFunctorCompSingularChainComplexFunctorIso.{v, u} R).inv.app X).f n =
         TopCat.ιSingularChainComplex _ ((TopCat.toSSetULiftEquiv).symm x) := by
-  haveI : HasCoproducts.{u} C := hasCoproducts_shrink
+  have : HasCoproducts.{u} C := hasCoproducts_shrink
   -- simp? [uliftFunctorCompSingularChainComplexFunctorIso,
   --   singularChainComplexFunctorULiftIso, SSet.chainComplexFunctorULiftIso]
   simp only [Functor.comp_obj, uliftFunctorCompSingularChainComplexFunctorIso,

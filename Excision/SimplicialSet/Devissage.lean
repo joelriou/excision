@@ -46,11 +46,11 @@ end
 
 section
 
-/-- Constructor for morphisms in `SSetPair`. -/
-abbrev homMk {X Y : SSetPair.{w}} (f₁ : X.left ⟶ Y.left) (f₂ : X.right ⟶ Y.right)
-    (w : f₁ ≫ Y.hom = X.hom ≫ f₂ := by cat_disch) :
-    X ⟶ Y:=
-  MorphismProperty.Arrow.homMk f₁ f₂ w
+--/-- Constructor for morphisms in `SSetPair`. -/
+--abbrev homMk {X Y : SSetPair.{w}} (f₁ : X.left ⟶ Y.left) (f₂ : X.right ⟶ Y.right)
+--    (w : f₁ ≫ Y.hom = X.hom ≫ f₂ := by cat_disch) :
+--    X ⟶ Y:=
+--  MorphismProperty.Arrow.homMk f₁ f₂ w
 
 /-- Constructor for isomorphisms in `SSetPair`. -/
 abbrev isoMk {X Y : SSetPair.{w}} (e₁ : X.left ≅ Y.left) (e₂ : X.right ≅ Y.right)
@@ -109,6 +109,7 @@ noncomputable abbrev shortComplexHomOfSubcomplexes (R : C) :
 
 open Classical in
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.defeqAttrib.useBackward true in
 /-- When `A` and `B` are subcomplexes of a simplicial set `X`, this is
 the degreewise splitting of the short complex which relates the chain
 complexes of the pairs `(B, A ⊓ B)`, `(X, A)` and `(X, A ⊔ B)`. -/
@@ -139,27 +140,24 @@ noncomputable def splittingShortComplexHomOfSubcomplexesEval (R : C) (n : ℕ) :
       f_r :=
         chainComplexX_hom_ext (fun x hx ↦ by
           dsimp
-          simp only [ShortComplex.map_f, eval_map,
-            chainComplexπ_f_naturality_assoc, SSet.ι_chainComplexMap_f_assoc,
+          simp only [chainComplexπ_f_naturality_assoc, SSet.ι_chainComplexMap_f_assoc,
             ι_chainComplexXDesc]
           erw [Category.comp_id]
-          exact dif_pos x.prop)
+          exact dite_eq_left x.prop)
       s_g :=
         chainComplexX_hom_ext (fun x hx ↦ by
           simp only [ShortComplex.map_g, eval_map,
             ι_chainComplexXDesc_assoc]
           erw [Category.comp_id]
-          rw [dif_neg (fun h ↦ hx ⟨⟨x, Or.inr h⟩, rfl⟩)]
+          rw [dite_eq_right (fun h ↦ hx ⟨⟨x, Or.inr h⟩, rfl⟩)]
           simp [chainComplexπ_f_naturality])
       id :=
         chainComplexX_hom_ext (fun x hx ↦ by
           simp only [ShortComplex.map_f, ShortComplex.map_g, eval_map,
             Preadditive.comp_add, ι_chainComplexXDesc_assoc,
             ι_chainComplexMap_f_assoc]
-          erw [ι_chainComplexXDesc]
-          simp only [of_right, MorphismProperty.Arrow.homMk_hom, Arrow.homMk_right,
-            NatTrans.id_app, id_apply, dite_eq_ite]
-          erw [Category.comp_id]
+          rw [ι_chainComplexXDesc]
+          simp
           split_ifs with hx'
           · simp [chainComplexπ_f_naturality]
             rfl

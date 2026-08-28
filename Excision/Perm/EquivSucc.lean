@@ -14,10 +14,11 @@ public import Mathlib.Data.ZMod.IntUnitsPower
 
 -/
 
--- #43168
+-- #43168 (merged)
 
 @[expose] public section
 
+/-
 @[simp]
 lemma Fin.succAbove_le_iff {n : ℕ} (p : Fin (n + 1)) (i : Fin n) :
     p.succAbove i ≤ p ↔ i.castSucc < p := by
@@ -110,3 +111,5 @@ lemma sign_decomposeFin'Symm (i : Fin (n + 2)) (σ : Perm (Fin (n + 1))) :
   · simp [Equiv.Perm.sign_eq_prod_prod_Ioi]
 
 end Equiv.Perm
+
+-/

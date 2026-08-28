@@ -229,7 +229,8 @@ lemma sdIterIsSmall_m {n : ℕ} (s : toSSet.obj X _⦋n⦌) :
 
 lemma sdIterIsSmall_iff_m_le {n : ℕ} (s : toSSet.obj X _⦋n⦌) (k : ℕ) :
     SdIterIsSmall U s k ↔ hU.m s ≤ k :=
-  ⟨fun h ↦ Nat.lt_wfRel.wf.min_le h, fun h ↦ (hU.sdIterIsSmall_m s).of_le h⟩
+  ⟨fun h ↦ WellFoundedLT.min_le h,
+    fun h ↦ (hU.sdIterIsSmall_m s).of_le h⟩
 
 lemma m_eq_zero_iff {n : ℕ} (s : toSSet.obj X _⦋n⦌) :
     hU.m s = 0 ↔ s ∈ (toSSet.subcomplexOfSets U).obj _ := by

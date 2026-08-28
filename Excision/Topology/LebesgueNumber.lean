@@ -12,10 +12,11 @@ public import Mathlib.Topology.MetricSpace.Bounded
 
 -/
 
--- #43171
+-- #43171 (merged)
 
 public section
 
+/-
 -- From https://github.com/joelriou/topcat-model-category
 /-- If `U : ι → Set X` is an open covering of a compact metric space `X`,
 there exists `ε > 0` such that any subset of `X` of diameter `≤ ε`
@@ -33,3 +34,5 @@ lemma CompactSpace.lebesgue_number_lemma {X : Type u} [MetricSpace X] [CompactSp
     (lt_of_le_of_lt hS₂ (by simpa))
   simpa only [← Metric.isBounded_iff_ediam_ne_top] using
     Metric.isBounded_of_compactSpace
+
+-/

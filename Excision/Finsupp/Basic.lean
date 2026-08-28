@@ -14,13 +14,13 @@ public import Mathlib.Algebra.BigOperators.Finsupp.Basic
 
 @[expose] public section
 
-lemma Finsupp.sum_finsetSum
+/-lemma Finsupp.sum_finsetSum
     {ι α M N : Type*} [AddCommMonoid M] [AddCommMonoid N]
     (f : ι → (α →₀ M)) (s : Finset ι) (g : α → M → N)
     (h₁ : ∀ a, g a 0 = 0)
     (h₂ : ∀ a m₁ m₂, g a (m₁ + m₂) = g a m₁ + g a m₂) :
     (∑ i ∈ s, f i).sum g = ∑ i ∈ s, (f i).sum g :=
-  map_sum (liftAddHom (fun a ↦ { toFun := g a, map_zero' := h₁ a, map_add' := h₂ a })) f s
+  map_sum (liftAddHom (fun a ↦ { toFun := g a, map_zero' := h₁ a, map_add' := h₂ a })) f s-/
 
 lemma Finsupp.rec' {α M : Type*} [AddCommMonoid M]
     {motive : (α →₀ M) → Prop}

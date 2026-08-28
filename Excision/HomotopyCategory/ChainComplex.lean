@@ -7,15 +7,18 @@ module
 
 public import Mathlib.Algebra.Homology.Embedding.ExtendHomotopy
 public import Mathlib.Algebra.Homology.HomotopyCategory.DegreewiseSplit
+public import Mathlib.Algebra.Homology.HomotopyCategory.ChainComplex
 
 /-!
 # Homotopy equivalences and degreewise split mono
 
 -/
 
--- #42323
+-- #42323 (merged)
 
 @[expose] public section
+
+/-
 
 open CategoryTheory Pretriangulated HomologicalComplex Limits
 
@@ -84,3 +87,5 @@ lemma homotopyEquivalences_shortComplexF_iff_of_degreewiseSplit
   rfl
 
 end ChainComplex
+
+-/

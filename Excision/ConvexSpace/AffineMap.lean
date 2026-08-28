@@ -6,6 +6,7 @@ Authors: Joël Riou
 module
 
 public import Mathlib.Geometry.Convex.ConvexSpace.Defs
+public import Mathlib.Geometry.Convex.ConvexSpace.AffineMap
 
 /-!
 # Bundled affine maps between convex spaces
@@ -15,7 +16,7 @@ If `X` and `Y` are convex spaces (over `R`), we introduce the type
 
 -/
 
--- #42126
+-- #42126 (merged)
 
 @[expose] public section
 
@@ -30,6 +31,7 @@ lemma isAffineMap_const {X Y : Type*} [ConvexSpace R X] [ConvexSpace R Y] (y : Y
     IsAffineMap R (fun (_ : X) ↦ y) where
   map_sConvexComb _ := by simp
 
+/-
 variable (R) in
 /-- The type of (bundled) affine maps between two convex spaces. -/
 protected structure AffineMap
@@ -105,6 +107,8 @@ def const {X Y : Type*} [ConvexSpace R X] [ConvexSpace R Y] (y : Y) :
   toFun _ := y
 
 end AffineMap
+
+-/
 
 end ConvexSpace
 

@@ -44,7 +44,7 @@ lemma ι_sigmaConstObjObjULiftIso_hom (X : C) {T : Type u} (t : ULift.{v} T) :
     haveI : HasCoproducts.{u} C := hasCoproducts_shrink
     dsimp% Sigma.ι _ t ≫ (sigmaConstObjObjULiftIso.{v} X T).hom =
       Sigma.ι (fun _ ↦ X) t.down := by
-  haveI : HasCoproducts.{u} C := hasCoproducts_shrink
+  have : HasCoproducts.{u} C := hasCoproducts_shrink
   exact Sigma.ι_reindex_hom Equiv.ulift.{v, u} (fun (_ : T) ↦ X) t
 
 set_option backward.isDefEq.respectTransparency false in
@@ -125,8 +125,8 @@ noncomputable def splittingSigmaConstCokernelShortComplex :
       · obtain ⟨a, rfl⟩ := hb
         aesop
       · dsimp [sigmaConstCokernelCofork]
-        rw [Preadditive.comp_add, Sigma.ι_desc_assoc, dif_neg hb,
-          Sigma.ι_desc_assoc, dif_pos (by simpa using hb)]
+        rw [Preadditive.comp_add, Sigma.ι_desc_assoc, dite_eq_right hb,
+          Sigma.ι_desc_assoc, dite_eq_left (by simpa using hb)]
         simp }
 
 /-- If `c` is a colimit cokernel cofork for a map `∐ fun (_ : α) ↦ R ⟶ ∐ fun (_ : β) ↦ R`

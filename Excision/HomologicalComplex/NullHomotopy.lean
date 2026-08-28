@@ -12,10 +12,11 @@ public import Mathlib.Algebra.Homology.Homotopy
 
 -/
 
--- #42791
+-- #42791 (merged)
 
 @[expose] public section
 
+/-
 open CategoryTheory
 
 variable {C : Type*} [Category* C] [Preadditive C]
@@ -80,3 +81,5 @@ lemma nullHomotopicMap_f_succ (n : ℕ) :
   Homotopy.nullHomotopicMap_f (by simp) (by simp) _
 
 end ChainComplex
+
+-/

@@ -12,12 +12,13 @@ public import Mathlib.Algebra.Homology.Homotopy
 
 -/
 
--- #42321
+-- #42321 (merged)
 
 universe w
 
 @[expose] public section
 
+/-
 open CategoryTheory HomologicalComplex
 variable {ι : Type*} {c : ComplexShape ι} {C : Type*} [Category* C] [Preadditive C]
   {K L : HomologicalComplex C c}
@@ -78,3 +79,5 @@ instance : (homotopyEquivalences C c).RespectsIso :=
     (fun _ _ _ _ ↦ .of_isIso _)
 
 end HomologicalComplex
+
+-/

@@ -78,7 +78,7 @@ end
 lemma ιChainComplex_π_f_eq_zero
     (X : SSetPair.{w}) (R : C) {n : ℕ} (x : X.left _⦋n⦌) :
     dsimp% X.right.ιChainComplex (X.hom.app _ x) ≫ (X.chainComplexπ R).f n = 0 := by
-  simpa only [comp_zero, SSet.ι_chainComplexMap_f_assoc] using
+  simpa only [comp_zero, SSet.ι_chainComplexMap_f_assoc] using!
     X.left.ιChainComplex x ≫= X.chainComplex_condition_f R n
 
 @[reassoc]
