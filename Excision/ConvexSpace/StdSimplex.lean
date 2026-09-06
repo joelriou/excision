@@ -6,6 +6,7 @@ Authors: Joël Riou
 module
 
 public import Mathlib.Geometry.Convex.ConvexSpace.Module
+public import Mathlib.Geometry.Convex.ConvexSpace.Barycenter
 public import Excision.Perm.EquivSucc
 public import Excision.ConvexSpace.AffineMap
 public import Excision.Finsupp.Basic
@@ -272,6 +273,7 @@ lemma map_subIsobarycenter_of_injective
       rintro rfl
       tauto
 
+/-
 /-- The isobarycenter of the standard simplex. -/
 noncomputable abbrev isobarycenter
     {K : Type*} [Field K] [CharZero K] [LinearOrder K] [IsStrictOrderedRing K]
@@ -289,6 +291,7 @@ lemma isobarycenter_fin_one
     {K : Type*} [Field K] [CharZero K] [LinearOrder K] [IsStrictOrderedRing K] :
     isobarycenter (K := K) (M := Fin 1) = .single 0 :=
   isobarycenter_of_unique
+-/
 
 end StdSimplex
 
@@ -320,7 +323,7 @@ lemma subIsobarycenter_comp_of_injective
   simp [subIsobarycenter, StdSimplex.map_subIsobarycenter_of_injective _ _ _ hg]
 
 /-- The image of the isobarycenter of the standard simplex by an affine map. -/
-noncomputable abbrev isobarycenter [Nonempty M] [Fintype M] : Y := f .isobarycenter
+noncomputable abbrev isobarycenter [Nonempty M] [Fintype M] : Y := f .barycenter
 
 end
 
@@ -363,6 +366,7 @@ lemma sdVertex_zero
     (σ : Equiv.Perm (Fin (n + 1))) :
     f.sdVertex σ 0 = f.isobarycenter := by
   simp [sdVertex_def, subIsobarycenter]
+  rfl
 
 @[simp]
 lemma sdVertex_last

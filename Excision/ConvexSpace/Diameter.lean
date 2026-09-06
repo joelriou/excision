@@ -137,11 +137,12 @@ lemma dist_isobarycenter_single_eq
     · subst hj
       have : ∑ c ∈ {j}ᶜ, Finsupp.single c (n + 1 : ℝ)⁻¹ j = 0 :=
         Finset.sum_eq_zero (fun k hk ↦ Finsupp.single_eq_of_ne' (by simpa using hk))
-      simp [Finset.card_compl, this]
+      simp [Finset.card_compl, this, StdSimplex.weights_barycenter_apply]
     · have h₁ : ∑ c ∈ {i}ᶜ, (Finsupp.single c (n + 1 : ℝ)⁻¹) j = (n + 1 : ℝ)⁻¹ := by
         rw [Finset.sum_eq_single j (by aesop) (by aesop), Finsupp.single_eq_same]
       have h₂ : (n + 1 : ℝ) / (n + 2) * (n + 1 : ℝ)⁻¹ = (n + 2 : ℝ)⁻¹ := by grind
-      simp [Finset.card_compl, Finsupp.single_eq_of_ne hj, h₁, h₂]
+      simp [Finset.card_compl, Finsupp.single_eq_of_ne hj, h₁, h₂,
+        StdSimplex.weights_barycenter_apply]
   rw [dist_comm, this, dist_convexComboPair, dist_comm]
 
 lemma dist_isobarycenter_single_le (i : Fin (n + 1)) :
