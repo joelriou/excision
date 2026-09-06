@@ -203,6 +203,7 @@ lemma affineMapMk_apply_eq_sum
   rw [affineMapMk_apply, iConvexComb_eq_sum,
     Finsupp.sum_fintype _ _ (by simp)]-/
 
+/-
 /-- In the standard simplex with vertices `M`, this is the isobarycenter of
 a nonempty finite subset `S` of `M`. -/
 @[simps]
@@ -231,17 +232,17 @@ lemma subIsobarycenter_singleton
     {K : Type*} [Field K] [CharZero K] [LinearOrder K] [IsStrictOrderedRing K]
     {M : Type*} (m : M) :
     subIsobarycenter (K := K) {m} (by simp) = .single m := by
-  aesop
+  aesop-/
 
-lemma map_subIsobarycenter_of_injective
+lemma map_subBarycenter_of_injective
     {K : Type*} [Field K] [CharZero K] [LinearOrder K] [IsStrictOrderedRing K]
     {M N : Type*} [DecidableEq N] (S : Finset M) (hS : S.Nonempty)
     (f : M → N) (hf : Function.Injective f) :
-    map f (subIsobarycenter (K := K) S hS) =
-      subIsobarycenter (Finset.image f S) (by simpa) := by
+    map f (subBarycenter (K := K) S hS) =
+      subBarycenter (Finset.image f S) (by simpa) := by
   -- there must be a better proof
   ext n
-  simp only [weights_map, weights_subIsobarycenter, Finsupp.coe_finsetSum, Finset.sum_apply]
+  simp only [weights_map, weights_subBarycenter, Finsupp.coe_finsetSum, Finset.sum_apply]
   by_cases! hn : ∃ (m : M) (hm : m ∈ S), f m = n
   · obtain ⟨m, hm, rfl⟩ := hn
     rw [Finsupp.mapDomain_apply hf, Finset.sum_image hf.injOn,
@@ -307,20 +308,20 @@ variable {M : Type*} (f : ConvexSpace.AffineMap K (StdSimplex K M) Y)
 /-- Given an affine map from the standard simplex with vertices `M` and
 a nonempty finite subset `S` of `M`, this is the image of the isobarycenter
 of the face of the standard simplex corresponding to `S`. -/
-noncomputable def subIsobarycenter (S : Finset M) (hS : S.Nonempty) : Y :=
-  f (.subIsobarycenter S hS)
+noncomputable def subBarycenter (S : Finset M) (hS : S.Nonempty) : Y :=
+  f (.subBarycenter S hS)
 
 @[simp]
-lemma subIsobarycenter_single (m : M) :
-    f.subIsobarycenter {m} (by simp) = f (.single m) := by
-  simp [subIsobarycenter]
+lemma subBarycenter_single (m : M) :
+    f.subBarycenter {m} (by simp) = f (.single m) := by
+  simp [subBarycenter]
 
-lemma subIsobarycenter_comp_of_injective
+lemma subBarycenter_comp_of_injective
     [DecidableEq M] {N : Type*} (S : Finset N) (hS : S.Nonempty)
     (g : N → M) (hg : Function.Injective g) :
-    (f.comp (StdSimplex.affineMap (R := K) g)).subIsobarycenter S hS =
-      f.subIsobarycenter (Finset.image g S) (by simpa) := by
-  simp [subIsobarycenter, StdSimplex.map_subIsobarycenter_of_injective _ _ _ hg]
+    (f.comp (StdSimplex.affineMap (R := K) g)).subBarycenter S hS =
+      f.subBarycenter (Finset.image g S) (by simpa) := by
+  simp [subBarycenter, StdSimplex.map_subBarycenter_of_injective _ _ _ hg]
 
 /-- The image of the isobarycenter of the standard simplex by an affine map. -/
 noncomputable abbrev isobarycenter [Nonempty M] [Fintype M] : Y := f .barycenter
@@ -335,10 +336,10 @@ lemma isobarycenter_fin_one (f : ConvexSpace.AffineMap K (StdSimplex K (Fin 1)) 
 lemma subIsobarycenter_mk_comp_of_injective {M N : Type*} [DecidableEq N]
     (f : N → Y) (S : Finset M) (hS : S.Nonempty) (g : M → N)
     (hg : Function.Injective g) :
-    (StdSimplex.affineMapMk (R := K) (f ∘ g)).subIsobarycenter S hS =
-      (StdSimplex.affineMapMk (R := K) f).subIsobarycenter (Finset.image g S)
+    (StdSimplex.affineMapMk (R := K) (f ∘ g)).subBarycenter S hS =
+      (StdSimplex.affineMapMk (R := K) f).subBarycenter (Finset.image g S)
         (by simpa) := by
-  rw [← subIsobarycenter_comp_of_injective _ _ hS _ hg]
+  rw [← subBarycenter_comp_of_injective _ _ hS _ hg]
   congr
   aesop
 
@@ -353,11 +354,11 @@ to `{ x : Fin n | i ≤ σ⁻¹ x}` (i.e. `{σ i, σ (i + 1), ..., σ (n - 1)}`)
 noncomputable def sdVertex
     (f : ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y)
     (σ : Equiv.Perm (Fin n)) (i : Fin n) : Y :=
-  f.subIsobarycenter { x : Fin n | i ≤ σ⁻¹ x} ⟨σ i, by simp⟩
+  f.subBarycenter { x : Fin n | i ≤ σ⁻¹ x} ⟨σ i, by simp⟩
 
 lemma sdVertex_def (f : ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y)
     (σ : Equiv.Perm (Fin n)) (i : Fin n) :
-    f.sdVertex σ i = f.subIsobarycenter { x : Fin n | i ≤ σ⁻¹ x } ⟨σ i, by simp⟩ :=
+    f.sdVertex σ i = f.subBarycenter { x : Fin n | i ≤ σ⁻¹ x } ⟨σ i, by simp⟩ :=
   rfl
 
 @[simp]
@@ -365,8 +366,7 @@ lemma sdVertex_zero
     (f : ConvexSpace.AffineMap K (StdSimplex K (Fin (n + 1))) Y)
     (σ : Equiv.Perm (Fin (n + 1))) :
     f.sdVertex σ 0 = f.isobarycenter := by
-  simp [sdVertex_def, subIsobarycenter]
-  rfl
+  simp [sdVertex_def, subBarycenter]
 
 @[simp]
 lemma sdVertex_last
@@ -490,7 +490,7 @@ lemma sd_δ
   ext j
   simp only [δ_single, Fin.zero_succAbove, StdSimplex.affineMapMk_single,
     sdVertex_def, f.δ_def]
-  rw [f.subIsobarycenter_comp_of_injective _ ⟨σ j, by simp⟩ _
+  rw [f.subBarycenter_comp_of_injective _ ⟨σ j, by simp⟩ _
     Fin.succAbove_right_injective]
   congr
   ext k

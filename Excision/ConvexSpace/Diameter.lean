@@ -124,12 +124,12 @@ lemma diam_comp_le {d : ℕ}
 lemma dist_isobarycenter_single_eq
     (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin (n + 2))) E) (i : Fin (n + 2)) :
     dist s.isobarycenter (s (.single i)) = (n + 1) / (n + 2) *
-      dist (s.subIsobarycenter {i}ᶜ (Finset.nonempty_compl_singleton i)) (s (.single i)) := by
+      dist (s.subBarycenter {i}ᶜ (Finset.nonempty_compl_singleton i)) (s (.single i)) := by
   have : s.isobarycenter =
       convexCombPair (R := ℝ) (1 / (n + 2)) ((n + 1) / (n + 2)) (by positivity) (by positivity)
-        (by grind) (s (.single i)) (s.subIsobarycenter {i}ᶜ
+        (by grind) (s (.single i)) (s.subBarycenter {i}ᶜ
         (Finset.nonempty_compl_singleton i)) := by
-    dsimp [subIsobarycenter, isobarycenter]
+    dsimp [subBarycenter, isobarycenter]
     rw [← s.isAffineMap.map_convexCombPair]
     congr 1
     ext j
@@ -137,12 +137,12 @@ lemma dist_isobarycenter_single_eq
     · subst hj
       have : ∑ c ∈ {j}ᶜ, Finsupp.single c (n + 1 : ℝ)⁻¹ j = 0 :=
         Finset.sum_eq_zero (fun k hk ↦ Finsupp.single_eq_of_ne' (by simpa using hk))
-      simp [Finset.card_compl, this, StdSimplex.weights_barycenter_apply]
+      simp [StdSimplex.weights_barycenter_apply,
+        StdSimplex.subBarycenter_weights_apply_eq_zero]
     · have h₁ : ∑ c ∈ {i}ᶜ, (Finsupp.single c (n + 1 : ℝ)⁻¹) j = (n + 1 : ℝ)⁻¹ := by
         rw [Finset.sum_eq_single j (by aesop) (by aesop), Finsupp.single_eq_same]
       have h₂ : (n + 1 : ℝ) / (n + 2) * (n + 1 : ℝ)⁻¹ = (n + 2 : ℝ)⁻¹ := by grind
-      simp [Finset.card_compl, Finsupp.single_eq_of_ne hj, h₁, h₂,
-        StdSimplex.weights_barycenter_apply]
+      simp [Finsupp.single_eq_of_ne hj, StdSimplex.weights_subBarycenter, Finset.card_compl, h₁, h₂]
   rw [dist_comm, this, dist_convexComboPair, dist_comm]
 
 lemma dist_isobarycenter_single_le (i : Fin (n + 1)) :
@@ -163,10 +163,10 @@ lemma dist_isobarycenter_le (e : E) (he : e ∈ Set.range s) :
   rw [dist_comm]
   simpa using s.dist_isobarycenter_single_le i
 
-lemma dist_subIsobarycenter_le
+lemma dist_subBarycenter_le
     (t : Finset (Fin (n + 1))) (ht : t.Nonempty) (y : StdSimplex ℝ (Fin (n + 1)))
     (hy : ∀ (i : Fin (n + 1)), i ∉ t → y.weights i = 0) :
-    dist (s.subIsobarycenter t ht) (s y) ≤ n / (n + 1) * s.diam := by
+    dist (s.subBarycenter t ht) (s y) ≤ n / (n + 1) * s.diam := by
   obtain ⟨d, hdn, ⟨e⟩⟩ : ∃ (d : ℕ) (_ : d ≤ n), Nonempty (t ≃ Fin (d + 1)) := by
     generalize hd : t.card = d
     obtain _ | d := d
@@ -181,7 +181,7 @@ lemma dist_subIsobarycenter_le
     ext a
     simp only [Finset.mem_image, Finset.mem_univ, Function.comp_apply, true_and, φ]
     exact ⟨by grind, fun ha ↦ ⟨e ⟨a, ha⟩, by simp⟩⟩
-  have := s.subIsobarycenter_comp_of_injective .univ (by simp) φ hφ
+  have := s.subBarycenter_comp_of_injective .univ (by simp) φ hφ
   simp only [hφ'] at this
   rw [← this]
   refine ((s.comp (StdSimplex.affineMap φ)).dist_isobarycenter_le (s y) ?_).trans
@@ -202,8 +202,8 @@ lemma diam_sd_le (σ : Equiv.Perm (Fin (n + 1))) :
     · exact this _ _ hij
     · rw [dist_comm]
       exact this _ _ hij
-  refine fun i j hij ↦ s.dist_subIsobarycenter_le _ _ _
-    (fun k hk ↦ StdSimplex.subIsobarycenter_weights_apply_eq_zero _ _ _ ?_)
+  refine fun i j hij ↦ s.dist_subBarycenter_le _ _ _
+    (fun k hk ↦ StdSimplex.subBarycenter_weights_apply_eq_zero _ _ _ ?_)
   simp only [Equiv.Perm.coe_inv, Finset.mem_filter, Finset.mem_univ, true_and, not_le] at hk ⊢
   exact lt_of_lt_of_le hk hij
 
