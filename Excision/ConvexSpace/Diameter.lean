@@ -61,11 +61,11 @@ lemma diam_nonneg (f : ConvexSpace.AffineMap ℝ X E) :
 
 variable [NormedSpace ℝ E] [IsModuleConvexSpace ℝ E]
 
-lemma convex_range (f : ConvexSpace.AffineMap ℝ X E) :
+/-lemma convex_range (f : ConvexSpace.AffineMap ℝ X E) :
     Convex ℝ (Set.range f) := by
   rintro _ ⟨x, rfl⟩ _ ⟨y, rfl⟩ a b ha hb h
   exact ⟨convexCombPair a b ha hb h x y,
-    by simp [f.isAffineMap.map_convexCombPair]⟩
+    by simp [f.isAffineMap.map_convexCombPair]⟩-/
 
 variable (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin (n + 1))) E)
 
@@ -74,7 +74,7 @@ lemma range_subset_iff_of_convex {F : Set E} (hF : Convex ℝ F) :
   refine ⟨fun h i ↦ h (by simp), fun h ↦ ?_⟩
   rintro _ ⟨x, rfl⟩
   obtain ⟨p, rfl⟩ := StdSimplex.affineMapMk_surjective s
-  rw [StdSimplex.affineMapMk_apply_eq_sum]
+  rw [StdSimplex.affineMapMk_apply_eq_sum_of_fintype]
   refine hF.sum_mem (by simp) ?_ (by simpa using h)
   have := x.total
   rwa [Finsupp.sum_fintype _ _ (by simp)] at this
@@ -222,13 +222,13 @@ end AffineMap
 
 end ConvexSpace
 
-@[simp]
+/-@[simp]
 lemma StdSimplex.diam_equiv_image_range_affineMap
     {α β : Type*} [Fintype β] (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ α) (StdSimplex ℝ β)) :
     Metric.diam (StdSimplex.equiv '' (Set.range s)) = (StdSimplex.ι.comp s).diam := by
   rw [← isometry_subtype_coe.diam_image]
   dsimp [ConvexSpace.AffineMap.diam]
   rw [Set.range_comp, ← Set.image_comp]
-  rfl
+  rfl-/
 
 end Convexity

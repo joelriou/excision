@@ -179,8 +179,46 @@ open Convexity in
 lemma exists_sdIterIsSmall {n : ℕ} (s : toSSet.obj X _⦋n⦌) :
     ∃ (k : ℕ), SdIterIsSmall U s k := by
   obtain ⟨f, rfl⟩ := (toSSetObjEquiv _ _).symm.surjective s
-  let V (i : ι) : Set (stdSimplex ℝ (Fin (n + 1))) := f ⁻¹' (interior (U i))
-  obtain ⟨ε, hε₀, hε⟩ := CompactSpace.lebesgue_number_lemma V
+  let V (i : ι) : Set (StdSimplex ℝ (Fin (n + 1))) := f ⁻¹' (interior (U i))
+  let α : StdSimplex ℝ (Fin (n + 1)) ≃ₜ (Set.range (StdSimplex.ι (α := Fin (n + 1)))) :=
+    (StdSimplex.isEmbedding_toFun_comp_weights ℝ (Fin (n + 1))).toHomeomorph
+  have : CompactSpace (Set.range (StdSimplex.ι (α := Fin (n + 1)))) :=
+    isCompact_iff_compactSpace.mp (isCompact_range (by fun_prop))
+  let V' (i : ι) := α '' (V i)
+  obtain ⟨ε, hε₀, hε⟩ := CompactSpace.lebesgue_number_lemma V'
+    (fun i ↦ by simpa [V', V] using f.continuous.isOpen_preimage _ isOpen_interior)
+    (by simp [V', V, ← Set.image_iUnion, ← Set.preimage_iUnion, hU.iUnion_interior])
+  let s₀ := ConvexSpace.AffineMap.id (R := ℝ) (StdSimplex ℝ (Fin (n + 1)))
+  suffices ∃ (k : ℕ), ∀ (σ : Fin k → Equiv.Perm (Fin (n + 1))),
+    (StdSimplex.ι.comp (s₀.sdIter σ)).diam ≤ ε by
+      obtain ⟨k, hk⟩ := this
+      refine ⟨k, fun σ ↦ ?_⟩
+      rw [toSSet.mem_subcomplexOfSets_iff]
+      obtain ⟨i, hi⟩ := hε (Set.range (α ∘ s₀.sdIter σ))
+        (Set.range_nonempty _) (by
+          have := hk σ
+          dsimp [ConvexSpace.AffineMap.diam, Metric.diam] at this ⊢
+          rw [Set.range_comp, ← isometry_subtype_coe.ediam_image]
+          convert this
+          aesop)
+      refine ⟨i, ?_⟩
+      rintro _ ⟨x, rfl⟩
+      refine interior_subset ?_
+      simpa [V', V, toSSet.sdIter_toSSetObjEquiv_symm] using! hi (Set.mem_range_self x)
+  let δ := (StdSimplex.ι.comp s₀).diam
+  have hδ : 0 ≤ δ := (StdSimplex.ι.comp s₀).diam_nonneg
+  obtain h | h := hδ.lt_or_eq'
+  · have hε' : 0 < ε / δ := by positivity
+    obtain ⟨k, hk⟩ := exists_pow_lt_of_lt_one hε' (y := (n / (n + 1) : ℝ)) (by
+      rw [div_lt_one (by positivity)]
+      simp)
+    refine ⟨k, fun σ ↦ ?_⟩
+    rw [ConvexSpace.AffineMap.comp_sdIter]
+    refine ((StdSimplex.ι.comp s₀).diam_sdIter_le σ).trans
+      (le_of_le_of_eq (mul_le_mul_of_nonneg_right hk.le (ConvexSpace.AffineMap.diam_nonneg _))
+      (div_mul_cancel₀ ε h.ne'))
+  · exact ⟨0, by simp [δ, h, hε₀.le]⟩
+  /-obtain ⟨ε, hε₀, hε⟩ := CompactSpace.lebesgue_number_lemma V
     (fun i ↦ f.continuous.isOpen_preimage _ isOpen_interior)
     (by simp [V, ← Set.preimage_iUnion, hU.iUnion_interior])
   let s₀ := ConvexSpace.AffineMap.id (R := ℝ) (StdSimplex ℝ (Fin (n + 1)))
@@ -208,7 +246,7 @@ lemma exists_sdIterIsSmall {n : ℕ} (s : toSSet.obj X _⦋n⦌) :
     refine ((StdSimplex.ι.comp s₀).diam_sdIter_le σ).trans
       (le_of_le_of_eq (mul_le_mul_of_nonneg_right hk.le (ConvexSpace.AffineMap.diam_nonneg _))
       (div_mul_cancel₀ ε h.ne'))
-  · exact ⟨0, by simp [δ, h, hε₀.le]⟩
+  · exact ⟨0, by simp [δ, h, hε₀.le]⟩-/
 
 include hU in
 lemma nonempty_ofPred_sdIterIsSmall {n : ℕ} (s : toSSet.obj X _⦋n⦌) :

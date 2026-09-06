@@ -80,6 +80,8 @@ lemma rec' {M : Type*} {motive : StdSimplex R M → Prop}
         simpa using hw₀
       · rw [← hw, Finsupp.sum_finsetSum _ _ _ (by simp) (by simp)]
         simp
+
+/-
 @[simp]
 lemma iConvexComb_single {M : Type*} (x : StdSimplex R M) :
     x.iConvexComb single = x := by
@@ -108,7 +110,7 @@ lemma coe_affineMap {M N : Type*} (f : M → N) :
 @[simp]
 lemma affineMap_id (M : Type*) :
     affineMap (R := R) (id : M → M) = .id _ := by
-  aesop
+  aesop -/
 
 lemma mem_range_affineMap {M N : Type*} (s : StdSimplex R N) (f : M → N)
     (hf : ∀ (n : N), s.weights n ≠ 0 → n ∈ Set.range f) :
@@ -126,7 +128,7 @@ lemma mem_range_affineMap {M N : Type*} (s : StdSimplex R N) (f : M → N)
     choose m hm using this
     refine ⟨{
       weights := ∑ (i : Fin n), .single (m i) (w i)
-      nonneg := Finset.sum_nonneg' (fun i ↦ by simpa using (hw₀ i).le)
+      nonneg := Finset.sum_nonneg (fun i ↦ by simpa using (hw₀ i).le)
       total := by
         rw [Finsupp.sum_finsetSum _ _ _ (by simp) (by simp)]
         simpa}, ?_⟩
@@ -166,6 +168,7 @@ lemma sConvexComb_map_iConvexComb {M : Type*} {Y : Type*} [ConvexSpace R Y] (f :
         rw [StdSimplex.map_sConvexComb, sConvexComb_sConvexComb, sConvexComb_map,
           iConvexComb_map]
 
+/-
 /-- Constructor for (bundled) affine maps from a standard simplex to a convex space. -/
 noncomputable def affineMapMk {M : Type*} {Y : Type*} [ConvexSpace R Y] (f : M → Y) :
     ConvexSpace.AffineMap R (StdSimplex R M) Y where
@@ -197,7 +200,7 @@ lemma affineMapMk_apply_eq_sum
     (f : M → E) (s : StdSimplex R M) :
     affineMapMk (R := R) f s = ∑ (m : M), s.weights m • f m := by
   rw [affineMapMk_apply, iConvexComb_eq_sum,
-    Finsupp.sum_fintype _ _ (by simp)]
+    Finsupp.sum_fintype _ _ (by simp)]-/
 
 /-- In the standard simplex with vertices `M`, this is the isobarycenter of
 a nonempty finite subset `S` of `M`. -/

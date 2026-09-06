@@ -13,7 +13,7 @@ maxSynthPendingDepth = 3
 [[require]]
 name = "mathlib"
 git = "https://github.com/joelriou/mathlib4.git"
-rev = "sset-relative-homology"
+rev = "master"
 
 [[lean_lib]]
 name = "Excision"

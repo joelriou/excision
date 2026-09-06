@@ -182,7 +182,7 @@ noncomputable def sd {n : ℕ} (s : (toSSet.obj X) _⦋n⦌) (σ : Equiv.Perm (F
     ((toSSetObjEquiv _ _ s).comp
       ((ConvexSpace.AffineMap.id (StdSimplex ℝ (Fin (n + 1)))).sd σ).toContinuousMap)
 
-lemma sd_toSSetObjEquiv_symm {n : ℕ} (s : C(stdSimplex ℝ (Fin (n + 1)), X))
+lemma sd_toSSetObjEquiv_symm {n : ℕ} (s : C(StdSimplex ℝ (Fin (n + 1)), X))
     (σ : Equiv.Perm (Fin (n + 1))) :
     sd ((toSSetObjEquiv _ (op ⦋n⦌)).symm s) σ =
       (toSSetObjEquiv _ (op ⦋n⦌)).symm
@@ -230,7 +230,7 @@ lemma sdIter_one
     sdIter s σ = sd s (σ 0) := by
   rfl
 
-lemma sdIter_toSSetObjEquiv_symm {n : ℕ} (s : C(stdSimplex ℝ (Fin (n + 1)), X))
+lemma sdIter_toSSetObjEquiv_symm {n : ℕ} (s : C(StdSimplex ℝ (Fin (n + 1)), X))
     {k : ℕ} (σ : Fin k → Equiv.Perm (Fin (n + 1))) :
     sdIter ((toSSetObjEquiv _ (op ⦋n⦌)).symm s) σ =
       (toSSetObjEquiv _ (op ⦋n⦌)).symm
