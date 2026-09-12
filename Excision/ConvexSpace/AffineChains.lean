@@ -42,7 +42,7 @@ noncomputable def hSd : ∀ (n : ℕ),
       Sigma.desc (fun s ↦
         (SSet.ιChainComplex _ s - SSet.ιChainComplex _ s ≫
           ((toSSet ℝ Y).chainComplex R).d (n + 1) n ≫ hSd n) ≫
-            toSSet.cone s.isobarycenter _ (n + 1))
+            toSSet.cone s.barycenter _ (n + 1))
 
 @[simp]
 lemma hSd_zero : hSd Y R 0 = 0 := rfl
@@ -54,7 +54,7 @@ lemma ι_hSd_succ {n : ℕ}
     SSet.ιChainComplex _ s ≫ hSd Y R (n + 1) =
       (SSet.ιChainComplex (toSSet ℝ Y) s - SSet.ιChainComplex _ s ≫
         ((toSSet ℝ Y).chainComplex R).d (n + 1) n ≫ hSd Y R n) ≫
-          toSSet.cone s.isobarycenter _ (n + 1) :=
+          toSSet.cone s.barycenter _ (n + 1) :=
   Sigma.ι_desc ..
 
 set_option backward.defeqAttrib.useBackward true in
@@ -137,7 +137,7 @@ variable {Y} in
 lemma ι_sd_f_succ {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin (n + 2))) Y) :
     SSet.ιChainComplex _ s ≫ (sd Y R).f (n + 1) =
       SSet.ιChainComplex _ s ≫ ((toSSet ℝ Y).chainComplex R).d (n + 1) n ≫
-        (sd Y R).f n ≫ toSSet.cone (R := ℝ) s.isobarycenter R n := by
+        (sd Y R).f n ≫ toSSet.cone (R := ℝ) s.barycenter R n := by
   obtain _ | n := n
   · simp [sd_f_succ, cone_comp_d_eq_sub]
   · simp [sd_f_succ, ι_hSd_succ_assoc, cone_comp_d_eq_sub]
@@ -172,7 +172,7 @@ lemma ι_sd_f_eq_sum {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (F
     · simp
     · simp only [AffineMap.cone_single_succ, StdSimplex.affineMapMk_single,
         AffineMap.sdVertex_def, Equiv.Perm.coe_inv,
-        AffineMap.subIsobarycenter_mk_comp_of_injective _ _ _ _ Fin.succAbove_right_injective]
+        AffineMap.subBarycenter_mk_comp_of_injective _ _ _ _ Fin.succAbove_right_injective]
       congr 1
       ext k
       obtain ⟨k, rfl⟩ := (decomposeFin'Symm i σ).surjective k

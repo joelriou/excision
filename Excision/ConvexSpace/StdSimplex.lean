@@ -324,16 +324,16 @@ lemma subBarycenter_comp_of_injective
   simp [subBarycenter, StdSimplex.map_subBarycenter_of_injective _ _ _ hg]
 
 /-- The image of the isobarycenter of the standard simplex by an affine map. -/
-noncomputable abbrev isobarycenter [Nonempty M] [Fintype M] : Y := f .barycenter
+noncomputable abbrev barycenter [Nonempty M] [Fintype M] : Y := f .barycenter
 
 end
 
 @[simp]
-lemma isobarycenter_fin_one (f : ConvexSpace.AffineMap K (StdSimplex K (Fin 1)) Y) :
-    f.isobarycenter = f (.single 0) := by
-  simp [isobarycenter]
+lemma barycenter_fin_one (f : ConvexSpace.AffineMap K (StdSimplex K (Fin 1)) Y) :
+    f.barycenter = f (.single 0) := by
+  simp [barycenter]
 
-lemma subIsobarycenter_mk_comp_of_injective {M N : Type*} [DecidableEq N]
+lemma subBarycenter_mk_comp_of_injective {M N : Type*} [DecidableEq N]
     (f : N → Y) (S : Finset M) (hS : S.Nonempty) (g : M → N)
     (hg : Function.Injective g) :
     (StdSimplex.affineMapMk (R := K) (f ∘ g)).subBarycenter S hS =
@@ -365,7 +365,7 @@ lemma sdVertex_def (f : ConvexSpace.AffineMap K (StdSimplex K (Fin n)) Y)
 lemma sdVertex_zero
     (f : ConvexSpace.AffineMap K (StdSimplex K (Fin (n + 1))) Y)
     (σ : Equiv.Perm (Fin (n + 1))) :
-    f.sdVertex σ 0 = f.isobarycenter := by
+    f.sdVertex σ 0 = f.barycenter := by
   simp [sdVertex_def, subBarycenter]
 
 @[simp]

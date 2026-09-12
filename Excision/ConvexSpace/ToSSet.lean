@@ -16,6 +16,8 @@ public import Mathlib.AlgebraicTopology.SimplicialSet.Homology.Basic
 
 -/
 
+-- #43528, #43524
+
 universe w u
 
 @[expose] public section
