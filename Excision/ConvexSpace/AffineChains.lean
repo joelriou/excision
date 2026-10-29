@@ -57,8 +57,6 @@ lemma ι_hSd_succ {n : ℕ}
           toSSet.cone s.barycenter _ (n + 1) :=
   Sigma.ι_desc ..
 
-set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 variable {Y} in
 @[reassoc]
 lemma hSd_naturality (n : ℕ) :
