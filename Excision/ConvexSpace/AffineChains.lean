@@ -37,8 +37,8 @@ from the definition in the book.) -/
 noncomputable def hSd : ∀ (n : ℕ),
     ((toSSet ℝ Y).chainComplex R).X n ⟶
       ((toSSet ℝ Y).chainComplex R).X (n + 1)
-  | Nat.zero => 0
-  | Nat.succ n =>
+  | 0 => 0
+  | n + 1 =>
       Sigma.desc (fun s ↦
         (SSet.ιChainComplex _ s - SSet.ιChainComplex _ s ≫
           ((toSSet ℝ Y).chainComplex R).d (n + 1) n ≫ hSd n) ≫
