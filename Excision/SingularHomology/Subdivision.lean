@@ -71,7 +71,6 @@ lemma hSd_zero (R : C) : hSd.{w} R 0 = 0 := by simp [hSd]
 
 end singularChainComplexFunctor
 
-set_option backward.isDefEq.respectTransparency false in
 open singularChainComplexFunctor in
 /-- The subdivision operator on the singular chain complexes of
 topological spaces as an endomorphism of the functor
@@ -110,7 +109,6 @@ lemma ι_map_app_singularChainComplexSd_f {n : ℕ} (x : toSSet.obj X _⦋n⦌) 
     ← ι_singularChainComplexMap_assoc]
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma singularChainComplexSd_f_zero :
     X.singularChainComplexSd.f 0 = 𝟙 ((X.singularChainComplex R).X 0) := by
@@ -118,7 +116,6 @@ lemma singularChainComplexSd_f_zero :
     ChainComplex.nullHomotopicMap_f_zero]
 
 open singularChainComplexFunctor in
-set_option backward.isDefEq.respectTransparency false in
 /-- The homotopy from the identity to the subdivision endomorphism
 `X.singularChainComplexSd` of the singular chain complex of a topological
 space `X` with coefficients in `R`. -/
@@ -349,7 +346,6 @@ lemma ι_univObj_singularChainComplexSd_f (n : ℕ) :
       erw [ι_uliftFunctorCompSingularChainComplexFunctorIso_inv_app]
       rfl
 
-set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma ι_singularChainComplexSd_f {n : ℕ} (s : (toSSet.obj X) _⦋n⦌) :
     ιSingularChainComplex _ s ≫ (singularChainComplexSd X (R := R)).f n =

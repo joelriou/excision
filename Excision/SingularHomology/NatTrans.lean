@@ -28,8 +28,6 @@ namespace singularChainComplexFunctor
 
 variable {R : C} {n : ℕ} {F : TopCat.{w} ⥤ C}
 
-set_option backward.isDefEq.respectTransparency false in
-set_option backward.defeqAttrib.useBackward true in
 /-- Constructor for natural transformations from the functor of `n`-singular chains. -/
 noncomputable def natTransMk (f : R ⟶ F.obj (SimplexCategory.toTop.{w} ^⦋n⦌)) :
     (singularChainComplexFunctor C).obj R ⋙ HomologicalComplex.eval _ _ n ⟶ F where
@@ -38,8 +36,6 @@ noncomputable def natTransMk (f : R ⟶ F.obj (SimplexCategory.toTop.{w} ^⦋n�
     simp [singularChainComplexFunctor, SSet.chainComplexFunctor, ← Functor.map_comp]
     rfl)
 
-set_option backward.isDefEq.respectTransparency false in
-set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma ι_natTransMk (f : R ⟶ F.obj (SimplexCategory.toTop.{w} ^⦋n⦌))
     (X : TopCat.{w}) (s : (TopCat.toSSet.obj X) _⦋n⦌) :
@@ -47,7 +43,6 @@ lemma ι_natTransMk (f : R ⟶ F.obj (SimplexCategory.toTop.{w} ^⦋n⦌))
       f ≫ F.map s.down :=
   Sigma.ι_desc ..
 
-set_option backward.isDefEq.respectTransparency false in
 lemma natTrans_ext
     {f g : (singularChainComplexFunctor C).obj R ⋙ HomologicalComplex.eval _ _ n ⟶ F}
     (h : TopCat.ιSingularChainComplex _ (TopCat.toSSet.univObj n) ≫ f.app _ =
