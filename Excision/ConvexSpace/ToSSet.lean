@@ -110,7 +110,7 @@ variable {Y}
 
 attribute [local simp] SimplicialObject.δ_def SimplexCategory.δ_apply
 
-@[simp]
+/-@[simp]
 lemma toSSet.δ_zero_affineMapMk₂ (y₀ y₁ : Y) :
     (toSSet R Y).δ 0 (StdSimplex.affineMapMk ![y₀, y₁]) =
       StdSimplex.affineMapMk ![y₁] := by
@@ -138,7 +138,7 @@ lemma toSSet.δ_one_affineMapMk₃ (y₀ y₁ y₂ : Y) :
 lemma toSSet.δ_two_affineMapMk₃ (y₀ y₁ y₂ : Y) :
     (toSSet R Y).δ 2 (StdSimplex.affineMapMk ![y₀, y₁, y₂]) =
       StdSimplex.affineMapMk ![y₀, y₁] := by
-  ext i; fin_cases i <;> simp [Fin.succAbove]
+  ext i; fin_cases i <;> simp [Fin.succAbove]-/
 
 @[simp]
 lemma toSSet.δ_zero (y : Y) {n : ℕ} (s : ConvexSpace.AffineMap R (StdSimplex R (Fin (n + 1))) Y) :
