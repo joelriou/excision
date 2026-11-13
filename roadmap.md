@@ -82,7 +82,7 @@ it may be easier to work with a definition that is independent of the base-point
 ### Homology of spheres
 
 The best phrasing is probably to define an homotopy equivalence between the
-reduced chain complex $\tilde C_*(S^n)$ with the single chain complex
+reduced chain complex ${\tilde C_*(S^n)}$ with the single chain complex
 where `R` lies in degree `n`.
 If `U` is the complement of the north pole in `S^{n+1}` and `V` the complement
 of the south pole, the intersection `U ∩ V` is homotopy equivalent to `S^n`,
