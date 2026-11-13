@@ -58,8 +58,7 @@ that this also hold for weak homotopy equivalences (maps which induces bijection
 homotopy groups). Joël's plan will be to show the similar result for simplicial sets
 and to use Quillen's model category structure that he was formalized.)
 
-### Small simplices lemma, excision's theorem (in the process of being upstreamed
-from https://github.com/joelriou/excision by Joël Riou, #43524, #43528, ...)
+### Small simplices lemma, excision's theorem (in the process of being upstreamed from https://github.com/joelriou/excision by Joël Riou, #43524, #43528, ...)
 
 If `X` is a topological space, and `U i` is a family of subsets of `X` such that
 the interiors of the `U i` cover `X`, then we introduce a subcomplex of
