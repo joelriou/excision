@@ -93,7 +93,7 @@ sequence/triangle should allow to show that the reflection which swaps the poles
 acts as `(-1) • ·`, which should be the key in understanding the action
 of the orthogonal group on the chain complex (up to homotopy, or in homology).
 [Sign shenanigans are certainly involved in the definition of the generator
-of homology of `S^n` in degree `n`. It is probably ok, as a first implementation,
+of the homology of `S^n` in degree `n`. It is probably ok, as a first implementation,
 not to care too much about the precise convention we want to set, but in the
 future, it would be great to check at least that for `n = 1`, the generator
 we get is homologous to the obvious path with winding number `1`.]
