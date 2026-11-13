@@ -176,6 +176,8 @@ lemma ι_sd_f_eq_sum {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (F
       obtain ⟨k, rfl⟩ := (decomposeFin'Symm i σ).surjective k
       obtain rfl | ⟨k, rfl⟩ := k.eq_zero_or_eq_succ <;> simp
 
+/- This is not necessary
+
 /-- The `k`th iteration of the subdivision operator `ConvexSpace.toSSet.sd`. -/
 @[no_expose]
 noncomputable def sdIter (k : ℕ) :
@@ -231,7 +233,7 @@ lemma ι_sdIter_f {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (Fin 
     congr
     · rw [mul_comm]
       simp [α, Fin.prod_univ_succ]
-    · simp [α, AffineMap.sdIter_succ]
+    · simp [α, AffineMap.sdIter_succ]-/
 
 end ConvexSpace.toSSet
 
