@@ -151,7 +151,8 @@ lemma ι_sd_f_eq_sum {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (F
       ∑ (σ : Equiv.Perm (Fin (n + 1))),
         σ.sign • (SSet.ιChainComplex _ (ConvexSpace.AffineMap.sd s σ)) := by
   induction n with
-  | zero => simp
+  | zero => simp only [sd_f_0, Category.comp_id, Nat.reduceAdd, Finset.univ_unique, default_eq,
+    AffineMap.sd_eq_self, Finset.sum_singleton, sign_one, one_smul]
   | succ n hn =>
     rw [ι_sd_f_succ]
     obtain ⟨s, rfl⟩ := StdSimplex.affineMapMk_surjective s

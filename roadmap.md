@@ -72,9 +72,9 @@ could be using a distinguished triangle in the homotopy category of complexes.
 ### Reduced singular chain complex
 
 If `X` is a (nonempty) topological space (or an augmented simplicial set),
-one may consider the chain complex `C_*(X)` of `X`, and introduce the reduced
-complex $\tilde C_*(X)$ obtained by replacing `C_0(X)` by the kernel of
-the augmentation map `C_0(X) → C_0(PUnit)`. This chain complex is homotopically
+one may consider the chain complex $C_\star(X)$ of `X`, and introduce the reduced
+complex $\tilde C_*(X)$ obtained by replacing $C_0(X)$ by the kernel of
+the augmentation map $C_0(X) → C_0(PUnit)$. This chain complex is homotopically
 equivalent to the relative singular chain complex of the pointed space `(X, x)`
 for any `x : X`, but in order to handle the homology of spheres cleanly,
 it may be easier to work with a definition that is independent of the base-point.
@@ -82,19 +82,19 @@ it may be easier to work with a definition that is independent of the base-point
 ### Homology of spheres
 
 The best phrasing is probably to define an homotopy equivalence between the
-reduced chain complex ${\tilde C_*(S^n)}$ with the single chain complex
+reduced chain complex $\tilde C_\star(S^n)$ with the single chain complex
 where `R` lies in degree `n`.
 If `U` is the complement of the north pole in `S^{n+1}` and `V` the complement
 of the south pole, the intersection `U ∩ V` is homotopy equivalent to `S^n`,
 and the reduced version of the Mayer-Vietoris sequence (as a distinguished
-triangle) gives an homotopy equivalence between $\tilde C_*(S^{n+1})$ and
-the shift of $\tilde C_*(S^n)$. The "symmetry" properties of the Mayer-Vietoris
+triangle) gives an homotopy equivalence between $\tilde C_\star(S^{n+1})$ and
+the shift of $\tilde C_\star(S^n)$. The "symmetry" properties of the Mayer-Vietoris
 sequence/triangle should allow to show that the reflection which swaps the poles 
 acts as `(-1) • ·`, which should be the key in understanding the action
 of the orthogonal group on the chain complex (up to homotopy, or in homology).
 [Sign shenanigans are certainly involved in the definition of the generator
 of homology of `S^n` in degree `n`. It is probably ok, as a first implementation,
-not to care to much about the precise convention we want to set, but in the
+not to care too much about the precise convention we want to set, but in the
 future, it would be great to check at least that for `n = 1`, the generator
 we get is homologous to the obvious path with winding number `1`.]
 
