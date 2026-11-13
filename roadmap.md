@@ -6,8 +6,8 @@ https://leanprover.zulipchat.com/#narrow/channel/116395-maths/topic/Completed.20
 
 This roadmap describes an ongoing effort towards the addition in mathlib of
 proofs of essential properties of singular homology. For the application
-to the Brouwer fixed point theorem, the main is the computation of the
-homology of spheres.
+to the Brouwer fixed point theorem, the main result is the computation
+of the homology of spheres.
 
 ## Degree of generality
 
