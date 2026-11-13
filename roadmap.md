@@ -90,7 +90,7 @@ of the south pole, the intersection `U ∩ V` is homotopy equivalent to `S^n`,
 and the reduced version of the Mayer-Vietoris sequence (as a distinguished
 triangle) gives an homotopy equivalence between $\tilde C_*(S^{n+1})$ and
 the shift of $\tilde C_*(S^n)$. The "symmetry" properties of the Mayer-Vietoris
-sequence/triangle should allows to show that the reflection which swaps the poles 
+sequence/triangle should allow to show that the reflection which swaps the poles 
 acts as `(-1) • ·`, which should be the key in understanding the action
 of the orthogonal group on the chain complex (up to homotopy, or in homology).
 [Sign shenanigans are certainly involved in the definition of the generator
