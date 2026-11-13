@@ -8,8 +8,9 @@ module
 public import Mathlib.Algebra.Order.Archimedean.Real.Basic
 public import Mathlib.AlgebraicTopology.SimplicialSet.Homology.Basic
 public import Mathlib.GroupTheory.Perm.Sign
-public import Excision.ConvexSpace.ToSSet
-public import Excision.Perm.EquivSucc
+public import Mathlib.Geometry.Convex.ConvexSpace.ToSSet
+public import Excision.ConvexSpace.StdSimplex
+--public import Excision.ConvexSpace.ToSSet
 
 /-!
 # Affine chains and subdivision
