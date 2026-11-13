@@ -12,6 +12,7 @@ public import Mathlib.AlgebraicTopology.SimplexCategory.Basic
 
 -/
 
+/-
 @[expose] public section
 
 namespace SimplexCategory
@@ -23,3 +24,4 @@ lemma σ_apply {n : ℕ} (i : Fin (n + 1)) (j : Fin (n + 2)) :
     SimplexCategory.σ i j = Fin.predAbove i j := rfl
 
 end SimplexCategory
+-/

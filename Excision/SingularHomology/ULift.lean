@@ -94,7 +94,7 @@ lemma ι_uliftFunctorCompSingularChainComplexFunctorIso_inv_app (X : TopCat.{u})
     Functor.whiskeringRight_map_app_app, sigmaConstULiftIso_inv_app_app,
     ι_sigmaConstObjObjULiftIso_inv_assoc]
   -- needs cleanup
-  erw [Sigma.ι_desc]
+  erw [Sigma.ι_comp_desc]
   simp
   rfl
 

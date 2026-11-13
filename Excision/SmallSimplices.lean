@@ -272,7 +272,7 @@ lemma ι_hρ {n : ℕ} (x : toSSet.obj X _⦋n⦌) :
     X.ιSingularChainComplex x ≫ hU.hρ (R := R) n =
       X.ιSingularChainComplex x ≫
         (X.singularChainComplexHomotopyIdSdIter (hU.m x)).hom n (n + 1) :=
-  Sigma.ι_desc ..
+  Sigma.ι_comp_desc ..
 
 @[inherit_doc hρ]
 noncomputable def hρ' (n m : ℕ) :

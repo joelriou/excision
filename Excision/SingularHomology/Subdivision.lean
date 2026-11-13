@@ -259,8 +259,8 @@ end toSSet
 @[no_expose]
 noncomputable def singularChainComplexSdIter (k : ℕ) :
     X.singularChainComplex R ⟶ X.singularChainComplex R :=
-  letI x : End _ := singularChainComplexSd (R := R) X
-  x ^ k
+  letI x : End _ := .of (singularChainComplexSd (R := R) X)
+  (x ^ k).asHom
 
 @[simp]
 lemma singularChainComplexSdIter_zero :

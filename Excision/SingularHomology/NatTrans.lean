@@ -41,7 +41,7 @@ lemma ι_natTransMk (f : R ⟶ F.obj (SimplexCategory.toTop.{w} ^⦋n⦌))
     (X : TopCat.{w}) (s : (TopCat.toSSet.obj X) _⦋n⦌) :
     dsimp% X.ιSingularChainComplex s ≫ (natTransMk f).app X =
       f ≫ F.map s.down :=
-  Sigma.ι_desc ..
+  Sigma.ι_comp_desc ..
 
 lemma natTrans_ext
     {f g : (singularChainComplexFunctor C).obj R ⋙ HomologicalComplex.eval _ _ n ⟶ F}

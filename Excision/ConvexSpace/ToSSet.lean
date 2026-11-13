@@ -10,6 +10,7 @@ public import Excision.SimplexCategory.Basic
 public import Excision.Preadditive.HasZeroObject
 public import Mathlib.AlgebraicTopology.ExtraDegeneracy
 public import Mathlib.AlgebraicTopology.SimplicialSet.Homology.Basic
+public import Mathlib.Geometry.Convex.ConvexSpace.ToSSet
 
 /-!
 # Affine simplices in the singular simplicial set of a convex space
@@ -32,7 +33,7 @@ namespace ConvexSpace
 
 variable (Y Z : Type w) [ConvexSpace R Y] [ConvexSpace R Z]
 
-variable {Y} in
+/-variable {Y} in
 /-- The cone of an affine map from the standard simplex. -/
 noncomputable def AffineMap.cone
     {n : ℕ} (s : ConvexSpace.AffineMap R (StdSimplex R (Fin n)) Y) (y : Y) :
@@ -75,7 +76,7 @@ lemma AffineMap.cone_mk₂ (y y₀ y₁ : Y) :
   rw [cone_def]
   congr
   ext i
-  fin_cases i <;> aesop
+  fin_cases i <;> aesop-/
 
 lemma AffineMap.comp_cone {n : ℕ} (φ : ConvexSpace.AffineMap R Y Z)
     (ψ : ConvexSpace.AffineMap R (StdSimplex R (Fin (n + 1))) Y) (y : Y) :
@@ -83,7 +84,7 @@ lemma AffineMap.comp_cone {n : ℕ} (φ : ConvexSpace.AffineMap R Y Z)
   ext i
   obtain rfl | ⟨i, rfl⟩ := i.eq_zero_or_eq_succ <;> simp
 
-variable (R) in
+/-variable (R) in
 /-- Given a convex space `Y`, this is the simplicial set whose `n`-simplices are
 affine maps from the `n`-dimensional standard simplex to `Y`. -/
 @[simps -isSimp]
@@ -102,7 +103,7 @@ affine simplices that is induced by an affine map from `Y` to `Z`. -/
 @[simps]
 noncomputable def AffineMap.toSSetMap (φ : ConvexSpace.AffineMap R Y Z) :
     toSSet R Y ⟶ toSSet R Z where
-  app n := ↾fun g ↦ φ.comp g
+  app n := ↾fun g ↦ φ.comp g-/
 
 section
 
@@ -140,7 +141,7 @@ lemma toSSet.δ_two_affineMapMk₃ (y₀ y₁ y₂ : Y) :
       StdSimplex.affineMapMk ![y₀, y₁] := by
   ext i; fin_cases i <;> simp [Fin.succAbove]-/
 
-@[simp]
+/-@[simp]
 lemma toSSet.δ_zero (y : Y) {n : ℕ} (s : ConvexSpace.AffineMap R (StdSimplex R (Fin (n + 1))) Y) :
     (toSSet R Y).δ 0 (s.cone y) = s := by
   ext
@@ -150,19 +151,19 @@ lemma toSSet.δ_zero (y : Y) {n : ℕ} (s : ConvexSpace.AffineMap R (StdSimplex 
 lemma toSSet.δ_affineMapMk {n : ℕ} (s : Fin (n + 2) → Y)
     (i : Fin (n + 2)) :
     (toSSet R Y).δ i (StdSimplex.affineMapMk s) = StdSimplex.affineMapMk (s ∘ i.succAbove) := by
-  aesop
+  aesop-/
 
 end
 
-variable (R) in
+/-variable (R) in
 /-- Given a convex space `Y`, this is the augmented simplicial set
 whose `n`-simplices are affine maps from the `n`-dimensional standard simplex to `Y`. -/
 noncomputable abbrev toSSetAugmented : SSet.Augmented where
   left := toSSet R Y
   right := PUnit
-  hom.app _ := ↾fun _ ↦ .unit
+  hom.app _ := ↾fun _ ↦ .unit-/
 
-attribute [local simp] SimplicialObject.δ_def SimplexCategory.δ_apply
+/-attribute [local simp] SimplicialObject.δ_def SimplexCategory.δ_apply
   SimplicialObject.σ_def SimplexCategory.σ_apply AffineMap.cone_def
   StdSimplex.affineMapMk_apply in
 variable {Y} in
@@ -226,7 +227,7 @@ lemma AffineMap.cone_naturality
     (SSet.chainComplexMap φ.toSSetMap M).f n ≫ toSSet.cone (φ y) M n =
     toSSet.cone y M n ≫ (SSet.chainComplexMap φ.toSSetMap M).f (n + 1) := by
   ext x
-  simp [AffineMap.comp_cone]
+  simp [AffineMap.comp_cone]-/
 
 end ConvexSpace
 

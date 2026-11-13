@@ -118,7 +118,7 @@ noncomputable def chainComplexXDesc :
     (Sigma.desc f) (by
       ext x
       simp only [Functor.id_obj, SSet.ι_chainComplexMap_f_assoc, comp_zero]
-      exact (Sigma.ι_desc ..).trans (hf x))).1
+      exact (Sigma.ι_comp_desc ..).trans (hf x))).1
 
 @[reassoc]
 lemma ι_chainComplexXDesc (x : X.right _⦋n⦌) :
@@ -128,7 +128,7 @@ lemma ι_chainComplexXDesc (x : X.right _⦋n⦌) :
     (CokernelCofork.IsColimit.desc' (X.isColimitCokernelCoforkChainComplexX R n)
       (Sigma.desc f) _).2
   rw [this]
-  apply Sigma.ι_desc
+  apply Sigma.ι_comp_desc
 
 end
 

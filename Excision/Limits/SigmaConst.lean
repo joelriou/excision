@@ -125,15 +125,15 @@ noncomputable def splittingSigmaConstCokernelShortComplex :
       · obtain ⟨a, rfl⟩ := hb
         aesop
       · dsimp [sigmaConstCokernelCofork]
-        rw [Preadditive.comp_add, Sigma.ι_desc_assoc, dite_eq_right hb,
-          Sigma.ι_desc_assoc, dite_eq_left (by simpa using hb)]
+        rw [Preadditive.comp_add, Sigma.ι_comp_desc_assoc, dite_eq_right hb,
+          Sigma.ι_comp_desc_assoc, dite_eq_left (by simpa using hb)]
         simp }
 
 /-- If `c` is a colimit cokernel cofork for a map `∐ fun (_ : α) ↦ R ⟶ ∐ fun (_ : β) ↦ R`
 induced by an injective map `f : α → β`, this is a splitting of the short complex
 given by the vanishing `c.condition`. -/
 noncomputable def splittingSigmaConstCokernelShortComplex'
-    {c : CokernelCofork (Sigma.map' (f := fun (_ : α) ↦ R) (g := fun (_ : β) ↦ R) f (fun _ ↦ 𝟙 R))}
+    {c : CokernelCofork (Sigma.map' (g := fun (_ : α) ↦ R) (f := fun (_ : β) ↦ R) f (fun _ ↦ 𝟙 R))}
     (hc : IsColimit c) :
     (ShortComplex.mk _ _ c.condition).Splitting :=
   (splittingSigmaConstCokernelShortComplex R f hf).ofIso
@@ -149,7 +149,7 @@ is the kernel of the projection to its cokernel. -/
 @[no_expose]
 noncomputable def isLimitKernelForkOfIsColimitCokernelCoforkSigmaConst
     [HasZeroObject C]
-    {c : CokernelCofork (Sigma.map' (f := fun (_ : α) ↦ R) (g := fun (_ : β) ↦ R) f (fun _ ↦ 𝟙 R))}
+    {c : CokernelCofork (Sigma.map' (g := fun (_ : α) ↦ R) (f := fun (_ : β) ↦ R) f (fun _ ↦ 𝟙 R))}
     (hc : IsColimit c) :
     IsLimit (KernelFork.ofι _ c.condition) := by
   let iso := IsColimit.coconePointUniqueUpToIso (isColimitSigmaConstCokernelCofork R f) hc

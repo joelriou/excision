@@ -190,24 +190,20 @@ lemma TopPair.homotopyEquivalences_of_excision {V X : TopPair} (g : V ⟶ X)
           (TopCat.toSSet.mapIso (TopPair.proj₂.mapIso e₂))
           (TopCat.toSSet.mapIso (TopPair.proj₁.mapIso e₂ :)) ?_) R) ?_
   · simp [← Functor.map_comp]
-    rfl
   · simp [← Functor.map_comp]
-    rfl
   · simp only [toSSetPair_obj, toSSetPair_map, Arrow.mk_left, Arrow.mk_right,
       MorphismProperty.Arrow.isoMk, MorphismProperty.Comma.isoMk,
       MorphismProperty.Comma.isoFromComma, MorphismProperty.Comma.homFromCommaOfIsIso,
-      Functor.comp_obj, Arrow.mk_hom, ← Functor.map_comp]
+      Arrow.mk_hom, ← Functor.map_comp]
     congr 1
     ext : 1
     · simp only [MorphismProperty.Comma.comp_hom, MorphismProperty.Comma.Hom.hom_mk,
         MorphismProperty.Arrow.homMk_hom, Comma.comp_left, Comma.isoMk_hom_left, Functor.mapIso_hom,
-        Functor.comp_map, MorphismProperty.Comma.forget_map, Arrow.leftFunc_map, Arrow.homMk_left,
-        ← Functor.map_comp]
+        Arrow.homMk_left, ← Functor.map_comp]
       congr 1
       exact Functor.congr_map TopPair.proj₂ fac
     · simp only [MorphismProperty.Comma.comp_hom, MorphismProperty.Comma.Hom.hom_mk,
         MorphismProperty.Arrow.homMk_hom, Comma.comp_right, Comma.isoMk_hom_right,
-        Functor.mapIso_hom, Functor.comp_map, MorphismProperty.Comma.forget_map,
-        Arrow.rightFunc_map, Arrow.homMk_right, ← Functor.map_comp]
+        Functor.mapIso_hom, Arrow.homMk_right, ← Functor.map_comp]
       congr 1
       exact Functor.congr_map TopPair.proj₁ fac

@@ -147,7 +147,7 @@ lemma mem_range_affineMap {M N : Type*} (s : StdSimplex R N) (f : M → N)
       · intro j _ hj
         exact Finsupp.single_eq_of_ne (fun h ↦ hj (hp h.symm))
       · simp
-    · rw [Finsupp.mapDomain_of_not_mem_image_support,
+    · rw [Finsupp.mapDomain_of_notMem_image_support,
         Finset.sum_eq_zero (fun _ _ ↦ Finsupp.single_eq_of_ne (by grind))]
       simp only [Set.mem_image, SetLike.mem_coe, Finsupp.mem_support_iff, Finsupp.coe_finsetSum,
         Finset.sum_apply, ne_eq, not_exists, not_and]
@@ -245,7 +245,7 @@ lemma map_subBarycenter_of_injective
   simp only [weights_map, weights_subBarycenter, Finsupp.coe_finsetSum, Finset.sum_apply]
   by_cases! hn : ∃ (m : M) (hm : m ∈ S), f m = n
   · obtain ⟨m, hm, rfl⟩ := hn
-    rw [Finsupp.mapDomain_apply hf, Finset.sum_image hf.injOn,
+    rw [Finsupp.mapDomain_apply_of_injective hf, Finset.sum_image hf.injOn,
       Finsupp.coe_finsetSum, Finset.sum_apply]
     congr
     ext x
@@ -254,7 +254,7 @@ lemma map_subBarycenter_of_injective
       simp [Finset.card_image_of_injective S hf]
     · rw [Finsupp.single_eq_of_ne hx, Finsupp.single_eq_of_ne
         (fun h ↦ hx (hf h))]
-  · rw [Finsupp.mapDomain_of_not_mem_image_support,
+  · rw [Finsupp.mapDomain_of_notMem_image_support,
       Finset.sum_eq_zero]
     · intro x hx
       simp only [Finset.mem_image] at hx
@@ -298,7 +298,7 @@ end StdSimplex
 
 namespace ConvexSpace.AffineMap
 
-variable {K : Type*} [Field K] [CharZero K] [LinearOrder K] [IsStrictOrderedRing K]
+variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
   {Y : Type*} [ConvexSpace K Y] {Z : Type*} [ConvexSpace K Z]
 
 section

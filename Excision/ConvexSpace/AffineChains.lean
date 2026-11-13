@@ -55,7 +55,7 @@ lemma ι_hSd_succ {n : ℕ}
       (SSet.ιChainComplex (toSSet ℝ Y) s - SSet.ιChainComplex _ s ≫
         ((toSSet ℝ Y).chainComplex R).d (n + 1) n ≫ hSd Y R n) ≫
           toSSet.cone s.barycenter _ (n + 1) :=
-  Sigma.ι_desc ..
+  Sigma.ι_comp_desc ..
 
 variable {Y} in
 @[reassoc]
@@ -180,8 +180,8 @@ lemma ι_sd_f_eq_sum {n : ℕ} (s : ConvexSpace.AffineMap ℝ (StdSimplex ℝ (F
 @[no_expose]
 noncomputable def sdIter (k : ℕ) :
     (toSSet ℝ Y).chainComplex R ⟶ (toSSet ℝ Y).chainComplex R :=
-  letI x : End _ := sd Y R
-  x ^ k
+  letI x : End _ := .of (sd Y R)
+  (x ^ k).asHom
 
 @[simp]
 lemma sdIter_zero :
