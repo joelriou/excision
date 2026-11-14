@@ -113,6 +113,12 @@ structure SmallSimplicesCondition : Prop where
 
 namespace SmallSimplicesCondition
 
+lemma of_isOpen (h₁ : ∀ (i : ι), IsOpen (U i)) (h₂ : ⋃ (i : ι), U i = Set.univ) :
+    SmallSimplicesCondition U where
+  iUnion_interior :=
+    subset_antisymm (by simp) (subset_trans h₂.symm.le
+      (Set.iUnion_mono'' (fun i ↦ by simpa [subset_interior_iff_isOpen] using h₁ i)))
+
 variable (hU : SmallSimplicesCondition U)
 
 include hU in

@@ -15,6 +15,7 @@ public import Excision.HomotopyCategory.ChainComplex
 public import Excision.HomotopyCategory.HomotopyEquivalences
 public import Excision.Limits.SigmaConst
 public import Excision.Linear.ULift
+public import Excision.MayerVietoris
 public import Excision.Perm.EquivSucc
 public import Excision.Preadditive.HasZeroObject
 public import Excision.SimplexCategory.Basic
