@@ -36,9 +36,9 @@ Note: when `C` has products, we may apply this construction to an object
 in the opposite category `Cᵒᵖ`, and this would give a candidate definition
 of the complex which computes singular **co**homology.
 
-Most of the definitions or proofs involving singular homology should be
-stated first in terms of these singular chain complexes (morphisms,
-homotopies, homotopy equivalences), and only at the very end,
+If this is possible, most of the definitions or proofs involving singular
+homology should be stated first in terms of these singular chain complexes
+(morphisms, homotopies, homotopy equivalences), and only at the very end,
 consequences in terms of the actual homology of these complexes
 should be derived (this is the only place where we actually need that
 `C` is an abelian category).
@@ -97,6 +97,8 @@ of the homology of `S^n` in degree `n`. It is probably ok, as a first implementa
 not to care too much about the precise convention we want to set, but in the
 future, it would be great to check at least that for `n = 1`, the generator
 we get is homologous to the obvious path with winding number `1`.]
+(It may be difficult to prove all of this at the homotopical level: it may
+be easier to state and prove the results for the homology only.)
 
 ### Brouwer fixed point theorem
 
